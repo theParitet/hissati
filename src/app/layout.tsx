@@ -3,6 +3,7 @@ import { Tajawal, Fraunces } from "next/font/google";
 import "./globals.css";
 import { DirectionManager } from "@/components/DirectionManager";
 import { AppHeader } from "@/components/AppHeader";
+import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 
 // Self-hosted at build time (next/font) → no runtime CDN, works offline (NFR-1).
 // Tajawal is the bilingual workhorse; Fraunces gives Latin display its own voice.
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="flex min-h-dvh flex-col antialiased">
         <DirectionManager />
+        <ServiceWorkerRegister />
         <AppHeader />
         <main className="flex-1">{children}</main>
       </body>
