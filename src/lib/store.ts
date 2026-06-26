@@ -18,6 +18,7 @@ import type { Locale } from "@/lib/i18n";
 export interface DoneStep {
   key: string; // e.g. "registration:lt_1yr" | "stage:mvp" | "relocation_willing:true"
   mutate: Partial<Profile>;
+  label?: { en: string; ar: string }; // for the completed-steps trail (undo)
 }
 
 function maxByOrder(order: readonly string[], a: string | undefined, b: string): string {
