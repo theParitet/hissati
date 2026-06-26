@@ -5,7 +5,7 @@
 > **Tatweer Hackathon — Challenge 1: Taking the first entrepreneurial step.**
 > Built for first-time founders in **Al Qua'a, Al Ain**. Arabic-first, works in airplane mode.
 
-**Live demo:** https://hissati.vercel.app · **Code:** this repo · `npm test` → 34 passing tests
+**Live demo:** https://hissati.org · **Code:** this repo · `npm test` → 34 passing tests
 
 ---
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, RotateCcw, CheckCircle2, Undo2, Sparkles, FileDown, Share2 } from "lucide-react";
+import { CheckCircle2, Undo2, Sparkles, FileDown, Share2 } from "lucide-react";
 import { Button, Card, Eyebrow, Badge } from "@/components/ui";
 import { ReadinessGauge } from "@/components/ReadinessGauge";
 import { ProgramCard } from "@/components/ProgramCard";
@@ -33,7 +33,6 @@ export default function Results() {
   const doneSteps = useHissati((s) => s.doneSteps);
   const markStep = useHissati((s) => s.markStep);
   const unmarkStep = useHissati((s) => s.unmarkStep);
-  const resetAnswers = useHissati((s) => s.resetAnswers);
   const [checklistId, setChecklistId] = useState<string | null>(null);
 
   if (!hydrated) {
@@ -94,21 +93,11 @@ export default function Results() {
               <Share2 className="h-4 w-4" aria-hidden /> {t.shareWhatsapp}
             </Button>
           </a>
-          <Button variant="ghost" size="sm" onClick={() => router.push("/questionnaire")}>
-            <Pencil className="h-4 w-4" aria-hidden /> {t.editAnswers}
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              resetAnswers();
-              router.push("/questionnaire");
-            }}
-          >
-            <RotateCcw className="h-4 w-4" aria-hidden /> {t.restart}
-          </Button>
         </div>
       </div>
+
+      {/* Optional grounded assistant — top of the tab; renders nothing unless ANTHROPIC_API_KEY is set */}
+      <AgentChat />
 
       {/* Gauge + roadmap */}
       <section className="mt-6 grid gap-5 md:grid-cols-[0.9fr_1.1fr]">
@@ -190,9 +179,6 @@ export default function Results() {
           ))}
         </ProgramGroup>
       )}
-
-      {/* Optional grounded assistant — renders nothing unless ANTHROPIC_API_KEY is set */}
-      <AgentChat />
 
       {checklistProgram && (
         <ChecklistDialog

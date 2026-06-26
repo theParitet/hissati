@@ -220,6 +220,10 @@ export const UI: Record<Locale, Record<string, string>> = {
     restart: "ابدأ من جديد",
     resultsFor: "النتائج بناءً على ملفك",
     editAnswers: "تعديل الإجابات",
+    programs: "البرامج",
+    assistant: "المساعد",
+    clearAll: "مسح الكل",
+    saveAndSee: "حفظ وعرض النتائج",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -302,6 +306,10 @@ export const UI: Record<Locale, Record<string, string>> = {
     restart: "Start over",
     resultsFor: "Results for your profile",
     editAnswers: "Edit answers",
+    programs: "Programs",
+    assistant: "Assistant",
+    clearAll: "Clear all",
+    saveAndSee: "Save & see results",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",

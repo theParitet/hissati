@@ -92,13 +92,13 @@ export function AgentChat() {
           <h2 className="text-lg">{t.title}</h2>
         </div>
 
-        <div ref={scrollRef} className="max-h-80 space-y-3 overflow-y-auto px-5 py-4">
+        <div ref={scrollRef} className="min-h-[18rem] max-h-[28rem] space-y-3 overflow-y-auto px-5 py-4">
           {msgs.length === 0 && <p className="text-sm text-ink-soft">{t.intro}</p>}
           {msgs.map((m, i) => (
             <div key={i} className={m.role === "user" ? "text-end" : "text-start"}>
               <div
                 className={[
-                  "inline-block max-w-[85%] whitespace-pre-wrap rounded-card px-3.5 py-2 text-sm",
+                  "inline-block max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-card px-3.5 py-2 text-sm",
                   m.role === "user" ? "bg-oasis text-sand-100" : "bg-sand-200 text-ink",
                 ].join(" ")}
               >

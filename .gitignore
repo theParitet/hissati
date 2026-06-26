@@ -42,3 +42,4 @@ next-env.d.ts
 
 # hissati: internal planning/strategy/research — NOT part of the public submission
 .local-docs
+.playwright-mcp/
