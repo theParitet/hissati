@@ -41,6 +41,24 @@ function isRateLimited(ip: string): boolean {
   return hits.length > RL_MAX;
 }
 
+/**
+ * Which program ids a tool result surfaced — the client re-renders these as real
+ * ProgramCards from the SAME deterministic engine (the model never ships UI/HTML).
+ */
+function collectProgramIds(name: string, result: unknown): string[] {
+  if (!result || typeof result !== "object") return [];
+  const r = result as Record<string, unknown>;
+  const idsOf = (arr: unknown): string[] =>
+    Array.isArray(arr)
+      ? arr.map((x) => (x as { id?: unknown }).id).filter((v): v is string => typeof v === "string")
+      : [];
+  if (name === "match_programs") return [...idsOf(r.eligible), ...idsOf(r.almost)];
+  if (name === "steps_to_qualify")
+    return Array.isArray(r.almost_ids) ? r.almost_ids.filter((v): v is string => typeof v === "string") : [];
+  if (name === "program_details") return typeof r.id === "string" ? [r.id] : [];
+  return [];
+}
+
 export function GET() {
   return NextResponse.json({ enabled: Boolean(process.env.ANTHROPIC_API_KEY) });
 }
@@ -93,6 +111,7 @@ export async function POST(req: Request) {
     const client = new Anthropic();
     const work: Anthropic.MessageParam[] = convo.map((m) => ({ role: m.role, content: m.content }));
     const grounding: Array<{ name: string; labelEn: string; labelAr: string }> = [];
+    const programIds = new Set<string>();
     let reply = "";
 
     for (let turn = 0; turn < 5; turn++) {
@@ -114,10 +133,12 @@ export async function POST(req: Request) {
         const toolUses = resp.content.filter((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
         const results: Anthropic.ToolResultBlockParam[] = toolUses.map((tu) => {
           grounding.push({ name: tu.name, ...toolLabel(tu.name, tu.input) });
+          const result = executeTool(tu.name, tu.input);
+          for (const id of collectProgramIds(tu.name, result)) programIds.add(id);
           return {
             type: "tool_result",
             tool_use_id: tu.id,
-            content: JSON.stringify(executeTool(tu.name, tu.input)).slice(0, 12000),
+            content: JSON.stringify(result).slice(0, 12000),
           };
         });
         work.push({ role: "user", content: results });
@@ -128,7 +149,7 @@ export async function POST(req: Request) {
       break;
     }
 
-    return NextResponse.json({ enabled: true, reply, grounding });
+    return NextResponse.json({ enabled: true, reply, grounding, programIds: Array.from(programIds).slice(0, 6) });
   } catch {
     // Never break the app — the deterministic flow is the product (NFR-8).
     return NextResponse.json(

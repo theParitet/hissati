@@ -129,6 +129,7 @@ export function executeTool(name: string, input: unknown): unknown {
       const evals = evaluateAllFull(profile, PROGRAMS);
       return {
         readiness_score: readinessScore(profile, evals),
+        almost_ids: evals.filter((e) => e.status === "almost").map((e) => e.program.id),
         steps: deriveRoadmap(evals).map((s) => ({
           action: s.action,
           est_time: s.est_time,
