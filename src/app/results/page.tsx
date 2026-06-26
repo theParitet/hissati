@@ -8,6 +8,7 @@ import { ReadinessGauge } from "@/components/ReadinessGauge";
 import { ProgramCard } from "@/components/ProgramCard";
 import { RoadmapStepCard } from "@/components/RoadmapStepCard";
 import { ChecklistDialog } from "@/components/ChecklistDialog";
+import { AgentChat } from "@/components/AgentChat";
 import {
   useHissati,
   useLocale,
@@ -189,6 +190,9 @@ export default function Results() {
           ))}
         </ProgramGroup>
       )}
+
+      {/* Optional grounded assistant — renders nothing unless ANTHROPIC_API_KEY is set */}
+      <AgentChat />
 
       {checklistProgram && (
         <ChecklistDialog

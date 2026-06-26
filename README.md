@@ -59,6 +59,8 @@ npm run build   # production build (Turbopack)
 
 **Tools:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · Zod (schema/validation) · Zustand + persist (offline state) · Vitest (tests) · self-hosted Tajawal + Fraunces (next/font) · html2canvas + jsPDF (Arabic PDF) · hand-written service worker (offline) · Vercel (hosting).
 
+**Optional grounded assistant (FR-I, off by default).** Set `ANTHROPIC_API_KEY` (server-side; see `.env.example`) to enable an in-app assistant. It is **tool-calling only** — the model calls domain tools (`src/lib/agent-tools.ts`) that wrap the *same* deterministic matcher, and the app renders all UI from the structured results; the model never emits funding facts or HTML, and surfaces every tool call as a cited "checked …" chip. With no key, the route reports disabled and the UI hides — the offline core is completely unaffected (NFR-8).
+
 **Evidence in [`docs/`](docs/)** (captured by driving a real Chrome through the full flow):
 
 - `sample-plan-ar.pdf` / `sample-plan-en.pdf` — the one-tap Arabic & English PDF plan (FR-F2 proof).
