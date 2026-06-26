@@ -59,6 +59,13 @@ npm run build   # production build (Turbopack)
 
 **Tools:** Next.js 16 (App Router) · TypeScript · Tailwind v4 · Zod (schema/validation) · Zustand + persist (offline state) · Vitest (tests) · self-hosted Tajawal + Fraunces (next/font) · html2canvas + jsPDF (Arabic PDF) · hand-written service worker (offline) · Vercel (hosting).
 
+**Evidence in [`docs/`](docs/)** (captured by driving a real Chrome through the full flow):
+
+- `sample-plan-ar.pdf` / `sample-plan-en.pdf` — the one-tap Arabic & English PDF plan (FR-F2 proof).
+- `03-results-step0.png` → `05-results-step2.png` — the readiness climb **14 → 51 → 59** with the Khalifa loan flipping *almost → eligible*.
+- `07-offline.png` — the results page rendering with the network **offline** (service worker serving cache).
+- `01-landing-ar.png` / `06-results-ar-rtl.png` — Arabic-first RTL on both screens.
+
 ## 6. How we score against criteria 1–7
 
 - **1 · Impact (10).** Routes real, first-time founders to real money. Khalifa Fund has disbursed billions since 2007, yet local awareness is near-zero; Hissati closes the awareness-and-readiness gap for the exact person every other tool rejects — the not-yet-registered idea-stage founder.

@@ -75,7 +75,11 @@ export function ReadinessGauge({
 
       <div className="mt-3 text-center">
         <div className="flex items-baseline justify-center gap-1">
-          <span className="font-display text-6xl font-semibold leading-none text-ink">
+          <span
+            data-testid="readiness-score"
+            data-score={score}
+            className="font-display text-6xl font-semibold leading-none text-ink"
+          >
             {toLocaleDigits(display, locale)}
           </span>
           <span className="text-2xl text-ink-faint">/ {toLocaleDigits(100, locale)}</span>
