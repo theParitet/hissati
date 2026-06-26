@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, Send, ShieldCheck, Loader2 } from "lucide-react";
+import { Sparkles, Send, ShieldCheck, Loader2, PowerOff } from "lucide-react";
 import { Card } from "@/components/ui";
 import { useLocale } from "@/lib/store";
 
@@ -21,17 +21,25 @@ const T = {
     title: "اسأل حِصّتي",
     intro: "مساعد يعتمد على نفس المحرك — كل معلومة موثّقة من البرامج، لا اختراع.",
     placeholder: "مثال: أصنع التمور في المنزل، هل من تمويل؟",
+    placeholderOff: "المساعد غير متاح حالياً",
     note: "معلومات لا نصيحة قانونية أو مالية.",
     checked: "تم التحقق",
     error: "المساعد غير متاح الآن — بقية التطبيق تعمل دون اتصال.",
+    off: "غير مُفعّل",
+    offNote:
+      "المساعد ميزة اختيارية ومُطفأة حالياً. كل شيء آخر في حِصّتي — المطابقة، والخطوات، وخطة الـPDF — يعمل دون اتصال وبدونه.",
   },
   en: {
     title: "Ask Hissati",
     intro: "Grounded in the same engine — every fact is cited from the programs, nothing invented.",
     placeholder: "e.g. I make dates at home — is there funding?",
+    placeholderOff: "Assistant is currently unavailable",
     note: "Information, not legal or financial advice.",
     checked: "Checked",
     error: "The assistant is unavailable — the rest of the app works offline.",
+    off: "Off",
+    offNote:
+      "The assistant is an optional add-on and currently off. Everything else in Hissati — matching, steps, and the PDF plan — works offline without it.",
   },
 };
 
@@ -55,9 +63,12 @@ export function AgentChat() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [msgs, loading]);
 
-  if (!enabled) return null; // agent OFF by default → the app is unchanged
+  if (enabled === null) return null; // brief — while we check availability
+
+  const off = !enabled;
 
   async function send() {
+    if (off) return;
     const text = input.trim();
     if (!text || loading) return;
     const next: Msg[] = [...msgs, { role: "user", content: text }];
@@ -88,43 +99,53 @@ export function AgentChat() {
     <section className="mt-10 no-print">
       <Card className="overflow-hidden">
         <div className="flex items-center gap-2 border-b border-sand-line bg-sand-200/50 px-5 py-3">
-          <Sparkles className="h-5 w-5 text-amber" aria-hidden />
+          <Sparkles className={off ? "h-5 w-5 text-ink-faint" : "h-5 w-5 text-amber"} aria-hidden />
           <h2 className="text-lg">{t.title}</h2>
-        </div>
-
-        <div ref={scrollRef} className="min-h-[18rem] max-h-[28rem] space-y-3 overflow-y-auto px-5 py-4">
-          {msgs.length === 0 && <p className="text-sm text-ink-soft">{t.intro}</p>}
-          {msgs.map((m, i) => (
-            <div key={i} className={m.role === "user" ? "text-end" : "text-start"}>
-              <div
-                className={[
-                  "inline-block max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-card px-3.5 py-2 text-sm",
-                  m.role === "user" ? "bg-oasis text-sand-100" : "bg-sand-200 text-ink",
-                ].join(" ")}
-              >
-                {m.content}
-              </div>
-              {m.grounding && m.grounding.length > 0 && (
-                <div className="mt-1.5 flex flex-wrap gap-1.5">
-                  {m.grounding.map((g, j) => (
-                    <span
-                      key={j}
-                      className="inline-flex items-center gap-1 rounded-pill bg-palm-100 px-2 py-0.5 text-xs text-palm"
-                    >
-                      <ShieldCheck className="h-3 w-3" aria-hidden />
-                      {t.checked}: {locale === "ar" ? g.labelAr : g.labelEn}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-          {loading && (
-            <div className="inline-flex items-center gap-2 rounded-card bg-sand-200 px-3.5 py-2 text-sm text-ink-soft">
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            </div>
+          {off && (
+            <span className="ms-auto inline-flex items-center gap-1 rounded-pill bg-sand-200 px-2.5 py-1 text-xs text-ink-faint">
+              <PowerOff className="h-3 w-3" aria-hidden />
+              {t.off}
+            </span>
           )}
         </div>
+
+        {off ? (
+          <div className="px-5 py-6 text-sm text-ink-soft">{t.offNote}</div>
+        ) : (
+          <div ref={scrollRef} className="min-h-[18rem] max-h-[28rem] space-y-3 overflow-y-auto px-5 py-4">
+            {msgs.length === 0 && <p className="text-sm text-ink-soft">{t.intro}</p>}
+            {msgs.map((m, i) => (
+              <div key={i} className={m.role === "user" ? "text-end" : "text-start"}>
+                <div
+                  className={[
+                    "inline-block max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-card px-3.5 py-2 text-sm",
+                    m.role === "user" ? "bg-oasis text-sand-100" : "bg-sand-200 text-ink",
+                  ].join(" ")}
+                >
+                  {m.content}
+                </div>
+                {m.grounding && m.grounding.length > 0 && (
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
+                    {m.grounding.map((g, j) => (
+                      <span
+                        key={j}
+                        className="inline-flex items-center gap-1 rounded-pill bg-palm-100 px-2 py-0.5 text-xs text-palm"
+                      >
+                        <ShieldCheck className="h-3 w-3" aria-hidden />
+                        {t.checked}: {locale === "ar" ? g.labelAr : g.labelEn}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+            {loading && (
+              <div className="inline-flex items-center gap-2 rounded-card bg-sand-200 px-3.5 py-2 text-sm text-ink-soft">
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="border-t border-sand-line px-4 py-3">
           <div className="flex items-center gap-2">
@@ -132,19 +153,21 @@ export function AgentChat() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && send()}
-              placeholder={t.placeholder}
-              className="h-11 flex-1 rounded-pill border border-sand-line bg-sand-100 px-4 text-[15px] outline-none focus-visible:border-oasis"
+              placeholder={off ? t.placeholderOff : t.placeholder}
+              disabled={off || loading}
+              aria-disabled={off}
+              className="h-11 flex-1 rounded-pill border border-sand-line bg-sand-100 px-4 text-[15px] outline-none focus-visible:border-oasis disabled:cursor-not-allowed disabled:border-sand-line disabled:bg-sand-200/60 disabled:text-ink-faint"
             />
             <button
               onClick={send}
-              disabled={loading || !input.trim()}
+              disabled={off || loading || !input.trim()}
               aria-label="Send"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-pill bg-oasis text-sand-100 transition-colors hover:bg-oasis-700 disabled:opacity-40"
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-pill bg-oasis text-sand-100 transition-colors hover:bg-oasis-700 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Send className="h-4 w-4" aria-hidden />
             </button>
           </div>
-          <p className="mt-2 text-xs text-ink-faint">{t.note}</p>
+          {!off && <p className="mt-2 text-xs text-ink-faint">{t.note}</p>}
         </div>
       </Card>
     </section>
