@@ -26,6 +26,21 @@ interface InMsg {
   content: string;
 }
 
+// Best-effort per-IP rate limit. NOTE: serverless memory is per-instance and
+// resets on cold start — this stops casual abuse, NOT a distributed flood. The
+// durable cost ceiling is a monthly spend cap on the API key (Anthropic Console).
+const RL = new Map<string, number[]>();
+const RL_MAX = 20;
+const RL_WINDOW_MS = 5 * 60 * 1000;
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const hits = (RL.get(ip) ?? []).filter((t) => now - t < RL_WINDOW_MS);
+  hits.push(now);
+  RL.set(ip, hits);
+  if (RL.size > 5000) RL.clear(); // crude memory bound
+  return hits.length > RL_MAX;
+}
+
 export function GET() {
   return NextResponse.json({ enabled: Boolean(process.env.ANTHROPIC_API_KEY) });
 }
@@ -33,6 +48,25 @@ export function GET() {
 export async function POST(req: Request) {
   if (!process.env.ANTHROPIC_API_KEY) {
     return NextResponse.json({ enabled: false, error: "Assistant is disabled (no API key configured)." }, { status: 503 });
+  }
+
+  // Same-origin only — blocks scripted cross-site abuse (the model is already
+  // fixed server-side; this protects spend, not the model choice).
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host");
+  if (origin) {
+    try {
+      if (new URL(origin).host !== host) {
+        return NextResponse.json({ error: "Cross-origin requests are not allowed." }, { status: 403 });
+      }
+    } catch {
+      return NextResponse.json({ error: "Bad origin." }, { status: 403 });
+    }
+  }
+
+  const ip = (req.headers.get("x-forwarded-for") ?? "unknown").split(",")[0].trim();
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ error: "Too many requests — please slow down." }, { status: 429 });
   }
 
   let body: unknown;
