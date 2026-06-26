@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Languages, WifiOff, LayoutGrid, Pencil } from "lucide-react";
+import { Languages, WifiOff, LayoutGrid, Pencil, Sparkles } from "lucide-react";
 import { useHissati, useLocale, isProfileComplete } from "@/lib/store";
+import { useAssistant } from "@/lib/assistant-store";
 import { ui } from "@/lib/i18n";
 
 export function AppHeader() {
@@ -11,8 +13,14 @@ export function AppHeader() {
   const pathname = usePathname();
   const toggleLocale = useHissati((s) => s.toggleLocale);
   const answers = useHissati((s) => s.answers);
+  const assistantEnabled = useAssistant((s) => s.enabled);
+  const checkEnabled = useAssistant((s) => s.checkEnabled);
   const t = ui(locale);
   const complete = isProfileComplete(answers);
+
+  useEffect(() => {
+    checkEnabled();
+  }, [checkEnabled]);
 
   return (
     <header className="sticky top-0 z-30 border-b border-sand-line/70 bg-sand/80 backdrop-blur">
@@ -26,6 +34,11 @@ export function AppHeader() {
           {complete && (
             <NavLink href="/results" active={pathname === "/results"} icon={<LayoutGrid className="h-4 w-4" aria-hidden />}>
               {t.programs}
+            </NavLink>
+          )}
+          {assistantEnabled === true && (
+            <NavLink href="/assistant" active={pathname === "/assistant"} icon={<Sparkles className="h-4 w-4" aria-hidden />}>
+              {t.assistant}
             </NavLink>
           )}
           <NavLink

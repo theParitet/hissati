@@ -8,7 +8,7 @@ import { ReadinessGauge } from "@/components/ReadinessGauge";
 import { ProgramCard } from "@/components/ProgramCard";
 import { RoadmapStepCard } from "@/components/RoadmapStepCard";
 import { ChecklistDialog } from "@/components/ChecklistDialog";
-import { AgentChat } from "@/components/AgentChat";
+import { Assistant } from "@/components/Assistant";
 import {
   useHissati,
   useLocale,
@@ -96,8 +96,8 @@ export default function Results() {
         </div>
       </div>
 
-      {/* Optional grounded assistant — top of the tab; renders nothing unless ANTHROPIC_API_KEY is set */}
-      <AgentChat />
+      {/* Optional grounded assistant — top of the tab; shows an "off" state without a key */}
+      <Assistant variant="embedded" />
 
       {/* Gauge + roadmap */}
       <section className="mt-6 grid gap-5 md:grid-cols-[0.9fr_1.1fr]">

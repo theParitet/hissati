@@ -224,6 +224,9 @@ export const UI: Record<Locale, Record<string, string>> = {
     assistant: "المساعد",
     clearAll: "مسح الكل",
     saveAndSee: "حفظ وعرض النتائج",
+    assistantLead: "اسأل عن التمويل والتراخيص — كل إجابة موثّقة من البرامج، لا اختراع.",
+    askLandingLabel: "أو اسأل المساعد مباشرة",
+    askLandingPlaceholder: "اسأل عن التمويل… مثال: أصنع التمور في المنزل",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -310,6 +313,9 @@ export const UI: Record<Locale, Record<string, string>> = {
     assistant: "Assistant",
     clearAll: "Clear all",
     saveAndSee: "Save & see results",
+    assistantLead: "Ask about funding and licensing — every answer cited from the programs, nothing invented.",
+    askLandingLabel: "Or ask the assistant directly",
+    askLandingPlaceholder: "Ask about funding… e.g. I make dates at home",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",
