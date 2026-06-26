@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hissati">
+  <rect width="512" height="512" rx="112" fill="#14584A"/>
+  <clipPath id="r"><rect width="512" height="512" rx="112"/></clipPath>
+  <g clip-path="url(#r)">
+    <!-- rising sun: readiness climbing over the dunes -->
+    <circle cx="256" cy="300" r="104" fill="#D98A1E"/>
+    <circle cx="256" cy="300" r="150" fill="#D98A1E" opacity="0.18"/>
+    <!-- dune horizon -->
+    <path d="M-20 360 C 110 300, 200 380, 300 350 C 380 326, 460 372, 540 348 L 540 540 L -20 540 Z" fill="#0E4034"/>
+    <path d="M-20 410 C 130 360, 240 430, 340 400 C 430 374, 500 420, 540 404 L 540 560 L -20 560 Z" fill="#0A3026"/>
+  </g>
+</svg>

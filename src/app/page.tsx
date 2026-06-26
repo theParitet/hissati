@@ -1,65 +1,130 @@
-import Image from "next/image";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { ShieldCheck, WifiOff, FileText, ArrowLeft, ArrowRight } from "lucide-react";
+import { Button, Eyebrow } from "@/components/ui";
+import { useHissati, useLocale, isProfileComplete } from "@/lib/store";
+import { ui, toLocaleDigits } from "@/lib/i18n";
+import { PROGRAMS } from "@/lib/programs";
 
 export default function Home() {
+  const router = useRouter();
+  const locale = useLocale();
+  const t = ui(locale);
+  const answers = useHissati((s) => s.answers);
+  const hasProgress = isProfileComplete(answers);
+  const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
+
+  const tiers = new Set(PROGRAMS.map((p) => p.tier)).size;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      {/* Hero */}
+      <section className="grid items-center gap-10 py-12 sm:py-16 md:grid-cols-[1.15fr_0.85fr] md:py-20">
+        <div className="animate-rise">
+          <Eyebrow>{t.builtFor}</Eyebrow>
+          <h1 className="mt-4 text-4xl leading-[1.08] sm:text-5xl">{t.heroPromiseTitle}</h1>
+          <p className="mt-5 max-w-xl text-lg text-ink-soft">{t.heroLead}</p>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <Button size="lg" onClick={() => router.push("/questionnaire")}>
+              {hasProgress ? t.continueCta : t.startCta}
+              <Arrow className="h-5 w-5" aria-hidden />
+            </Button>
+            {hasProgress && (
+              <Button size="lg" variant="outline" onClick={() => router.push("/results")}>
+                {t.seeResults}
+              </Button>
+            )}
+          </div>
+
+          <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-soft">
+            <li className="inline-flex items-center gap-2">
+              <WifiOff className="h-4 w-4 text-oasis" aria-hidden /> {t.offlineReady}
+            </li>
+            <li className="inline-flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-oasis" aria-hidden /> {t.cited}
+            </li>
+            <li className="inline-flex items-center gap-2">
+              <FileText className="h-4 w-4 text-oasis" aria-hidden />
+              {locale === "ar"
+                ? `${toLocaleDigits(PROGRAMS.length, locale)} برنامجاً عبر ${toLocaleDigits(tiers, locale)} فئات`
+                : `${PROGRAMS.length} cited programs · ${tiers} tiers`}
+            </li>
+          </ul>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Signature: the sun rising over the dunes — readiness as a desert dawn */}
+        <div className="relative hidden md:block" aria-hidden>
+          <HeroSun />
         </div>
-      </main>
+      </section>
+
+      {/* How it works */}
+      <section className="border-t border-sand-line py-12">
+        <ol className="grid gap-6 sm:grid-cols-3">
+          {[
+            {
+              en: "Answer 6 short questions",
+              ar: "أجب عن ٦ أسئلة قصيرة",
+              sub: { en: "About your business — under a minute.", ar: "عن مشروعك — في أقل من دقيقة." },
+            },
+            {
+              en: "See where you stand",
+              ar: "اعرف موقعك",
+              sub: {
+                en: "Eligible now, almost, or not yet — with the exact blocking rule.",
+                ar: "مؤهّل، أو قريب، أو ليس بعد — مع القاعدة المانعة بالضبط.",
+              },
+            },
+            {
+              en: "Follow the cited path",
+              ar: "اتبع المسار الموثّق",
+              sub: {
+                en: "A roadmap, a readiness score that climbs, and a downloadable plan.",
+                ar: "خارطة طريق، ودرجة جاهزية ترتفع، وخطة قابلة للتنزيل.",
+              },
+            },
+          ].map((step, i) => (
+            <li key={i} className="print-block">
+              <div className="flex h-9 w-9 items-center justify-center rounded-pill bg-oasis text-sm font-bold text-sand-100">
+                {toLocaleDigits(i + 1, locale)}
+              </div>
+              <h3 className="mt-4 text-lg">{locale === "ar" ? step.ar : step.en}</h3>
+              <p className="mt-1.5 text-sm text-ink-soft">{locale === "ar" ? step.sub.ar : step.sub.en}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
     </div>
+  );
+}
+
+function HeroSun() {
+  return (
+    <svg viewBox="0 0 400 360" className="w-full" role="presentation">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#f7e6c8" />
+          <stop offset="1" stopColor="#f6f1e7" />
+        </linearGradient>
+        <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#D98A1E" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#D98A1E" stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      <rect x="0" y="0" width="400" height="360" rx="24" fill="url(#sky)" />
+      <circle cx="200" cy="210" r="150" fill="url(#glow)" />
+      <circle cx="200" cy="210" r="78" fill="#D98A1E" />
+      <path
+        d="M-10 250 C 90 200, 160 270, 250 244 C 320 224, 380 262, 410 246 L 410 360 L -10 360 Z"
+        fill="#1F7A52"
+        opacity="0.92"
+      />
+      <path
+        d="M-10 292 C 110 250, 200 312, 300 286 C 360 270, 400 300, 410 292 L 410 360 L -10 360 Z"
+        fill="#14584A"
+      />
+    </svg>
   );
 }

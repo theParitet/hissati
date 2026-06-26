@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* =========================================================================
+   Hissati — design tokens (Al Qua'a look).
+   Tailwind v4 is CSS-first: tokens declared in @theme become utilities
+   (bg-sand, text-oasis, font-display, rounded-card, ...). No tailwind.config.js.
+   ========================================================================= */
+@theme {
+  /* Warm dune base — deliberately warmer/deeper than the AI-default cream. */
+  --color-sand: #f6f1e7;
+  --color-sand-100: #fbf8f1;
+  --color-sand-200: #efe7d6;
+  --color-sand-line: #e3d8c4;
+
+  /* Date-bark ink (warm near-black). */
+  --color-ink: #21180f;
+  --color-ink-soft: #5c5043;
+  --color-ink-faint: #8a7d6c;
+
+  /* Deep oasis-green primary — growth / eligibility / Gulf trust. */
+  --color-oasis: #14584a;
+  --color-oasis-700: #0e4034;
+  --color-oasis-100: #dcebe3;
+
+  /* Date-gold accent. */
+  --color-amber: #d98a1e;
+  --color-amber-600: #b9711a;
+  --color-amber-100: #f7e6c8;
+
+  /* Night sky — astro / depth / gauge track. */
+  --color-night: #15203a;
+
+  /* Eligibility semantics. */
+  --color-palm: #1f7a52; /* eligible */
+  --color-palm-100: #d6ecdf;
+  --color-almost: #c47d12; /* almost (reads on sand) */
+  --color-almost-100: #f6e7c6;
+  --color-clay: #9c4a2f; /* not-a-fit */
+  --color-clay-100: #efd9cf;
+
+  /* Type — one stack does both scripts: Latin→Fraunces, Arabic→Tajawal fallback. */
+  --font-sans: var(--font-tajawal), system-ui, -apple-system, sans-serif;
+  --font-display: var(--font-fraunces), var(--font-tajawal), Georgia, serif;
+
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 1px 2px rgba(33, 24, 15, 0.04), 0 8px 24px -12px rgba(33, 24, 15, 0.18);
+  --shadow-lift: 0 2px 4px rgba(33, 24, 15, 0.06), 0 18px 40px -16px rgba(33, 24, 15, 0.28);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    background: var(--color-sand);
+    color: var(--color-ink);
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(1200px 520px at 85% -10%, rgba(217, 138, 30, 0.08), transparent 60%),
+      radial-gradient(900px 480px at 0% 0%, rgba(20, 88, 74, 0.06), transparent 55%),
+      var(--color-sand);
+    min-height: 100dvh;
+    text-rendering: optimizeLegibility;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Arabic sets slightly more line-height for comfortable reading. */
+  [dir="rtl"] body {
+    line-height: 1.7;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3 {
+    font-weight: 800; /* Tajawal display weight reads heavier than Fraunces 600 */
+    letter-spacing: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-oasis);
+    outline-offset: 2px;
+    border-radius: 4px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Signature gauge: the sun rises as readiness climbs. */
+@keyframes hissati-rise {
+  from {
+    transform: translateY(14%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-rise {
+  animation: hissati-rise 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Print / PDF stylesheet — drop chrome, ink on white, keep cards intact. */
+@media print {
+  body {
+    background: #fff !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-block {
+    break-inside: avoid;
+  }
 }
