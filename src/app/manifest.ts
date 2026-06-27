@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
+import { SITE_DESCRIPTION } from "@/lib/site";
 
 // PWA manifest (Next built-in). Installable + offline app shell (NFR-1).
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Hissati — funding-readiness navigator",
     short_name: "Hissati",
-    description:
-      "Match UAE founders to real funding programs and turn every \"no\" into a cited next step.",
+    description: SITE_DESCRIPTION,
     lang: "ar",
     dir: "rtl",
     start_url: "/",

@@ -215,7 +215,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
   function turn(m: AssistantMsg, i: number) {
     if (m.role === "user") {
       return (
-        <div key={i} className="text-end">
+        <div key={i} className="min-w-0 max-w-full text-end">
           <div className="inline-block max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-card bg-oasis px-3.5 py-2 text-sm text-sand-100">
             {m.content}
           </div>
@@ -226,7 +226,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
     // Friendly, retryable failure — not a model answer.
     if (m.error) {
       return (
-        <div key={i} className="text-start">
+        <div key={i} className="min-w-0 max-w-full text-start">
           <div className="flex w-fit max-w-[92%] items-start gap-2.5 rounded-card border border-clay-100 bg-clay-100/40 px-3.5 py-2.5 text-sm text-ink">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-clay" aria-hidden />
             <div>
@@ -249,7 +249,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
     const extra = (m.programIds?.length ?? 0) - ids.length;
 
     return (
-      <div key={i} className="text-start">
+      <div key={i} className="min-w-0 max-w-full text-start">
         {m.content && (
           <div className="block w-fit max-w-[92%] rounded-card bg-sand-200/70 px-4 py-3 text-ink [&_*]:break-words">
             <Markdown>{m.content}</Markdown>
@@ -261,7 +261,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
 
         {/* Real ProgramCards from the SAME engine — capped to keep the thread tight. */}
         {ids.length > 0 && complete && (
-          <div className="mt-3 grid gap-3">
+          <div className="mt-3 grid min-w-0 grid-cols-[minmax(0,1fr)] gap-3">
             {ids.map((id) => {
               const program = getProgramById(id);
               if (!program) return null;
@@ -330,11 +330,11 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
   if (isPage) {
     return (
       <>
-        <div className="flex h-full flex-col">
-          <div ref={scrollRef} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden">
+          <div ref={scrollRef} className="flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto">
             <div
               className={
-                "mx-auto flex w-full max-w-2xl flex-1 flex-col px-4 py-6 " +
+                "mx-auto flex min-w-0 w-full max-w-2xl flex-1 flex-col px-4 py-6 " +
                 (off || empty ? "items-center justify-center" : "space-y-4")
               }
             >
@@ -368,7 +368,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
           </div>
 
           {!off && (
-            <div className="mx-auto w-full max-w-2xl px-4 pb-5">
+            <div className="mx-auto min-w-0 w-full max-w-2xl px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
               <div className="flex items-center gap-2 rounded-pill border border-sand-line bg-sand-100 p-2 shadow-lift transition-colors focus-within:border-oasis">
                 <input
                   value={input}

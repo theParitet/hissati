@@ -1,12 +1,11 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hissati">
-  <rect width="512" height="512" rx="112" fill="#14584A"/>
-  <clipPath id="r"><rect width="512" height="512" rx="112"/></clipPath>
-  <g clip-path="url(#r)">
-    <!-- rising sun: readiness climbing over the dunes -->
-    <circle cx="256" cy="300" r="104" fill="#D98A1E"/>
-    <circle cx="256" cy="300" r="150" fill="#D98A1E" opacity="0.18"/>
-    <!-- dune horizon -->
-    <path d="M-20 360 C 110 300, 200 380, 300 350 C 380 326, 460 372, 540 348 L 540 540 L -20 540 Z" fill="#0E4034"/>
-    <path d="M-20 410 C 130 360, 240 430, 340 400 C 430 374, 500 420, 540 404 L 540 560 L -20 560 Z" fill="#0A3026"/>
+  <rect width="512" height="512" rx="112" fill="#FBF8F1"/>
+  <g transform="translate(56 56) scale(4)">
+    <circle cx="50" cy="50" r="28" stroke="#14584A" stroke-width="13"/>
+    <path d="M 26.25 35.16 A 28 28 0 0 1 73.75 35.16" stroke="#CBA35C" stroke-width="13"/>
+    <path d="M50 57 L50 38" stroke="#14584A" stroke-width="3.2" stroke-linecap="round"/>
+    <path d="M50 47 Q 46 40 41 40.5 M50 47 Q 54 40 59 40.5 M50 47 Q 44.5 44 38.5 46 M50 47 Q 55.5 44 61.5 46" stroke="#14584A" stroke-width="2.6" stroke-linecap="round"/>
+    <circle cx="47.2" cy="46.2" r="1.5" fill="#14584A"/>
+    <circle cx="52.8" cy="46.2" r="1.5" fill="#14584A"/>
   </g>
 </svg>

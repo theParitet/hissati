@@ -17,6 +17,7 @@ import type { Program } from "@/lib/schema";
 import type { ProgressStats } from "@/lib/metrics";
 import { formatAmountRange } from "@/lib/format";
 import { formatAED } from "@/components/ui";
+import { SITE_URL } from "@/lib/site";
 
 export interface SharePayload {
   title: string;
@@ -113,7 +114,7 @@ export function appUrl(): string {
   const env = process.env.NEXT_PUBLIC_APP_URL;
   if (env && /^https?:\/\//.test(env)) return env.replace(/\/+$/, "");
   if (typeof window !== "undefined" && window.location?.origin) return window.location.origin;
-  return "https://hissati.app";
+  return SITE_URL.toString().replace(/\/+$/, "");
 }
 
 /**

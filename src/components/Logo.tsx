@@ -12,22 +12,7 @@
  * app's own faces (Fraunces + Tajawal) so the logo always matches the product.
  */
 import { cn } from "@/lib/cn";
-
-function Glyph({ className }: { className?: string }) {
-  return (
-    <svg viewBox="14 14 72 72" fill="none" className={cn("block", className)} aria-hidden focusable="false">
-      <circle cx="50" cy="50" r="28" stroke="currentColor" strokeWidth="13" />
-      <path d="M 26.25 35.16 A 28 28 0 0 1 73.75 35.16" stroke="#cba35c" strokeWidth="13" />
-      <path d="M50 57 L50 38" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
-      <path d="M50 47 Q 46 40 41 40.5" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M50 47 Q 54 40 59 40.5" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M50 47 Q 44.5 44 38.5 46" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-      <path d="M50 47 Q 55.5 44 61.5 46" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-      <circle cx="47.2" cy="46.2" r="1.5" fill="currentColor" stroke="none" />
-      <circle cx="52.8" cy="46.2" r="1.5" fill="currentColor" stroke="none" />
-    </svg>
-  );
-}
+import { BrandMark } from "@/components/BrandMark";
 
 export function Logo({
   variant = "mark",
@@ -37,13 +22,13 @@ export function Logo({
   className?: string;
 }) {
   if (variant === "mark") {
-    return <Glyph className={cn("h-8 w-8 text-oasis", className)} />;
+    return <BrandMark className={cn("h-8 w-8 text-oasis", className)} />;
   }
 
   if (variant === "stacked") {
     return (
       <span className={cn("inline-flex flex-col items-center gap-1 leading-none text-oasis", className)}>
-        <Glyph className="h-10 w-10" />
+        <BrandMark className="h-10 w-10" />
         <span className="font-display text-lg font-semibold tracking-tight tb-trim">Hissati</span>
         <span className="font-sans text-sm text-amber-600 tb-trim">حصتي</span>
       </span>
@@ -53,7 +38,7 @@ export function Logo({
   // lockup (horizontal)
   return (
     <span className={cn("inline-flex items-center gap-2 leading-none text-oasis", className)}>
-      <Glyph className="h-9 w-9 shrink-0" />
+      <BrandMark className="h-9 w-9 shrink-0" />
       <span className="inline-flex items-baseline gap-1.5">
         <span className="font-display text-xl font-semibold tracking-tight tb-trim">Hissati</span>
         <span className="font-sans text-base text-amber-600 tb-trim">حصتي</span>

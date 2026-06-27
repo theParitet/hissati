@@ -42,7 +42,7 @@ export function Overview({
   return (
     <div className="space-y-5">
       {/* Hero: cited ledger (light) + funding sky (dark) in one card. */}
-      <Card className="overflow-hidden p-0">
+      <Card data-top-stripe className="overflow-hidden p-0">
         <div className="sadu-band" aria-hidden />
         <div className="grid gap-5 p-5 sm:grid-cols-3 sm:gap-4 sm:p-6">
           <Stat

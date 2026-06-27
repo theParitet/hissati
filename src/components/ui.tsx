@@ -249,9 +249,12 @@ export function VerifiedStamp({
         className
       )}
     >
-      <Check className="h-3 w-3" aria-hidden /> checked · {host} · {localizeDate(verifiedDate, locale)}
-      {sourceDate ? ` · source ${localizeDate(sourceDate, locale)}` : ""}
-      {confidence ? ` · ${ui(locale)[`confidence_${confidence}`]}` : ""}
+      <Check className="h-3 w-3 shrink-0" aria-hidden />
+      <span className="min-w-0 break-all">
+        checked · {host} · {localizeDate(verifiedDate, locale)}
+        {sourceDate ? ` · source ${localizeDate(sourceDate, locale)}` : ""}
+        {confidence ? ` · ${ui(locale)[`confidence_${confidence}`]}` : ""}
+      </span>
     </span>
   );
 }

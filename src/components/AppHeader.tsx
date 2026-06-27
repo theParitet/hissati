@@ -33,8 +33,8 @@ export function AppHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-30 border-b border-sand-line/70 bg-sand/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
+    <header className="sticky top-0 z-30 h-16 border-b border-sand-line/70 bg-sand/80 backdrop-blur-md">
+      <div className="mx-auto flex h-full max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
           aria-label={t.appName}

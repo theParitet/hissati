@@ -120,6 +120,13 @@
     linear-gradient(var(--color-clay) 0 0) 0 100% / 100% 1.5px no-repeat;
 }
 
+/* A stripe touching a card's top edge becomes the edge; rounded upper corners
+   would otherwise make the band look inset. Logical corners mirror in RTL. */
+:where([data-top-stripe]) {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
 /* Signature: the sun rises as the founder's funding climbs. */
 @keyframes hissati-rise {
   from {

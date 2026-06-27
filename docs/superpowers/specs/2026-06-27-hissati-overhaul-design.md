@@ -39,10 +39,11 @@ Compact, concise, modern, UX-first. Not verbose.
 ### 3.2 Identity & CSS (task 1)
 - Reconcile `design.md` ↔ the real Tailwind-v4 `@theme`. **Keep the shipping token names** (`oasis / amber / clay / sand / ink / night / palm / almost`), not the doc's `green/gold/red/bone`. Reconcile hex to the build.
 - Deepen the cream base; reserve true cream for paper/PDF.
-- **Restrain Al Sadu** to one signature surface (hero band) + the **PDF seal** — off every card/modal/header.
+- **Restrain Al Sadu** to one signature surface (Overview hero band) + the **PDF seal** — off every other card/modal/header. A card whose top edge is the band uses square upper corners and keeps its rounded lower corners.
 - Promote `night` for the funding sky. Add missing tokens: focus ring (single source of truth), motion durations, skeleton, elevation.
 - Typography: Inter is the Latin UI face, Tajawal is the Arabic UI fallback, Fraunces remains the Latin display face, and IBM Plex Mono remains the ledger face. Compact icon/label rows use explicit one-line boxes rather than browser-dependent `text-box-trim`.
 - The header lockup uses a tightly cropped 36px mark inside the existing 64px header so the visible glyph, not the SVG whitespace, is vertically centered.
+- The compass geometry lives in the shared `BrandMark`; the app logo, favicon, app icons, and social preview derive from it.
 - `prefers-reduced-motion` respected.
 
 ### 3.3 Header & naming (task 6)
@@ -54,6 +55,7 @@ Compact, concise, modern, UX-first. Not verbose.
 ### 3.4 Assistant (tasks 5 + 9 — one owner; same surface)
 - Modern, uncluttered chat. **Reuse** `ProgramCard` / `CompareView` / compact stat chips instead of dumping walls of markdown into the thread.
 - Tighter grounding chips; better empty / loading / error states.
+- The full-page mobile chat is bounded to the dynamic viewport below the 64px header; only the conversation pane scrolls. Embedded program cards and receipts must shrink within the message column without horizontal page overflow.
 - Model never emits HTML; app renders all UI from structured tool results (unchanged architecture).
 - Fully functional with the agent OFF.
 
@@ -61,6 +63,11 @@ Compact, concise, modern, UX-first. Not verbose.
 - Reframe from "share a number" to "share a **next action with receipts**."
 - **PDF** → a real **Funding Readiness Plan**: founder context, cited sources + verified dates, the document checklist they can carry to TAMM / a bank. A judged artifact (Readiness + Evidence). Needs its own layout (currently only a bare print stylesheet) and an Al Sadu seal. Must survive html2canvas and render Arabic RTL.
 - **WhatsApp** → shares the top eligible program + AED + apply link (+ a QR to the live URL, since deploy is handled). Per-program share from the checklist; plan-level share from the dashboard.
+
+### 3.6 Search and link sharing
+- `https://hissati.org` is the canonical production origin, overrideable with `NEXT_PUBLIC_SITE_URL`.
+- The landing page is indexable and owns the sitemap entry; personalized assistant, questionnaire, and results routes are `noindex`.
+- Open Graph and Twitter use one generated 1200×630 brand image. Favicon, Apple icon, and PWA icon use the compass mark.
 
 ## 4. The metric layer (task 8 — foundation-owned)
 

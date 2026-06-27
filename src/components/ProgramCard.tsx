@@ -43,7 +43,7 @@ export function ProgramCard({
 
   return (
     <Card
-      className={`relative overflow-hidden p-5 ps-6 print-block transition-shadow ${
+      className={`relative min-w-0 max-w-full overflow-hidden p-5 ps-6 print-block transition-shadow ${
         selected ? "shadow-lift ring-2 ring-oasis ring-offset-2 ring-offset-sand" : ""
       }`}
     >

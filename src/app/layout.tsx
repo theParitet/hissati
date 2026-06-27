@@ -4,6 +4,7 @@ import "./globals.css";
 import { DirectionManager } from "@/components/DirectionManager";
 import { AppHeader } from "@/components/AppHeader";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
 // Self-hosted at build time (next/font) → no runtime CDN, works offline (NFR-1).
 // Tajawal is the bilingual workhorse; Fraunces gives Latin display its own voice.
@@ -34,10 +35,52 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "حِصّتي · Hissati — funding-readiness navigator",
-  description:
-    "Match UAE founders to real funding programs and turn every \"no\" into a cited next step. Offline-first, Arabic-first. Built for Al Qua'a, Al Ain.",
+  metadataBase: SITE_URL,
+  title: {
+    default: "Hissati · حِصّتي — UAE funding navigator",
+    template: `%s · ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
   applicationName: "Hissati",
+  keywords: [
+    "UAE startup funding",
+    "UAE grants",
+    "small business funding UAE",
+    "Emirati entrepreneur funding",
+    "تمويل المشاريع الإمارات",
+    "منح المشاريع الصغيرة",
+  ],
+  authors: [{ name: "Hissati" }],
+  creator: "Hissati",
+  publisher: "Hissati",
+  category: "Business and finance",
+  alternates: { canonical: "/" },
+  formatDetection: { email: false, address: false, telephone: false },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: SITE_NAME,
+    title: "Hissati · حِصّتي — UAE funding navigator",
+    description: SITE_DESCRIPTION,
+    locale: "ar_AE",
+    alternateLocale: ["en_AE"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Hissati · حِصّتي — UAE funding navigator",
+    description: SITE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   appleWebApp: { capable: true, title: "Hissati", statusBarStyle: "default" },
 };
 
@@ -53,11 +96,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${tajawal.variable} ${inter.variable} ${fraunces.variable} ${plexMono.variable}`}
     >
-      <body className="flex min-h-dvh flex-col antialiased">
+      <body className="flex min-h-dvh min-w-0 flex-col antialiased">
         <DirectionManager />
         <ServiceWorkerRegister />
         <AppHeader />
-        <main className="flex-1">{children}</main>
+        <main className="min-h-0 min-w-0 flex-1">{children}</main>
       </body>
     </html>
   );
