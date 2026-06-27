@@ -1,10 +1,9 @@
 "use client";
 
 import { Hero } from "@/components/landing/Hero";
-import { ProblemInversion } from "@/components/landing/ProblemInversion";
-import { FounderClimb } from "@/components/landing/FounderClimb";
-import { HowItWorks } from "@/components/landing/HowItWorks";
-import { WhyItHolds } from "@/components/landing/WhyItHolds";
+import { Fragmentation } from "@/components/landing/Fragmentation";
+import { FounderChain } from "@/components/landing/FounderChain";
+import { LivePreview } from "@/components/landing/LivePreview";
 import { ClosingCta } from "@/components/landing/ClosingCta";
 import { useLocale } from "@/lib/store";
 
@@ -14,10 +13,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <ProblemInversion locale={locale} />
-      <FounderClimb locale={locale} />
-      <HowItWorks locale={locale} />
-      <WhyItHolds locale={locale} />
+      <Fragmentation locale={locale} />
+      <FounderChain locale={locale} />
+      <LivePreview locale={locale} />
       <ClosingCta />
     </>
   );
