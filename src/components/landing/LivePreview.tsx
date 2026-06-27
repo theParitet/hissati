@@ -20,7 +20,7 @@ import {
   ListChecks,
   CornerDownRight,
 } from "lucide-react";
-import { Card, Button, StatusPill, Money, VerifiedStamp } from "@/components/ui";
+import { AmountDirectionBadge, Card, Button, StatusPill, Money, VerifiedStamp } from "@/components/ui";
 import { evalFor, DEMO_PROFILES, statsFor, KHALIFA_ID } from "@/components/landing/demo";
 import { ui, pick, toLocaleDigits, enumLabel, type Locale } from "@/lib/i18n";
 import { formatAmountRange } from "@/lib/format";
@@ -119,13 +119,13 @@ export function LivePreview({ locale }: { locale: Locale }) {
 
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             {/* Live program card. */}
-            <Card className="relative overflow-hidden p-5 ps-6">
-              <span
-                className={`absolute inset-y-0 start-0 w-1.5 ${
-                  status === "eligible" ? "bg-palm" : "bg-almost"
-                }`}
-                aria-hidden
-              />
+            <Card
+              className={`relative overflow-hidden p-5 ${
+                status === "eligible"
+                  ? "border-palm-100 bg-palm-100/25"
+                  : "border-almost-100 bg-almost-100/30"
+              }`}
+            >
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <h3 className="text-lg leading-snug">{pick(program.name, locale)}</h3>
@@ -133,9 +133,12 @@ export function LivePreview({ locale }: { locale: Locale }) {
                 </div>
                 <StatusPill status={status} locale={locale} />
               </div>
-              <p className="mt-3 text-xl font-semibold text-oasis">
-                {formatAmountRange(program.amount, locale)}
-              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <AmountDirectionBadge direction="receive" locale={locale} />
+                <p className="text-xl font-semibold text-oasis">
+                  {formatAmountRange(program.amount, locale)}
+                </p>
+              </div>
               <div className="mt-2.5 flex flex-wrap gap-1.5">
                 {[program.sector_tags[0], program.sector_tags[1]]
                   .filter(Boolean)

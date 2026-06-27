@@ -1,7 +1,8 @@
 "use client";
 
-import { ExternalLink, ListChecks, Clock, Layers, GitCompare, CheckCircle2, FileText, Pencil, Wallet } from "lucide-react";
-import { AvailabilityPill, Card, Button, StatusPill, VerifiedStamp, trimLabels } from "@/components/ui";
+import { ExternalLink, ListChecks, Clock, Layers, GitCompare, CheckCircle2, FileText, Pencil } from "lucide-react";
+import { AmountDirectionBadge, AvailabilityPill, Card, Button, StatusPill, VerifiedStamp, trimLabels } from "@/components/ui";
+import { CostContext } from "@/components/CostContext";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
@@ -9,7 +10,11 @@ import { programProgress } from "@/lib/checklist";
 import { useHissati } from "@/lib/store";
 import type { EvaluatedProgram, Profile } from "@/lib/schema";
 
-const STRIPE = { eligible: "bg-palm", almost: "bg-almost", not_fit: "bg-clay" } as const;
+const CARD_TONE = {
+  eligible: "border-palm-100 bg-palm-100/25",
+  almost: "border-almost-100 bg-almost-100/30",
+  not_fit: "border-clay-100 bg-clay-100/25",
+} as const;
 
 export function ProgramCard({
   ev,
@@ -43,12 +48,10 @@ export function ProgramCard({
 
   return (
     <Card
-      className={`relative min-w-0 max-w-full overflow-hidden p-5 ps-6 print-block transition-shadow ${
+      className={`relative min-w-0 max-w-full overflow-hidden p-5 print-block transition-shadow ${CARD_TONE[status]} ${
         selected ? "shadow-lift ring-2 ring-oasis ring-offset-2 ring-offset-sand" : ""
       }`}
     >
-      <span className={`absolute inset-y-0 start-0 w-1.5 ${STRIPE[status]}`} aria-hidden />
-
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="text-lg leading-snug">{pick(program.name, locale)}</h3>
@@ -65,18 +68,14 @@ export function ProgramCard({
         </div>
       </div>
 
-      {/* Amount headline — a licence is a fee you PAY, not funding, so flag + de-green it. */}
+      {/* Amount headline — direction is always explicit, for both income and costs. */}
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        {cost && (
-          <span className="inline-flex items-center gap-1 rounded-pill bg-clay-100 px-2 py-0.5 text-xs font-semibold text-clay">
-            <Wallet className="h-3 w-3" aria-hidden />
-            <span className="tb-trim">{t.youPay}</span>
-          </span>
-        )}
+        <AmountDirectionBadge direction={cost ? "pay" : "receive"} locale={locale} />
         <span className={`text-xl font-semibold ${cost ? "text-ink" : "text-oasis"}`}>
           {formatAmountRange(program.amount, locale)}
         </span>
       </div>
+      {cost && <CostContext program={program} locale={locale} className="mt-3" />}
 
       <div className="mt-2.5 flex flex-wrap gap-1.5">
         <MetaChip>{t[`instrument_${program.instrument}`]}</MetaChip>

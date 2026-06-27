@@ -1,6 +1,6 @@
 /** Hand-rolled, accessible UI primitives styled in the Al Qua'a palette. */
 import * as React from "react";
-import { Check } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { ui, type Locale } from "@/lib/i18n";
 import { localizeDate } from "@/lib/format";
@@ -307,6 +307,32 @@ export function StatusPill({
     >
       <span aria-hidden>{map.dot}</span>
       {trimLabels(map.label)}
+    </span>
+  );
+}
+
+/** Clarifies whether a displayed amount enters or leaves the founder's budget. */
+export function AmountDirectionBadge({
+  direction,
+  locale,
+  className,
+}: {
+  direction: "receive" | "pay";
+  locale: Locale;
+  className?: string;
+}) {
+  const receive = direction === "receive";
+  const Icon = receive ? ArrowDownToLine : ArrowUpFromLine;
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-pill px-2 py-1 text-[11px] font-semibold leading-none",
+        receive ? "bg-oasis-100 text-oasis" : "bg-clay-100 text-clay",
+        className
+      )}
+    >
+      <Icon className="h-3 w-3 shrink-0" aria-hidden />
+      <span className="tb-trim">{receive ? ui(locale).youReceive : ui(locale).youPay}</span>
     </span>
   );
 }

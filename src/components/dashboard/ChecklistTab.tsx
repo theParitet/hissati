@@ -188,6 +188,8 @@ export function ChecklistTab({
                       }
                     >
                       {" · "}
+                      {isCostInstrument(current.ev.program.instrument) ? t.youPay : t.youReceive}
+                      {" · "}
                       {formatAmountRange(current.ev.program.amount, locale)}
                     </span>
                   </p>

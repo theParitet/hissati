@@ -31,10 +31,12 @@ The whole overhaul is organized around **one honest, cited number — "AED withi
 
 ### 3.1 Dashboard (replaces the one-long-page `/results`) — 3 tabs
 - **Overview** — the hero. Compact stat strip: **AED within reach** (sum of eligible programs, cited) · **Programs N eligible / M total** · **Steps done**. Below it, the **funding sky**: each matched program is a star — lit (eligible) / glowing (almost) / dim (not-fit) — that lights up as roadmap steps complete. Plus the 1–3 highest-impact next actions. This is the live-demo "watch it climb" moment, made of real money. The funding-sky is dark (the signature surface).
-- **Programs** — all programs in detail: eligible / almost / not-fit, restructured compact & scannable; each names the blocking rule + cited remedy; verified stamps on figures; compare.
+- **Programs** — all programs in detail: eligible / almost / not-fit, restructured compact & scannable; each amount explicitly says **You receive** or **You pay**. Paid instruments explain their purpose and list downstream programs whose remediation data names them as a prerequisite. Each program still names the blocking rule + cited remedy; verified stamps on figures; compare.
 - **Checklist** — per-program application checklist (documents to gather + requirements met); the tangible take-away; ties into PDF/share.
 
 Compact, concise, modern, UX-first. Not verbose.
+
+The side rail contains navigation only. Profile editing remains available through the persistent header; no duplicate profile-summary card sits below the tabs.
 
 ### 3.2 Identity & CSS (task 1)
 - Reconcile `design.md` ↔ the real Tailwind-v4 `@theme`. **Keep the shipping token names** (`oasis / amber / clay / sand / ink / night / palm / almost`), not the doc's `green/gold/red/bone`. Reconcile hex to the build.
@@ -54,6 +56,7 @@ Compact, concise, modern, UX-first. Not verbose.
 
 ### 3.4 Assistant (tasks 5 + 9 — one owner; same surface)
 - Modern, uncluttered chat. **Reuse** `ProgramCard` / `CompareView` / compact stat chips instead of dumping walls of markdown into the thread.
+- Embedded program cards use a quiet full-surface eligibility tint plus the status badge; they do not use a start-edge stripe.
 - Tighter grounding chips; better empty / loading / error states.
 - The full-page mobile chat is bounded to the dynamic viewport below the 64px header; only the conversation pane scrolls. Embedded program cards and receipts must shrink within the message column without horizontal page overflow.
 - Model never emits HTML; app renders all UI from structured tool results (unchanged architecture).
@@ -61,7 +64,7 @@ Compact, concise, modern, UX-first. Not verbose.
 
 ### 3.5 PDF + WhatsApp (task 7 — brainstorm + implement)
 - Reframe from "share a number" to "share a **next action with receipts**."
-- **PDF** → a real **Funding Readiness Plan**: founder context, cited sources + verified dates, the document checklist they can carry to TAMM / a bank. A judged artifact (Readiness + Evidence). Needs its own layout (currently only a bare print stylesheet) and an Al Sadu seal. Must survive html2canvas and render Arabic RTL.
+- **PDF** → a real **Funding Readiness Plan**: founder context, cited sources + verified dates, explicit receive/pay direction, paid-instrument purpose/dependencies, and the document checklist they can carry to TAMM / a bank. A judged artifact (Readiness + Evidence). It uses the app’s Latin/Arabic font stack, optically centered stamps/pills, one shared download-button treatment, and no QR code. Must survive html2canvas and render Arabic RTL.
 - **WhatsApp** → shares the top eligible program + AED + apply link (+ a QR to the live URL, since deploy is handled). Per-program share from the checklist; plan-level share from the dashboard.
 
 ### 3.6 Search and link sharing
@@ -132,6 +135,7 @@ Each leaf invokes the `frontend-design` skill, builds against the frozen contrac
 - `Money({ aed, locale, className? })` + `formatAED(aed, locale)` util (mono, `dir="ltr"`, locale digits)
 - `VerifiedStamp({ sourceUrl, verifiedDate, locale })`
 - `StatusPill({ status: 'eligible'|'almost'|'not_fit', locale })`
+- `AmountDirectionBadge({ direction: 'receive'|'pay', locale })`
 - `Skeleton`, `EmptyState({ icon?, title, desc?, action? })`
 - (existing `Button`, `Card`, `Badge`, `Eyebrow` retained)
 

@@ -7,8 +7,9 @@
  * engine already met, how to apply, and the cited source. Reused by the assistant's
  * ChecklistDialog and the dashboard Checklist tab so both read identical numbers.
  */
-import { Clock, FileText, CheckCircle2, Circle, Wallet, ListChecks } from "lucide-react";
-import { Badge, VerifiedStamp } from "@/components/ui";
+import { Clock, FileText, CheckCircle2, Circle, ListChecks } from "lucide-react";
+import { AmountDirectionBadge, VerifiedStamp } from "@/components/ui";
+import { CostContext } from "@/components/CostContext";
 import { ui, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { programProgress } from "@/lib/checklist";
@@ -97,12 +98,9 @@ export function ChecklistBody({ ev, locale }: { ev: EvaluatedProgram; locale: Lo
         <span className={`font-semibold ${cost ? "text-ink" : "text-oasis"}`}>
           {formatAmountRange(program.amount, locale)}
         </span>
-        {cost && (
-          <Badge tone="clay">
-            <Wallet className="h-3 w-3" aria-hidden /> {t.youPay}
-          </Badge>
-        )}
+        <AmountDirectionBadge direction={cost ? "pay" : "receive"} locale={locale} />
       </div>
+      {cost && <CostContext program={program} locale={locale} />}
 
       <div className="grid grid-cols-2 gap-3 border-t border-sand-line pt-4 text-sm">
         <div>

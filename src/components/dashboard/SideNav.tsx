@@ -25,13 +25,11 @@ export function SideNav({
   active,
   onChange,
   locale,
-  footer,
 }: {
   items: NavItem[];
   active: string;
   onChange: (id: string) => void;
   locale: Locale;
-  footer?: React.ReactNode;
 }) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -106,7 +104,6 @@ export function SideNav({
           );
         })}
       </div>
-      {footer ? <div className="hidden lg:block">{footer}</div> : null}
     </nav>
   );
 }

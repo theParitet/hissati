@@ -164,6 +164,9 @@ export function ProgramsTab({
                                 program.operator
                               ) : (
                                 <span className={cost ? "" : "text-oasis"}>
+                                  <span className="font-medium">
+                                    {cost ? t.youPay : t.youReceive} ·{" "}
+                                  </span>
                                   {formatAmountRange(program.amount, locale)}
                                 </span>
                               )}

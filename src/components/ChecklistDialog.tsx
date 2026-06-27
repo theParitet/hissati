@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, ExternalLink, FileDown } from "lucide-react";
+import { X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { ChecklistBody } from "@/components/dashboard/ChecklistBody";
 import { ShareSheet } from "@/components/ShareSheet";
 import { ui, pick, type Locale } from "@/lib/i18n";
@@ -69,9 +70,7 @@ export function ChecklistDialog({
             </Button>
           </a>
           {onDownloadPdf && (
-            <Button variant="outline" onClick={onDownloadPdf}>
-              <FileDown className="h-4 w-4" aria-hidden /> {t.downloadPdf}
-            </Button>
+            <DownloadPdfButton locale={locale} onClick={onDownloadPdf} />
           )}
           <ShareSheet payload={buildSharePayload({ kind: "program", locale, program })} locale={locale} />
         </div>

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LayoutGrid, Layers, ListChecks, Pencil, FileDown } from "lucide-react";
+import { LayoutGrid, Layers, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { SideNav, type NavItem } from "@/components/dashboard/SideNav";
 import { Overview } from "@/components/dashboard/Overview";
 import { ProgramsTab } from "@/components/dashboard/ProgramsTab";
@@ -17,7 +18,7 @@ import {
   isProfileComplete,
   effectiveProfile,
 } from "@/lib/store";
-import { ui, enumLabel } from "@/lib/i18n";
+import { ui } from "@/lib/i18n";
 import { PROGRAMS } from "@/lib/programs";
 import { evaluateAllFull } from "@/lib/engine";
 import { matchScore } from "@/lib/scoring";
@@ -95,46 +96,22 @@ export default function Results() {
     tab === "overview" ? (
       <>
         <ShareSheet payload={buildSharePayload({ kind: "plan", locale, stats })} locale={locale} />
-        <Button size="sm" onClick={downloadPdf}>
-          <FileDown className="h-4 w-4" aria-hidden /> {t.downloadPdf}
-        </Button>
+        <DownloadPdfButton locale={locale} onClick={downloadPdf} />
       </>
     ) : tab === "checklist" ? (
-      <Button size="sm" variant="outline" onClick={downloadPdf}>
-        <FileDown className="h-4 w-4" aria-hidden /> {t.downloadPdf}
-      </Button>
+      <DownloadPdfButton locale={locale} onClick={downloadPdf} />
     ) : null;
-
-  const profileSummary = [
-    enumLabel("sector", profile.sector, locale),
-    enumLabel("stage", profile.stage, locale),
-    enumLabel("location", profile.location, locale),
-  ].join(" · ");
 
   return (
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6">
       <div className="grid gap-5 lg:grid-cols-[12.5rem_minmax(0,1fr)] lg:gap-8">
-        {/* Dashboard chrome — vertical nav (mobile: horizontal strip) + quiet profile */}
+        {/* Dashboard chrome — vertical nav (mobile: horizontal strip). */}
         <aside className="lg:sticky lg:top-20 lg:self-start">
           <SideNav
             items={navItems}
             active={tab}
             onChange={(id) => setTab(id as TabId)}
             locale={locale}
-            footer={
-              <div className="mt-4 rounded-xl border border-sand-line bg-sand-100/60 p-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-faint">
-                  {locale === "ar" ? "ملفك" : "Your profile"}
-                </p>
-                <p className="mt-1.5 text-xs leading-relaxed text-ink-soft">{profileSummary}</p>
-                <button
-                  onClick={() => router.push("/questionnaire")}
-                  className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-oasis transition-colors hover:text-oasis-700"
-                >
-                  <Pencil className="h-3 w-3" aria-hidden /> {t.editAnswers}
-                </button>
-              </div>
-            }
           />
         </aside>
 

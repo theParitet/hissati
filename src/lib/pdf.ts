@@ -7,26 +7,26 @@
  * that unlock funding + the documents to gather, each with its cited time/cost), a
  * scannable "how to apply" block per eligible program (amount, method, processing
  * time, apply URL, verified source + date), the "one step away" programs with their
- * blocking rule → cited remedy, and a QR to the live app. html2canvas rasterises a
+ * blocking rule → cited remedy. html2canvas rasterises a
  * dedicated, inline-styled element (so Arabic shaping is preserved and no
  * Tailwind/oklch CSS trips the renderer) and jsPDF paginates it onto A4.
  *
  * html2canvas survival rules followed here: hex colours only (never oklch/var
  * colour tokens); spacing via margins, not flex `gap`; accent edges are a flex
  * first-child bar so they sit on the start side in both LTR and RTL; the Al Sadu
- * band/seal and the QR are plain inline SVG (shapes only — no <pattern>/gradients)
- * so they serialise cleanly; every user/program string is escaped. The heavy
+ * band/seal is plain inline SVG (shapes only — no <pattern>/gradients), so it
+ * serialises cleanly; every user/program string is escaped. The heavy
  * html2canvas/jsPDF deps load lazily so the HTML builder is import-safe in Node
  * (unit/preview). Saves as hissati-plan-{locale}.pdf.
  */
 import { ui, pick, toLocaleDigits, enumLabel, type Locale } from "@/lib/i18n";
-import { formatAmountRange, localizeDate } from "@/lib/format";
+import { formatAmountRange, isCostInstrument, localizeDate } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
-import { appUrl, qrSvgPath } from "@/lib/share";
 import type { ProgressStats } from "@/lib/metrics";
 import { isCurrentlyAvailable } from "@/lib/metrics";
 import type { EvaluatedProgram, Profile } from "@/lib/schema";
 import type { RoadmapStep } from "@/lib/roadmap";
+import { programsUnlockedBy } from "@/lib/programs";
 
 /* Palette — inline hex twins of the Al Qua'a tokens (html2canvas can't read oklch). */
 const C = {
@@ -48,7 +48,7 @@ const C = {
   clayBg: "#f3e6df",
 };
 
-const BODY = "var(--font-tajawal), 'Tajawal', system-ui, -apple-system, sans-serif";
+const BODY = "var(--font-inter), var(--font-tajawal), 'Tajawal', system-ui, -apple-system, sans-serif";
 const DISPLAY = "var(--font-fraunces), var(--font-tajawal), 'Tajawal', Georgia, serif";
 const MONO = "var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
 
@@ -138,21 +138,12 @@ function seal(size = 56, onDark = false): string {
   </svg>`;
 }
 
-/** Offline QR (inline SVG path) — same encoder as the in-app ShareSheet. */
-function qrSvg(text: string, px: number): string {
-  const { path, size } = qrSvgPath(text);
-  return `<svg width="${px}" height="${px}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
-    <rect width="${size}" height="${size}" fill="${C.white}"/>
-    <path d="${path}" fill="${C.ink}"/>
-  </svg>`;
-}
-
 /* --------------------------------------------------------------------------
  * Small typographic primitives
  * ------------------------------------------------------------------------ */
 
 function eyebrow(txt: string, color: string): string {
-  return `<div style="font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:${color}">${esc(
+  return `<div style="font-size:9px;font-weight:700;line-height:1;letter-spacing:0.16em;text-transform:uppercase;color:${color}">${esc(
     txt
   )}</div>`;
 }
@@ -164,7 +155,7 @@ function box(color = C.oasis, size = 14): string {
 
 /** A right-aligned data pill (time/cost). Always mono + LTR. */
 function metaPill(text: string, color = C.soft): string {
-  return `<span dir="ltr" style="flex:0 0 auto;font-family:${MONO};font-size:10px;color:${color};border:1px solid ${C.line};background:${C.white};border-radius:999px;padding:2px 8px;white-space:nowrap">${esc(
+  return `<span dir="ltr" style="display:inline-flex;align-items:center;flex:0 0 auto;font-family:${MONO};font-size:10px;line-height:1;color:${color};border:1px solid ${C.line};background:${C.white};border-radius:999px;padding:4px 8px;white-space:nowrap">${esc(
     text
   )}</span>`;
 }
@@ -172,7 +163,7 @@ function metaPill(text: string, color = C.soft): string {
 function sectionHeader(eb: string, title: string, color: string, count: number | undefined, locale: Locale): string {
   const badge =
     count != null
-      ? `<span dir="ltr" style="font-family:${MONO};font-size:11px;font-weight:700;color:${C.white};background:${color};border-radius:999px;padding:1px 9px">${toLocaleDigits(
+      ? `<span dir="ltr" style="display:inline-flex;align-items:center;font-family:${MONO};font-size:11px;font-weight:700;line-height:1;color:${C.white};background:${color};border-radius:999px;padding:4px 9px">${toLocaleDigits(
           count,
           locale
         )}</span>`
@@ -192,11 +183,11 @@ function verifiedStamp(ev: EvaluatedProgram, locale: Locale, t: Record<string, s
   const sourceDate = ev.program.source.source_date
     ? ` · source ${localizeDate(ev.program.source.source_date, locale)}`
     : "";
-  return `<span dir="ltr" style="display:inline-block;border:1px solid ${C.clay};background:${C.clayBg};border-radius:6px;padding:2px 8px;font-family:${MONO};font-size:9.5px;color:${C.clay};line-height:1.3">✓ checked · ${esc(
+  return `<span dir="ltr" style="display:inline-flex;align-items:center;border:1px solid ${C.clay};background:${C.clayBg};border-radius:6px;padding:4px 8px;font-family:${MONO};font-size:9.5px;color:${C.clay};line-height:1"><span style="display:inline-block;transform:translateY(-0.6px)">✓ checked · ${esc(
     host(ev.program.source.url)
   )} · ${localizeDate(ev.program.source.verified_date, locale)}${sourceDate} · ${esc(
     t[`confidence_${ev.program.source.confidence}`]
-  )}</span>`;
+  )}</span></span>`;
 }
 
 /* --------------------------------------------------------------------------
@@ -204,7 +195,7 @@ function verifiedStamp(ev: EvaluatedProgram, locale: Locale, t: Record<string, s
  * ------------------------------------------------------------------------ */
 
 function chip(label: string, value: string): string {
-  return `<span style="display:inline-block;margin:0 4px 6px 4px;padding:3px 10px;border:1px solid ${C.line};border-radius:999px;background:${C.white};font-size:11px;color:${C.ink}"><span style="color:${C.faint}">${esc(
+  return `<span style="display:inline-flex;align-items:center;margin:0 4px 6px 4px;padding:5px 10px;border:1px solid ${C.line};border-radius:999px;background:${C.white};font-size:11px;line-height:1;color:${C.ink}"><span style="color:${C.faint}">${esc(
     label
   )}: </span>${esc(value)}</span>`;
 }
@@ -370,14 +361,42 @@ function applyRow(label: string, value: string, ltr = false): string {
 
 /** Header row shared by both program block kinds: name + operator + cited amount. */
 function programHead(ev: EvaluatedProgram, locale: Locale, amountColor: string): string {
+  const cost = isCostInstrument(ev.program.instrument);
+  const displayColor = cost ? C.clay : amountColor;
+  const direction = cost
+    ? locale === "ar"
+      ? "تدفع"
+      : "You pay"
+    : locale === "ar"
+      ? "تستلم"
+      : "You receive";
   return `<div style="display:flex;align-items:flex-start;justify-content:space-between">
     <div style="min-width:0;max-width:440px">
       <div style="font-weight:700;color:${C.ink};font-size:14.5px;line-height:1.25">${esc(pick(ev.program.name, locale))}</div>
       <div style="color:${C.faint};font-size:11px;margin-top:2px">${esc(ev.program.operator)}</div>
     </div>
-    <div dir="ltr" style="font-family:${MONO};font-weight:700;color:${amountColor};font-size:14px;white-space:nowrap;margin:0 0 0 10px">${esc(
-      formatAmountRange(ev.program.amount, locale)
-    )}</div>
+    <div style="text-align:end;white-space:nowrap;margin:0 0 0 10px">
+      <div style="font-size:9px;font-weight:700;line-height:1;color:${cost ? C.clay : C.oasis}">${direction}</div>
+      <div dir="ltr" style="font-family:${MONO};font-weight:700;color:${displayColor};font-size:14px;line-height:1;margin-top:5px">${esc(
+        formatAmountRange(ev.program.amount, locale)
+      )}</div>
+    </div>
+  </div>`;
+}
+
+function paidContext(ev: EvaluatedProgram, locale: Locale): string {
+  if (!isCostInstrument(ev.program.instrument)) return "";
+  const ar = locale === "ar";
+  const unlocked = programsUnlockedBy(ev.program.id);
+  const dependency = unlocked.length
+    ? `<div style="margin-top:4px;font-size:10.5px;color:${C.clay}"><strong>${
+        ar ? "خطوة مطلوبة للوصول إلى" : "Required step toward"
+      }:</strong> ${esc(unlocked.map((program) => pick(program.name, locale)).join(ar ? "، " : ", "))}.</div>`
+    : "";
+  return `<div style="margin-top:8px;border:1px solid ${C.clay};border-radius:8px;background:${C.clayBg};padding:8px 10px">
+    <div style="font-size:10.5px;font-weight:700;color:${C.clay}">${ar ? "ما الذي تفتحه هذه الرسوم" : "What this payment unlocks"}</div>
+    <div style="margin-top:3px;font-size:10.5px;line-height:1.4;color:${C.soft}">${esc(pick(ev.program.description, locale))}</div>
+    ${dependency}
   </div>`;
 }
 
@@ -394,6 +413,7 @@ function eligibleBlock(ev: EvaluatedProgram, locale: Locale, t: Record<string, s
     <div style="flex:0 0 auto;width:5px;background:${C.palm}"></div>
     <div style="flex:1 1 auto;padding:12px 15px;min-width:0">
       ${programHead(ev, locale, C.palm)}
+      ${paidContext(ev, locale)}
       <div style="margin-top:8px;border-top:1px solid ${C.line};padding-top:7px">${rows}</div>
       <div style="margin-top:9px">${verifiedStamp(ev, locale, t)}</div>
     </div>
@@ -419,6 +439,7 @@ function almostBlock(ev: EvaluatedProgram, profile: Profile, locale: Locale, t: 
     <div style="flex:0 0 auto;width:5px;background:${C.almost}"></div>
     <div style="flex:1 1 auto;padding:12px 15px;min-width:0">
       ${programHead(ev, locale, C.almost)}
+      ${paidContext(ev, locale)}
       <div style="margin-top:8px;border-top:1px dashed ${C.almost};padding-top:7px">
         <div style="font-weight:700;color:${C.almost};font-size:12px">${esc(t.youCouldQualify)} <span style="color:${C.faint};font-weight:400">· ${esc(
           eta
@@ -448,7 +469,6 @@ export function buildPlanHtml(opts: {
   const eligible = evaluated.filter((e) => e.status === "eligible" && isCurrentlyAvailable(e.program));
   const almost = evaluated.filter((e) => e.status === "almost" && isCurrentlyAvailable(e.program));
   const gatherFrom = [...eligible, ...almost];
-  const url = appUrl();
   const today = localizeDate(new Date().toISOString().slice(0, 10), locale);
 
   const empty =
@@ -458,15 +478,9 @@ export function buildPlanHtml(opts: {
         }</div>`
       : "";
 
-  const footer = `<div style="margin-top:24px;border-top:1px solid ${C.line};padding-top:14px;display:flex;justify-content:space-between;align-items:center">
-    <div style="max-width:440px">
-      <div style="font-size:11.5px;color:${C.soft};font-weight:700">${esc(t.cited)}</div>
-      <div style="font-size:10px;color:${C.faint};margin-top:4px">${esc(t.appName)} · ${esc(t.tagline)} · ${today}</div>
-    </div>
-    <div style="text-align:center">
-      ${qrSvg(url, 78)}
-      <div style="font-size:9px;color:${C.faint};margin-top:4px">${ar ? "امسح لفتح حِصّتي" : "Scan to open Hissati"}</div>
-    </div>
+  const footer = `<div style="margin-top:24px;border-top:1px solid ${C.line};padding-top:14px">
+    <div style="font-size:11.5px;color:${C.soft};font-weight:700">${esc(t.cited)}</div>
+    <div style="font-size:10px;color:${C.faint};margin-top:4px">${esc(t.appName)} · ${esc(t.tagline)} · ${today}</div>
   </div>`;
 
   const html = `

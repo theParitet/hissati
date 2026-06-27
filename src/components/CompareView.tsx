@@ -8,7 +8,7 @@
  * extra controls (`onRemove`) are optional and back-compatible.
  */
 import { ListChecks, X } from "lucide-react";
-import { Button, StatusPill } from "@/components/ui";
+import { AmountDirectionBadge, Button, StatusPill } from "@/components/ui";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import type { CompareRow } from "@/lib/compare";
@@ -90,7 +90,11 @@ export function CompareView({
               <span className={`font-medium ${cost ? "text-ink" : "text-oasis"}`}>
                 {formatAmountRange(r.amount, locale)}
               </span>
-              {cost && <span className="mt-0.5 block text-xs font-medium text-clay">{t.youPay}</span>}
+              <AmountDirectionBadge
+                direction={cost ? "pay" : "receive"}
+                locale={locale}
+                className="mt-1"
+              />
             </span>
           );
         })}

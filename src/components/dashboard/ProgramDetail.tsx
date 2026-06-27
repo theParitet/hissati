@@ -14,13 +14,13 @@ import {
   GitCompare,
   CheckCircle2,
   Layers,
-  Wallet,
   Clock,
   AlertTriangle,
   ArrowUpRight,
   FileText,
 } from "lucide-react";
-import { AvailabilityPill, Button, StatusPill, VerifiedStamp } from "@/components/ui";
+import { AmountDirectionBadge, AvailabilityPill, Button, StatusPill, VerifiedStamp } from "@/components/ui";
+import { CostContext } from "@/components/CostContext";
 import { ShareSheet } from "@/components/ShareSheet";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
@@ -81,15 +81,12 @@ export function ProgramDetail({
 
       {/* Amount + facts */}
       <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
-        {cost && (
-          <span className="inline-flex items-center gap-1 rounded-pill bg-clay-100 px-2 py-1 text-xs font-semibold leading-none text-clay">
-            <Wallet className="h-3 w-3" aria-hidden /> {t.youPay}
-          </span>
-        )}
+        <AmountDirectionBadge direction={cost ? "pay" : "receive"} locale={locale} />
         <span className={`text-2xl font-semibold leading-none ${cost ? "text-ink" : "text-oasis"}`}>
           {formatAmountRange(program.amount, locale)}
         </span>
       </div>
+      {cost && <CostContext program={program} locale={locale} className="mt-3" />}
       <div className="mt-3 flex flex-wrap gap-1.5">
         <Chip>{t[`instrument_${program.instrument}`]}</Chip>
         <Chip>{tierLabel}</Chip>

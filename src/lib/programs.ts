@@ -18,3 +18,10 @@ export const PROGRAMS_GENERATED: string = parsed.generated;
 export function getProgramById(id: string): Program | undefined {
   return PROGRAMS.find((p) => p.id === id);
 }
+
+/** Programs whose published remediation path explicitly requires this program. */
+export function programsUnlockedBy(programId: string): Program[] {
+  return PROGRAMS.filter((program) =>
+    program.eligibility.some((rule) => rule.remedy?.links_program_id === programId)
+  );
+}
