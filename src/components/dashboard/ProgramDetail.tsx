@@ -18,12 +18,10 @@ import {
 } from "lucide-react";
 import { AmountDirectionBadge, AvailabilityPill, StatusPill, VerifiedStamp } from "@/components/ui";
 import { CostContext } from "@/components/CostContext";
-import { ShareSheet } from "@/components/ShareSheet";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
 import { programProgress } from "@/lib/checklist";
-import { buildSharePayload } from "@/lib/share";
 import { useHissati } from "@/lib/store";
 import type { EvaluatedProgram, Profile } from "@/lib/schema";
 
@@ -182,7 +180,7 @@ export function ProgramDetail({
         <ArrowUpRight className="h-4 w-4 shrink-0 text-ink-faint" aria-hidden />
       </button>
 
-      {/* Source + actions */}
+      {/* Source */}
       <div className="mt-6 border-t border-sand-line pt-4">
         <VerifiedStamp
           sourceUrl={program.source.url}
@@ -191,9 +189,6 @@ export function ProgramDetail({
           confidence={program.source.confidence}
           locale={locale}
         />
-        <div className="no-print mt-3 flex flex-wrap items-center gap-2">
-          <ShareSheet payload={buildSharePayload({ kind: "program", locale, program })} locale={locale} />
-        </div>
       </div>
     </div>
   );

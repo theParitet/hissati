@@ -95,7 +95,7 @@ export function ProgramsTab({
         {/* MASTER — the list (hidden while comparing so the table gets full width) */}
         <div
           className={cn(
-            "min-w-0 lg:border-e lg:border-sand-line",
+            "min-w-0 lg:flex lg:flex-col lg:border-e lg:border-sand-line",
             comparing ? "hidden" : mobilePane === "detail" ? "hidden lg:block" : "block"
           )}
         >
@@ -126,7 +126,7 @@ export function ProgramsTab({
             </div>
           )}
 
-          <div className="max-h-[34rem] overflow-y-auto p-2 lg:max-h-[40rem]">
+          <div className="max-h-[34rem] overflow-y-auto p-2 lg:max-h-none lg:min-h-0 lg:flex-1">
             {groups.map((g) => (
               <div key={g.key} className="mb-1.5 last:mb-0">
                 <div className="flex items-center gap-2 px-2 pb-1 pt-2">

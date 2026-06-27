@@ -11,11 +11,9 @@ import { ChevronLeft, ChevronRight, ExternalLink, ListChecks } from "lucide-reac
 import { cn } from "@/lib/cn";
 import { Button, StatusPill, EmptyState } from "@/components/ui";
 import { ChecklistBody } from "@/components/dashboard/ChecklistBody";
-import { ShareSheet } from "@/components/ShareSheet";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { programProgress } from "@/lib/checklist";
-import { buildSharePayload } from "@/lib/share";
 import { useHissati } from "@/lib/store";
 import type { EvaluatedProgram, EligibilityStatus } from "@/lib/schema";
 
@@ -90,7 +88,7 @@ export function ChecklistTab({
         {/* MASTER — programs + their progress */}
         <div
           className={cn(
-            "min-w-0 lg:border-e lg:border-sand-line",
+            "min-w-0 lg:flex lg:flex-col lg:border-e lg:border-sand-line",
             mobilePane === "detail" ? "hidden lg:block" : "block"
           )}
         >
@@ -103,7 +101,7 @@ export function ChecklistTab({
             </span>
           </div>
 
-          <ul className="max-h-[34rem] overflow-y-auto p-2 lg:max-h-[40rem]">
+          <ul className="max-h-[34rem] overflow-y-auto p-2 lg:max-h-none lg:min-h-0 lg:flex-1">
             {items.map(({ ev }) => {
               const { program, status } = ev;
               const p = programProgress(ev, checkedDocs[program.id] ?? []);
@@ -205,10 +203,6 @@ export function ChecklistTab({
                     {t.apply} <ExternalLink className="h-4 w-4" aria-hidden />
                   </Button>
                 </a>
-                <ShareSheet
-                  payload={buildSharePayload({ kind: "program", locale, program: current.ev.program })}
-                  locale={locale}
-                />
               </div>
             </>
           )}

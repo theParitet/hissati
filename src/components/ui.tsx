@@ -1,6 +1,6 @@
 /** Hand-rolled, accessible UI primitives styled in the Al Qua'a palette. */
 import * as React from "react";
-import { ArrowDownToLine, ArrowUpFromLine, Check } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { ui, type Locale } from "@/lib/i18n";
 import { localizeDate } from "@/lib/format";
@@ -245,13 +245,13 @@ export function VerifiedStamp({
     <span
       dir="ltr"
       className={cn(
-        "inline-flex items-center gap-1 rounded-md border border-clay-100 bg-clay-100/50 px-1.5 py-0.5 font-mono text-[10px] leading-none text-clay",
+        "inline-flex items-center gap-1.5 rounded-md border border-palm/25 bg-palm-100/70 px-2 py-1 font-mono text-[11px] font-medium leading-tight text-palm",
         className
       )}
     >
-      <Check className="h-3 w-3 shrink-0" aria-hidden />
+      <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden />
       <span className="min-w-0 break-all">
-        checked · {host} · {localizeDate(verifiedDate, locale)}
+        <span className="font-sans font-semibold tracking-wide">verified</span> · {host} · {localizeDate(verifiedDate, locale)}
         {sourceDate ? ` · source ${localizeDate(sourceDate, locale)}` : ""}
         {confidence ? ` · ${ui(locale)[`confidence_${confidence}`]}` : ""}
       </span>

@@ -9,7 +9,6 @@ import { SideNav, type NavItem } from "@/components/dashboard/SideNav";
 import { Overview } from "@/components/dashboard/Overview";
 import { ProgramsTab } from "@/components/dashboard/ProgramsTab";
 import { ChecklistTab } from "@/components/dashboard/ChecklistTab";
-import { ShareSheet } from "@/components/ShareSheet";
 import type { SkyStar } from "@/components/dashboard/FundingSky";
 import {
   useHissati,
@@ -24,7 +23,6 @@ import { evaluateAllFull } from "@/lib/engine";
 import { matchScore } from "@/lib/scoring";
 import { isCurrentlyAvailable, progressStats } from "@/lib/metrics";
 import { deriveRoadmap, type RoadmapStep } from "@/lib/roadmap";
-import { buildSharePayload } from "@/lib/share";
 import { exportPlanPdf } from "@/lib/pdf";
 import type { Profile } from "@/lib/schema";
 
@@ -95,10 +93,7 @@ export default function Results() {
   // Slim per-section actions for the dashboard top strip.
   const actions =
     tab === "overview" ? (
-      <>
-        <ShareSheet payload={buildSharePayload({ kind: "plan", locale, stats })} locale={locale} />
-        <DownloadPdfButton locale={locale} onClick={downloadPdf} />
-      </>
+      <DownloadPdfButton locale={locale} onClick={downloadPdf} />
     ) : tab === "checklist" ? (
       <DownloadPdfButton locale={locale} onClick={downloadPdf} />
     ) : null;

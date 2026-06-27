@@ -5,9 +5,7 @@ import { X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { ChecklistBody } from "@/components/dashboard/ChecklistBody";
-import { ShareSheet } from "@/components/ShareSheet";
 import { ui, pick, type Locale } from "@/lib/i18n";
-import { buildSharePayload } from "@/lib/share";
 import { evaluateProgramFull } from "@/lib/engine";
 import type { Profile, Program } from "@/lib/schema";
 
@@ -72,7 +70,6 @@ export function ChecklistDialog({
           {onDownloadPdf && (
             <DownloadPdfButton locale={locale} onClick={onDownloadPdf} />
           )}
-          <ShareSheet payload={buildSharePayload({ kind: "program", locale, program })} locale={locale} />
         </div>
       </div>
     </div>
