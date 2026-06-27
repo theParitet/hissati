@@ -66,6 +66,40 @@ function collectCompareIds(result: unknown): string[] {
   return Array.isArray(r.ids) ? r.ids.filter((v): v is string => typeof v === "string") : [];
 }
 
+interface AgentStats {
+  aedReachableNow?: number;
+  aedReachableAfterSteps?: number;
+  programsEligible?: number;
+}
+
+function num(o: unknown, key: string): number | undefined {
+  if (o && typeof o === "object") {
+    const v = (o as Record<string, unknown>)[key];
+    if (typeof v === "number") return v;
+  }
+  return undefined;
+}
+
+/**
+ * Lift the cited money figures the money-tools already compute (match_programs /
+ * steps_to_qualify) so the client can render the "within reach" ledger chip — the
+ * same honest, falsifiable number as the dashboard. Never a readiness score.
+ */
+function collectStats(name: string, result: unknown, prev?: AgentStats): AgentStats | undefined {
+  if (name === "match_programs") {
+    return {
+      ...prev,
+      aedReachableNow: num(result, "aed_reachable_now"),
+      aedReachableAfterSteps: num(result, "aed_reachable_after_steps"),
+      programsEligible: num(result, "programs_eligible"),
+    };
+  }
+  if (name === "steps_to_qualify") {
+    return { ...prev, aedReachableAfterSteps: num(result, "aed_reachable_after_steps") };
+  }
+  return prev;
+}
+
 export function GET() {
   return NextResponse.json({ enabled: Boolean(process.env.ANTHROPIC_API_KEY) });
 }
@@ -125,6 +159,7 @@ export async function POST(req: Request) {
     const grounding: Array<{ name: string; labelEn: string; labelAr: string }> = [];
     const programIds = new Set<string>();
     const compareIds = new Set<string>();
+    let stats: AgentStats | undefined;
     let reply = "";
 
     for (let turn = 0; turn < 5; turn++) {
@@ -163,6 +198,7 @@ export async function POST(req: Request) {
             grounding,
             programIds: Array.from(programIds).slice(0, 6),
             compareIds: Array.from(compareIds).slice(0, 3),
+            stats,
             form: { fields, reason: typeof f.reason === "string" ? f.reason : undefined },
           });
         }
@@ -172,6 +208,7 @@ export async function POST(req: Request) {
           const result = executeTool(tu.name, tu.input);
           for (const id of collectProgramIds(tu.name, result)) programIds.add(id);
           if (tu.name === "compare_programs") for (const id of collectCompareIds(result)) compareIds.add(id);
+          stats = collectStats(tu.name, result, stats);
           return {
             type: "tool_result",
             tool_use_id: tu.id,
@@ -192,6 +229,7 @@ export async function POST(req: Request) {
       grounding,
       programIds: Array.from(programIds).slice(0, 6),
       compareIds: Array.from(compareIds).slice(0, 3),
+      stats,
     });
   } catch {
     // Never break the app — the deterministic flow is the product (NFR-8).

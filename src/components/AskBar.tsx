@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, ArrowRight, ArrowLeft } from "lucide-react";
+import { cn } from "@/lib/cn";
 import { useLocale } from "@/lib/store";
 import { useAssistant } from "@/lib/assistant-store";
 import { ui } from "@/lib/i18n";
@@ -12,16 +13,30 @@ import { ui } from "@/lib/i18n";
  * network never hides it; it simply routes to /assistant, which explains the
  * off-state there. When the assistant is on, the typed question is seeded so the
  * answer is waiting on arrival.
+ *
+ * Props are a frozen cross-leaf contract (landing + dashboard consume it):
+ *  - `seed`    pre-fill the input (e.g. a suggested question on the landing hero)
+ *  - `variant` "hero" reads larger for the landing; "inline" is the compact default
+ *  - `className`
  */
-export function AskBar({ className = "" }: { className?: string }) {
+export function AskBar({
+  seed = "",
+  variant = "inline",
+  className = "",
+}: {
+  seed?: string;
+  variant?: "hero" | "inline";
+  className?: string;
+}) {
   const router = useRouter();
   const locale = useLocale();
   const t = ui(locale);
   const enabled = useAssistant((s) => s.enabled);
   const checkEnabled = useAssistant((s) => s.checkEnabled);
   const send = useAssistant((s) => s.send);
-  const [v, setV] = useState("");
+  const [v, setV] = useState(seed);
   const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
+  const hero = variant === "hero";
 
   useEffect(() => {
     checkEnabled();
@@ -36,22 +51,33 @@ export function AskBar({ className = "" }: { className?: string }) {
 
   return (
     <div className={className}>
-      <div className="flex items-center gap-2 rounded-pill border border-sand-line bg-sand-100 p-1.5 shadow-card transition-colors focus-within:border-oasis">
-        <Sparkles className="ms-2 h-4 w-4 shrink-0 text-amber" aria-hidden />
+      <div
+        className={cn(
+          "flex items-center gap-2 rounded-pill border border-sand-line bg-sand-100 shadow-card transition-colors focus-within:border-oasis",
+          hero ? "p-2" : "p-1.5"
+        )}
+      >
+        <Sparkles className={cn("ms-2 shrink-0 text-amber", hero ? "h-5 w-5" : "h-4 w-4")} aria-hidden />
         <input
           value={v}
           onChange={(e) => setV(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && go()}
           placeholder={t.askLandingPlaceholder}
           aria-label={t.askLandingLabel}
-          className="h-9 min-w-0 flex-1 bg-transparent text-[15px] outline-none placeholder:text-ink-faint"
+          className={cn(
+            "min-w-0 flex-1 bg-transparent outline-none placeholder:text-ink-faint",
+            hero ? "h-11 text-base" : "h-9 text-[15px]"
+          )}
         />
         <button
           onClick={go}
           aria-label={t.askLandingLabel}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-pill bg-oasis text-sand-100 transition-colors hover:bg-oasis-700"
+          className={cn(
+            "flex shrink-0 items-center justify-center rounded-pill bg-oasis text-sand-100 transition-colors hover:bg-oasis-700",
+            hero ? "h-11 w-11" : "h-9 w-9"
+          )}
         >
-          <Arrow className="h-4 w-4" aria-hidden />
+          <Arrow className={hero ? "h-5 w-5" : "h-4 w-4"} aria-hidden />
         </button>
       </div>
     </div>
