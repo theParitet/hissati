@@ -1,0 +1,61 @@
+%% Hissati — Functionality Workflow
+%% End-to-end journey + data flow. Highlights the "no dead ends" guarantee and the
+%% live re-check loop (mark a step done → re-run the SAME engine → score climbs).
+flowchart TD
+  START([Founder opens Hissati]) --> LAND["Landing · Arabic-first RTL<br/>value story + ask-bar"]
+  LAND -->|Start| WIZ
+  LAND -. optional question .-> ASK
+
+  subgraph WIZARD["Adaptive questionnaire · offline · persisted"]
+    WIZ["wizardSteps(answers)<br/>~6 core gating questions"] --> ANS["Answer → setAnswer → localStorage"]
+    ANS --> LIVE["stillMatching · live 'N programs still match' chip"]
+    LIVE --> RELOC{"relocation the<br/>deciding gate?"}
+    RELOC -->|yes| ASKR["ask relocation"]
+    ASKR --> COMPLETE
+    RELOC -->|no| COMPLETE{"isProfileComplete?<br/>6 core answers"}
+    COMPLETE -->|no| WIZ
+  end
+
+  COMPLETE -->|yes| EVAL
+
+  subgraph ENGINE["Deterministic results pipeline · pure · offline"]
+    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 12 programs)"] --> BUCKETS{"classify each program"}
+    BUCKETS -->|0 rules failed| ELIG["ELIGIBLE now"]
+    BUCKETS -->|1–2 remediable| ALMOST["ALMOST · blocking rule + cited fix"]
+    BUCKETS -->|hard gate| NOTFIT["NOT A FIT · explained, never empty"]
+    ELIG --> RANK["matchScore ranking<br/>progressStats · AED within reach"]
+    ALMOST --> ROADMAP["deriveRoadmap · ordered, deduped, cited steps"]
+    NOTFIT --> PREREG["pre-registration track · idea-stage"]
+  end
+
+  RANK --> DASH
+  ROADMAP --> DASH
+  PREREG --> DASH
+
+  subgraph RESULTS["Results dashboard"]
+    DASH["Overview · Programs · Checklist"] --> ACTIONS{"founder acts"}
+    ACTIONS -->|mark step done| MARK["markStep → effectiveProfile re-folds"]
+    ACTIONS -->|export| PDFOUT["Bilingual PDF readiness plan · jsPDF"]
+    ACTIONS -->|share| SHAREOUT["QR + WhatsApp deep-link"]
+    ACTIONS -->|compare / checklist| DETAIL["compare rows · document ticks"]
+  end
+
+  MARK -->|re-run the SAME engine| EVAL
+  MARK -. "score climbs · almost → eligible flips" .-> DASH
+
+  ASK["Ask-bar / /assistant"] --> AGENT
+  DASH -. ask in context .-> ASK
+
+  subgraph ASSIST["Optional grounded assistant · app works fully with it OFF"]
+    AGENT["POST /api/agent · profile + messages"] --> LOOP["Claude tool-calling loop"]
+    LOOP --> TOOLEX["executeTool over the SAME engine + KB"]
+    TOOLEX -->|collect_profile| FORM["tap-to-answer form → enrich profile"]
+    FORM --> AGENT
+    TOOLEX -->|structured results| RENDER["render ProgramCards / CompareView / grounding chips"]
+  end
+  RENDER -. seeds shared profile .-> DASH
+
+  classDef opt stroke-dasharray:5 5,fill:#f6f1e7;
+  class ASSIST,ASK,AGENT,LOOP,TOOLEX,FORM,RENDER opt;
+  classDef guard fill:#14584a,color:#ffffff;
+  class ALMOST,NOTFIT,PREREG guard;
