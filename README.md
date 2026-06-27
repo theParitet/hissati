@@ -7,6 +7,17 @@ Hissati (حصتي, *"my share"*) matches a UAE founder to real funding programs 
 🔗 **Live demo:** https://hissati.org  ·  💻 **Repo:** https://github.com/theParitet/TatweerHackathon404Team
 🏷️ **Tatweer Hackathon — Challenge 1: Taking the first entrepreneurial step**
 
+<table>
+  <tr>
+    <td width="72%"><img src="./docs/screenshots/landing-arabic.png" alt="Hissati Arabic-first desktop landing page"></td>
+    <td width="28%"><img src="./docs/screenshots/landing-mobile.jpg" alt="Hissati mobile landing page"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Arabic-first desktop experience</sub></td>
+    <td align="center"><sub>Responsive mobile experience</sub></td>
+  </tr>
+</table>
+
 ---
 
 ## 1. The challenge and the problem
@@ -51,6 +62,17 @@ From the "almost" set, Hissati builds a **Funding Readiness Roadmap** (ordered, 
 - 🌐 **Bilingual, Arabic-first** — full RTL with an English toggle; self-hosted Tajawal / Fraunces / IBM Plex Mono fonts (no runtime CDN).
 - 📑 **Cited or it doesn't ship** — every program amount and eligibility rule carries source provenance, a verification date, and an explicit confidence level. Nothing is invented.
 - 🤖 **Optional grounded agent** — a Claude-powered chat that turns vague/dialect questions into structured lookups. It calls the *same* engine over the *same* cited data and never emits UI/HTML; the app is fully usable with it switched off.
+
+<table>
+  <tr>
+    <td width="50%"><img src="./docs/screenshots/program-details.png" alt="Program matching dashboard with eligibility and source evidence"></td>
+    <td width="50%"><img src="./docs/screenshots/application-checklist.png" alt="Application checklist and bilingual PDF export"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Explainable matches with source provenance</sub></td>
+    <td align="center"><sub>Program-specific checklist and PDF plan</sub></td>
+  </tr>
+</table>
 
 ## 5. How it works
 
