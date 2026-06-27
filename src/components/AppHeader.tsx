@@ -38,7 +38,7 @@ export function AppHeader() {
         <Link
           href="/"
           aria-label={t.appName}
-          className="shrink-0 rounded-pill transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
+          className="inline-flex shrink-0 items-center rounded-pill leading-none transition-opacity hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           <Logo variant="lockup" />
         </Link>

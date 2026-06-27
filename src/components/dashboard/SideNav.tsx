@@ -90,7 +90,7 @@ export function SideNav({
                 )}
               />
               <Icon className="h-[1.05rem] w-[1.05rem] shrink-0" aria-hidden />
-              <span>{item.label}</span>
+              <span className="tb-trim">{item.label}</span>
               {item.count ? (
                 <span
                   className={cn(

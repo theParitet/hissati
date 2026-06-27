@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Tajawal, Fraunces, IBM_Plex_Mono } from "next/font/google";
+import { Tajawal, Fraunces, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { DirectionManager } from "@/components/DirectionManager";
 import { AppHeader } from "@/components/AppHeader";
@@ -11,6 +11,12 @@ const tajawal = Tajawal({
   subsets: ["arabic", "latin"],
   weight: ["400", "500", "700", "800"],
   variable: "--font-tajawal",
+  display: "swap",
+});
+// Inter supplies balanced Latin UI metrics; Arabic falls through to Tajawal.
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
   display: "swap",
 });
 const fraunces = Fraunces({
@@ -45,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="ar"
       dir="rtl"
       suppressHydrationWarning
-      className={`${tajawal.variable} ${fraunces.variable} ${plexMono.variable}`}
+      className={`${tajawal.variable} ${inter.variable} ${fraunces.variable} ${plexMono.variable}`}
     >
       <body className="flex min-h-dvh flex-col antialiased">
         <DirectionManager />

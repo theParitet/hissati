@@ -41,6 +41,8 @@ Compact, concise, modern, UX-first. Not verbose.
 - Deepen the cream base; reserve true cream for paper/PDF.
 - **Restrain Al Sadu** to one signature surface (hero band) + the **PDF seal** — off every card/modal/header.
 - Promote `night` for the funding sky. Add missing tokens: focus ring (single source of truth), motion durations, skeleton, elevation.
+- Typography: Inter is the Latin UI face, Tajawal is the Arabic UI fallback, Fraunces remains the Latin display face, and IBM Plex Mono remains the ledger face. Compact icon/label rows use explicit one-line boxes rather than browser-dependent `text-box-trim`.
+- The header lockup uses a tightly cropped 36px mark inside the existing 64px header so the visible glyph, not the SVG whitespace, is vertically centered.
 - `prefers-reduced-motion` respected.
 
 ### 3.3 Header & naming (task 6)

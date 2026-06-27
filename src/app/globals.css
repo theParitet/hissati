@@ -40,8 +40,8 @@
   --color-clay: #9c4a2f; /* not-a-fit */
   --color-clay-100: #efd9cf;
 
-  /* Type — one stack does both scripts: Latin→Fraunces, Arabic→Tajawal fallback. */
-  --font-sans: var(--font-tajawal), system-ui, -apple-system, sans-serif;
+  /* Type — Inter's balanced metrics for Latin UI; Tajawal for Arabic glyphs. */
+  --font-sans: var(--font-inter), var(--font-tajawal), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-fraunces), var(--font-tajawal), Georgia, serif;
   /* Ledger voice — AED amounts, match %, verified stamps ("with receipts"). */
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -100,23 +100,12 @@
   }
 }
 
-/* UNIVERSAL optical text centering.
-   The single source of truth for "text sits visually centered in its box".
-   `text-box-trim` trims the line BOX (leading) to the glyph box — it never clips
-   ink, so it is safe for Arabic (marks/dots always paint). Applied directly to
-   the common UI elements (not an opt-in class) so EVERY button/tab/heading/label
-   is centered by default; no component has to remember. Progressive enhancement:
-   a no-op (standard baseline rendering) in browsers without text-box-trim.
-   `:where()` keeps specificity 0 so a component can still override. */
-@supports (text-box-trim: trim-both) {
-  :where(
-    button, [role="tab"], summary, label, th,
-    h1, h2, h3, h4, h5, h6,
-    .tb-trim, [data-trim]
-  ) {
-    text-box-trim: trim-both;
-    text-box-edge: cap alphabetic;
-  }
+/* Compact labels use a deterministic line box. The previous text-box-trim
+   enhancement produced different geometry across browsers and used Latin edges
+   for Arabic. Flex rows center this box; the font stack supplies sane metrics. */
+.tb-trim,
+[data-trim] {
+  line-height: 1;
 }
 
 /* Al Sadu selvedge — ONE signature band (hero + PDF seal only, NEVER per card).

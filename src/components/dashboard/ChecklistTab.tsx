@@ -95,7 +95,7 @@ export function ChecklistTab({
           )}
         >
           <div className="flex items-center justify-between gap-3 border-b border-sand-line bg-sand-200/40 px-4 py-2.5">
-            <span className="text-xs font-medium text-ink-soft">
+            <span className="text-xs font-medium leading-none text-ink-soft tb-trim">
               {locale === "ar" ? "المستندات الجاهزة" : "Documents ready"}
             </span>
             <span className="font-mono text-xs leading-none tabular-nums text-ink-soft" dir="ltr">

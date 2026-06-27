@@ -121,7 +121,7 @@ export function ProgramsTab({
               <div key={g.key} className="mb-1.5 last:mb-0">
                 <div className="flex items-center gap-2 px-2 pb-1 pt-2">
                   <span
-                    className="text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-faint"
+                    className="text-[11px] font-semibold uppercase leading-none tracking-[0.14em] text-ink-faint tb-trim"
                   >
                     {g.label}
                   </span>

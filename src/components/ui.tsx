@@ -85,7 +85,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-medium",
+        "inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-medium leading-none",
         tones[tone],
         className
       )}
@@ -272,8 +272,8 @@ export function AvailabilityPill({
     unknown: "bg-sand-200 text-ink-faint",
   }[availability.status];
   return (
-    <span className={cn("inline-flex rounded-pill px-2 py-1 text-[11px] font-semibold", tone, className)}>
-      {ui(locale)[`availability_${availability.status}`]}
+    <span className={cn("inline-flex rounded-pill px-2 py-1 text-[11px] font-semibold leading-none", tone, className)}>
+      {trimLabels(ui(locale)[`availability_${availability.status}`])}
     </span>
   );
 }
@@ -297,7 +297,7 @@ export function StatusPill({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-semibold",
+        "inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-semibold leading-none",
         map.cls,
         className
       )}

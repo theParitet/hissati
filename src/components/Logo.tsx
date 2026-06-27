@@ -15,7 +15,7 @@ import { cn } from "@/lib/cn";
 
 function Glyph({ className }: { className?: string }) {
   return (
-    <svg viewBox="6 6 88 88" fill="none" className={className} aria-hidden focusable="false">
+    <svg viewBox="14 14 72 72" fill="none" className={cn("block", className)} aria-hidden focusable="false">
       <circle cx="50" cy="50" r="28" stroke="currentColor" strokeWidth="13" />
       <path d="M 26.25 35.16 A 28 28 0 0 1 73.75 35.16" stroke="#cba35c" strokeWidth="13" />
       <path d="M50 57 L50 38" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" />
@@ -42,21 +42,21 @@ export function Logo({
 
   if (variant === "stacked") {
     return (
-      <span className={cn("inline-flex flex-col items-center gap-1 text-oasis", className)}>
+      <span className={cn("inline-flex flex-col items-center gap-1 leading-none text-oasis", className)}>
         <Glyph className="h-10 w-10" />
-        <span className="font-display text-lg font-semibold tracking-tight">Hissati</span>
-        <span className="font-sans text-sm text-amber-600">حصتي</span>
+        <span className="font-display text-lg font-semibold tracking-tight tb-trim">Hissati</span>
+        <span className="font-sans text-sm text-amber-600 tb-trim">حصتي</span>
       </span>
     );
   }
 
   // lockup (horizontal)
   return (
-    <span className={cn("inline-flex items-center gap-2 text-oasis", className)}>
-      <Glyph className="h-8 w-8 shrink-0" />
+    <span className={cn("inline-flex items-center gap-2 leading-none text-oasis", className)}>
+      <Glyph className="h-9 w-9 shrink-0" />
       <span className="inline-flex items-baseline gap-1.5">
-        <span className="font-display text-xl font-semibold tracking-tight">Hissati</span>
-        <span className="font-sans text-base text-amber-600">حصتي</span>
+        <span className="font-display text-xl font-semibold tracking-tight tb-trim">Hissati</span>
+        <span className="font-sans text-base text-amber-600 tb-trim">حصتي</span>
       </span>
     </span>
   );
