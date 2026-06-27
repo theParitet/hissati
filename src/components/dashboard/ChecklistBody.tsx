@@ -1,15 +1,15 @@
 "use client";
 
 /**
- * ChecklistBody — the shared contents of an application checklist: amount + how
- * to apply, the required documents the founder ticks off (persisted), the
- * requirements the engine already met, and the cited source. Reused by the
- * ChecklistDialog modal (opened from the assistant) and the dashboard Checklist
- * tab so both read identical numbers.
+ * ChecklistBody — the trackable contents of an application checklist. Leads with
+ * the documents to gather (the thing the founder actually works), shown as a
+ * satisfying progress bar + tappable rows that persist; then the requirements the
+ * engine already met, how to apply, and the cited source. Reused by the assistant's
+ * ChecklistDialog and the dashboard Checklist tab so both read identical numbers.
  */
 import { Clock, FileText, CheckCircle2, Circle, Wallet, ListChecks } from "lucide-react";
 import { Badge, VerifiedStamp } from "@/components/ui";
-import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
+import { ui, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { programProgress } from "@/lib/checklist";
 import { useHissati } from "@/lib/store";
@@ -23,38 +23,33 @@ export function ChecklistBody({ ev, locale }: { ev: EvaluatedProgram; locale: Lo
   const checked = checkedAll[program.id] ?? [];
   const cost = isCostInstrument(program.instrument);
   const prog = programProgress(ev, checked);
+  const docsTotal = program.required_documents.length;
+  const docsPct = docsTotal ? Math.round((prog.docsReady / docsTotal) * 100) : 0;
+  const allReady = docsTotal > 0 && prog.docsReady === docsTotal;
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className={`font-semibold ${cost ? "text-ink" : "text-oasis"}`}>
-          {formatAmountRange(program.amount, locale)}
-        </span>
-        {cost && (
-          <Badge tone="clay">
-            <Wallet className="h-3 w-3" aria-hidden /> {t.youPay}
-          </Badge>
-        )}
-        <Badge tone="neutral">{t[`instrument_${program.instrument}`]}</Badge>
-      </div>
-
-      {/* Requirements the engine already met — the eligibility signal. */}
-      <div className="flex items-center gap-2 rounded-xl bg-palm-100/50 px-3 py-2 text-sm text-palm">
-        <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden />
-        <span className="tb-trim">{t.requirements}</span>
-        <span className="ms-auto font-mono tabular-nums" dir="ltr">
-          {toLocaleDigits(prog.reqMet, locale)}/{toLocaleDigits(prog.reqTotal, locale)}
-        </span>
-      </div>
-
+      {/* Documents — the thing you track. Lead with it. */}
       <div>
-        <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
-          <FileText className="h-4 w-4 text-oasis" aria-hidden /> <span className="tb-trim">{t.requiredDocs}</span>
-          <span className="ms-auto font-mono text-xs font-normal text-ink-soft tb-trim" dir="ltr">
-            {toLocaleDigits(checked.length, locale)}/{toLocaleDigits(program.required_documents.length, locale)}
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="inline-flex items-center gap-2 text-sm font-semibold text-ink">
+            <FileText className="h-4 w-4 text-amber" aria-hidden /> {t.requiredDocs}
+          </h3>
+          <span
+            className={`font-mono text-sm leading-none tabular-nums ${allReady ? "text-palm" : "text-ink-soft"}`}
+            dir="ltr"
+          >
+            {toLocaleDigits(prog.docsReady, locale)}/{toLocaleDigits(docsTotal, locale)}
           </span>
-        </h3>
-        <ul className="mt-2 space-y-0.5">
+        </div>
+        <span className="mt-2 block h-2 overflow-hidden rounded-pill bg-sand-200">
+          <span
+            className={`block h-full rounded-pill transition-[width] duration-500 ${allReady ? "bg-palm" : "bg-amber"}`}
+            style={{ width: `${docsPct}%` }}
+          />
+        </span>
+
+        <ul className="mt-3 space-y-1">
           {program.required_documents.map((d, i) => {
             const done = checked.includes(i);
             return (
@@ -63,14 +58,18 @@ export function ChecklistBody({ ev, locale }: { ev: EvaluatedProgram; locale: Lo
                   type="button"
                   onClick={() => toggleDoc(program.id, i)}
                   aria-pressed={done}
-                  className="flex w-full items-start gap-2.5 rounded-md px-1.5 py-1.5 text-start text-sm transition-colors hover:bg-sand-200"
+                  className={`flex w-full items-center gap-3 rounded-lg border px-3 py-2.5 text-start text-sm transition-colors ${
+                    done
+                      ? "border-palm-100 bg-palm-100/50"
+                      : "border-sand-line bg-sand-100 hover:bg-sand-200/60"
+                  }`}
                 >
                   {done ? (
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-palm" aria-hidden />
+                    <CheckCircle2 className="h-5 w-5 shrink-0 text-palm" aria-hidden />
                   ) : (
-                    <Circle className="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" aria-hidden />
+                    <Circle className="h-5 w-5 shrink-0 text-ink-faint" aria-hidden />
                   )}
-                  <span className={done ? "tb-trim text-ink-faint line-through" : "tb-trim text-ink-soft"}>
+                  <span className={done ? "text-ink-faint line-through" : "text-ink"}>
                     {locale === "ar" ? d.ar : d.en}
                     {d.format && <span className="text-ink-faint"> · {d.format}</span>}
                   </span>
@@ -78,16 +77,34 @@ export function ChecklistBody({ ev, locale }: { ev: EvaluatedProgram; locale: Lo
               </li>
             );
           })}
-          {program.required_documents.length === 0 && (
-            <li className="flex items-center gap-2 px-1.5 py-1.5 text-sm text-ink-soft">
-              <ListChecks className="h-4 w-4 text-palm" aria-hidden />
+          {docsTotal === 0 && (
+            <li className="inline-flex items-center gap-2 rounded-lg bg-palm-100/50 px-3 py-2.5 text-sm text-palm">
+              <ListChecks className="h-4 w-4" aria-hidden />
               {locale === "ar" ? "لا مستندات محددة مسبقاً." : "No documents listed up front."}
             </li>
           )}
         </ul>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 text-sm">
+      {/* Requirements the engine already met + amount context — secondary. */}
+      <div className="flex flex-wrap items-center gap-2 text-sm">
+        <span className="inline-flex items-center gap-1.5 rounded-pill bg-palm-100/60 px-2.5 py-1 leading-none text-palm">
+          <CheckCircle2 className="h-3.5 w-3.5" aria-hidden /> {t.requirements}
+          <span className="font-mono tabular-nums" dir="ltr">
+            {toLocaleDigits(prog.reqMet, locale)}/{toLocaleDigits(prog.reqTotal, locale)}
+          </span>
+        </span>
+        <span className={`font-semibold ${cost ? "text-ink" : "text-oasis"}`}>
+          {formatAmountRange(program.amount, locale)}
+        </span>
+        {cost && (
+          <Badge tone="clay">
+            <Wallet className="h-3 w-3" aria-hidden /> {t.youPay}
+          </Badge>
+        )}
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 border-t border-sand-line pt-4 text-sm">
         <div>
           <p className="text-xs text-ink-faint">{t.introMethod}</p>
           <p className="mt-0.5 text-ink">{t[`intro_${program.intro_method}`]}</p>
@@ -95,7 +112,7 @@ export function ChecklistBody({ ev, locale }: { ev: EvaluatedProgram; locale: Lo
         {program.processing_time && (
           <div>
             <p className="inline-flex items-center gap-1 text-xs text-ink-faint">
-              <Clock className="h-3.5 w-3.5" aria-hidden /> <span className="tb-trim">{t.processingTime}</span>
+              <Clock className="h-3.5 w-3.5" aria-hidden /> {t.processingTime}
             </p>
             <p className="mt-0.5 text-ink">{program.processing_time}</p>
           </div>

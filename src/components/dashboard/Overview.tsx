@@ -1,18 +1,16 @@
 "use client";
 
 /**
- * Overview — the dashboard hero. Leads with the cited "within reach" stat strip,
- * then the signature funding sky (one hero card: a ledger on top, the sky below),
- * then the 1–3 highest-impact next actions and plan-level share / PDF. Marking a
- * step here re-flows the engine → the AED climbs and stars rise (the demo beat).
+ * Overview — leads with data: the cited "within reach" ledger + the signature
+ * funding sky in one hero, then the highest-impact next actions. Marking a step
+ * re-flows the engine → the AED climbs and stars rise (the demo beat). Plan-level
+ * share / PDF live in the dashboard top strip, not here.
  */
-import { CheckCircle2, Undo2, FileDown, Sparkles } from "lucide-react";
-import { Card, Stat, Money, Eyebrow, Button, EmptyState } from "@/components/ui";
-import { ShareSheet } from "@/components/ShareSheet";
+import { CheckCircle2, Undo2, Sparkles } from "lucide-react";
+import { Card, Stat, Money, EmptyState } from "@/components/ui";
 import { FundingSky, type SkyStar } from "@/components/dashboard/FundingSky";
 import { RoadmapStepCard } from "@/components/RoadmapStepCard";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
-import { buildSharePayload } from "@/lib/share";
 import type { ProgressStats } from "@/lib/metrics";
 import type { RoadmapStep } from "@/lib/roadmap";
 import type { DoneStep } from "@/lib/store";
@@ -27,7 +25,6 @@ export function Overview({
   doneSteps,
   onMarkStep,
   onUnmarkStep,
-  onDownloadPdf,
 }: {
   locale: Locale;
   stats: ProgressStats;
@@ -36,7 +33,6 @@ export function Overview({
   doneSteps: DoneStep[];
   onMarkStep: (step: RoadmapStep) => void;
   onUnmarkStep: (key: string) => void;
-  onDownloadPdf: () => void;
 }) {
   const t = ui(locale);
   const open = stats.hasOpenEndedAmounts;
@@ -44,7 +40,7 @@ export function Overview({
   const plus = open ? "+" : "";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Hero: cited ledger (light) + funding sky (dark) in one card. */}
       <Card className="overflow-hidden p-0">
         <div className="sadu-band" aria-hidden />
@@ -110,7 +106,7 @@ export function Overview({
       {/* Next actions — the highest-impact, cited roadmap steps. */}
       <section>
         <div className="flex items-baseline justify-between gap-3">
-          <h2 className="text-xl">{locale === "ar" ? "خطواتك التالية" : "Your next steps"}</h2>
+          <h2 className="text-lg leading-none">{locale === "ar" ? "خطواتك التالية" : "Next steps"}</h2>
           {steps.length > MAX_NEXT && (
             <span className="text-xs text-ink-faint">
               {locale === "ar"
@@ -119,9 +115,8 @@ export function Overview({
             </span>
           )}
         </div>
-        <p className="mt-1 text-sm text-ink-soft">{t.roadmapLead}</p>
 
-        <div className="mt-4 space-y-3">
+        <div className="mt-3 space-y-3">
           {nextSteps.map((step, i) => (
             <RoadmapStepCard
               key={step.key}
@@ -160,7 +155,7 @@ export function Overview({
                     onClick={() => onUnmarkStep(d.key)}
                     className="no-print inline-flex items-center gap-1 text-xs text-ink-faint hover:text-ink"
                   >
-                    <Undo2 className="h-3.5 w-3.5" aria-hidden /> <span className="tb-trim">{t.undo}</span>
+                    <Undo2 className="h-3.5 w-3.5" aria-hidden /> {t.undo}
                   </button>
                 </li>
               ))}
@@ -168,24 +163,6 @@ export function Overview({
           )}
         </div>
       </section>
-
-      {/* Plan-level take-away: share the cited plan + carry it as a PDF. */}
-      <Card className="no-print flex flex-wrap items-center justify-between gap-3 p-4">
-        <div className="min-w-0">
-          <Eyebrow>{locale === "ar" ? "خطتي" : "My plan"}</Eyebrow>
-          <p className="mt-0.5 text-sm text-ink-soft">
-            {locale === "ar"
-              ? "شارك خطتك الموثّقة أو احملها كملف PDF إلى تَم أو البنك."
-              : "Share your cited plan, or carry it as a PDF to TAMM or a bank."}
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <ShareSheet payload={buildSharePayload({ kind: "plan", locale, stats })} locale={locale} />
-          <Button size="sm" onClick={onDownloadPdf}>
-            <FileDown className="h-4 w-4" aria-hidden /> {t.downloadPdf}
-          </Button>
-        </div>
-      </Card>
     </div>
   );
 }
