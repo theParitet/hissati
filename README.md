@@ -337,23 +337,7 @@ Hissati is deliberately scoped to be deployable **today**, in this rural context
 
 **Evidence & validation.** Every quantitative claim in §7 is reproducible from the repo (the Vitest suite doubles as evidence), every funding figure in the dataset is cited to a primary source with a verified date, and the offline claim is demonstrable in DevTools. The contextual claims in §3 and this section are referenced in [§References](#references).
 
-## 9. How we score against criteria 1–7
-
-The hackathon scores filtration entirely from this repo on criteria 1–7, and *a criterion with no evidence in the repo is scored in its lowest band.* Here is where each is evidenced.
-
-| # | Criterion (max) | Our evidence |
-|---|---|---|
-| **1** | **Impact & value (10)** | Routes real, named funding (Khalifa Fund, Ma'an, licence rungs) to the exact person every other tool rejects — the idea-stage rural founder. The need is quantified in §3: SMEs are 94%+ of UAE companies and 63.5% of non-oil GDP [[1]](#references), yet only ~25–28% ever access bank finance [[2]](#references)[[3]](#references). |
-| **2** | **Relevance to the challenge (10)** | Squarely Challenge 1: it takes a founder from *idea* to a *concrete first action* (the first licence, its cost, the single next step), then onward to funding — built Arabic-first and offline for the Al Qua'a rural context. |
-| **3** | **Feasibility (10)** | See §8: software-only, deployable today on free-tier Vercel; offline + Arabic + mobile-first suit a context where phones carry ~64% of web traffic [[15]](#references); no hardware, no marketplace, near-zero running cost. |
-| **4** | **Readiness (10)** | Complete and working end-to-end: wizard → classification → roadmap → checklist → bilingual PDF, live at hissati.org and runnable offline. Demo video in [`/docs`](./docs). Not a mockup. |
-| **5** | **Scalability (10)** | Eligibility is data, not code: rules live in [`src/data/programs.json`](./src/data/programs.json). Adding a programme or emirate is a schema-validated data edit. The need scales with the sector — 557k SMEs today, 1M targeted by 2030 [[1]](#references). |
-| **6** | **Falsifiability & evidence (10)** | Every claim in §7 is testable; the Vitest suite doubles as evidence; every figure is cited to a primary source with a verified date, with unconfirmed values openly flagged. |
-| **7** | **Repo documentation (5)** | This README covers every required section; the three architecture diagrams ([`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md)), the engineering ground rules ([`CLAUDE.md`](./CLAUDE.md)), the Vitest suite, screenshots, and sample PDFs let a judge understand, run, and verify from the repo alone. |
-
-*(Criterion 8 — presentation — is scored live on Sunday; our 3-minute offline run-of-show is in [`docs/superpowers/demo-script.md`](./docs/superpowers/demo-script.md).)*
-
-## 10. Tech stack
+## 9. Tech stack
 
 **Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · Zustand 5 (+persist) · Zod 3 · Vitest 2 · Vercel · Anthropic Claude (optional agent).**
 
@@ -361,7 +345,7 @@ Supporting libraries: **jsPDF + html2canvas** (client-side bilingual PDF), **qrc
 
 The deterministic core is plain TypeScript with no heavy dependencies, and the knowledge base ships in the bundle so matching needs zero network. Offline is a **hand-written service worker** (`public/sw.js`) — Next 16's Turbopack doesn't run the webpack hook that `next-pwa`/Serwist rely on — and the UI is built on **bespoke primitives** (`components/ui.tsx`), not a component library. The only server-side surface is an optional `/api/agent` route that keeps the API key off the client and returns structured results only (never HTML). Full layering, data flows, and the service-worker strategy are in [`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md).
 
-## 11. Run it locally
+## 10. Run it locally
 
 ```bash
 npm install
@@ -381,11 +365,11 @@ The agent is **optional**. Without `ANTHROPIC_API_KEY` the `/api/agent` route re
 5. Run the whole wizard → results → roadmap → PDF flow with no network
 ```
 
-## 12. Data & citations
+## 11. Data & citations
 
 The knowledge base is **hand-verified**, not scraped. Each of the 12 records in [`src/data/programs.json`](./src/data/programs.json) carries bilingual names, operator, tier, instrument, a structured amount, eligibility rules (each with a bilingual blocking message and an optional cited remedy), required documents, an application URL, and a **`source.url` + `verified_date`** (all `2026-06-26`). The dataset is validated against [`src/lib/schema.ts`](./src/lib/schema.ts) at module load and in `tests/programs.test.ts`, so a malformed record fails the build instead of shipping. Amounts that could not be live-confirmed against JavaScript-rendered government portals are left unfixed (they contribute `0` to "AED within reach" rather than an invented figure), and Arabic strings are drafted and flagged for native review before any public launch.
 
-## 13. Documentation
+## 12. Documentation
 
 | Reference | Covers |
 |---|---|
