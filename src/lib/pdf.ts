@@ -53,6 +53,9 @@ const DISPLAY = "var(--font-fraunces), var(--font-tajawal), 'Tajawal', Georgia, 
 const MONO = "var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace";
 
 const CONTENT_W = 722; // 794 (A4 @96dpi) − 2 × 36px padding
+// html2canvas paints compact-text baselines lower than the browser's layout box.
+// Keep the correction in one PDF-only token so every pill/stamp moves together.
+const COMPACT_TEXT = "display:inline-block;transform:translateY(-3px)";
 
 function esc(s: string): string {
   return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
@@ -150,23 +153,29 @@ function eyebrow(txt: string, color: string): string {
 
 /** A pen-tickable square (paper checkbox). */
 function box(color = C.oasis, size = 14): string {
-  return `<span style="display:inline-block;flex:0 0 auto;width:${size}px;height:${size}px;border:1.6px solid ${color};border-radius:3px;background:${C.white}"></span>`;
+  return `<span style="display:inline-block;flex:0 0 auto;width:${size}px;height:${size}px;transform:translateY(4px);border:1.6px solid ${color};border-radius:3px;background:${C.white}"></span>`;
 }
 
 /** A right-aligned data pill (time/cost). Always mono + LTR. */
 function metaPill(text: string, color = C.soft): string {
-  return `<span dir="ltr" style="display:inline-flex;align-items:center;flex:0 0 auto;font-family:${MONO};font-size:10px;line-height:1;color:${color};border:1px solid ${C.line};background:${C.white};border-radius:999px;padding:4px 8px;white-space:nowrap">${esc(
+  return `<span dir="ltr" style="display:inline-flex;align-items:center;flex:0 0 auto;font-family:${MONO};font-size:10px;line-height:1;color:${color};border:1px solid ${C.line};background:${C.white};border-radius:999px;padding:4px 8px;white-space:nowrap"><span style="${COMPACT_TEXT}">${esc(
     text
-  )}</span>`;
+  )}</span></span>`;
 }
 
 function sectionHeader(eb: string, title: string, color: string, count: number | undefined, locale: Locale): string {
   const badge =
     count != null
-      ? `<span dir="ltr" style="display:inline-flex;align-items:center;font-family:${MONO};font-size:11px;font-weight:700;line-height:1;color:${C.white};background:${color};border-radius:999px;padding:4px 9px">${toLocaleDigits(
+      ? `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${toLocaleDigits(
           count,
           locale
-        )}</span>`
+        )}">
+          <circle cx="12" cy="12" r="12" fill="${color}"/>
+          <text x="12" y="12" text-anchor="middle" dominant-baseline="central" fill="${C.white}" font-family="${MONO}" font-size="11" font-weight="700">${toLocaleDigits(
+            count,
+            locale
+          )}</text>
+        </svg>`
       : "";
   return `<div style="margin:24px 0 9px">
     ${eyebrow(eb, C.faint)}
@@ -183,7 +192,7 @@ function verifiedStamp(ev: EvaluatedProgram, locale: Locale, t: Record<string, s
   const sourceDate = ev.program.source.source_date
     ? ` · source ${localizeDate(ev.program.source.source_date, locale)}`
     : "";
-  return `<span dir="ltr" style="display:inline-flex;align-items:center;border:1px solid ${C.clay};background:${C.clayBg};border-radius:6px;padding:4px 8px;font-family:${MONO};font-size:9.5px;color:${C.clay};line-height:1"><span style="display:inline-block;transform:translateY(-0.6px)">✓ checked · ${esc(
+  return `<span dir="ltr" style="display:inline-flex;align-items:center;border:1px solid ${C.clay};background:${C.clayBg};border-radius:6px;padding:4px 8px;font-family:${MONO};font-size:9.5px;color:${C.clay};line-height:1"><span style="${COMPACT_TEXT}">✓ checked · ${esc(
     host(ev.program.source.url)
   )} · ${localizeDate(ev.program.source.verified_date, locale)}${sourceDate} · ${esc(
     t[`confidence_${ev.program.source.confidence}`]
@@ -195,9 +204,9 @@ function verifiedStamp(ev: EvaluatedProgram, locale: Locale, t: Record<string, s
  * ------------------------------------------------------------------------ */
 
 function chip(label: string, value: string): string {
-  return `<span style="display:inline-flex;align-items:center;margin:0 4px 6px 4px;padding:5px 10px;border:1px solid ${C.line};border-radius:999px;background:${C.white};font-size:11px;line-height:1;color:${C.ink}"><span style="color:${C.faint}">${esc(
+  return `<span style="display:inline-flex;align-items:center;margin:0 4px 6px 4px;padding:5px 10px;border:1px solid ${C.line};border-radius:999px;background:${C.white};font-size:11px;line-height:1;color:${C.ink}"><span style="${COMPACT_TEXT}"><span style="color:${C.faint}">${esc(
     label
-  )}: </span>${esc(value)}</span>`;
+  )}: </span>${esc(value)}</span></span>`;
 }
 
 function founderSnapshot(profile: Profile, locale: Locale, today: string): string {
