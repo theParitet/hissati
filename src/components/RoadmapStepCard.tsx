@@ -19,8 +19,8 @@ export function RoadmapStepCard({
   const t = ui(locale);
   return (
     <Card className="flex items-start gap-4 p-4 print-block">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-pill bg-oasis text-sm font-bold text-sand-100">
-        <span className="tb-trim">{toLocaleDigits(index + 1, locale)}</span>
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-pill bg-oasis text-sm font-bold leading-none text-sand-100">
+        {toLocaleDigits(index + 1, locale)}
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
@@ -33,7 +33,7 @@ export function RoadmapStepCard({
           {step.est_cost_aed != null && step.est_cost_aed > 0 && (
             <span className="inline-flex items-center gap-1">
               <Coins className="h-3.5 w-3.5" aria-hidden />{" "}
-              <span className="tb-trim">
+              <span>
                 {locale === "ar" ? "درهم" : "AED"} {toLocaleDigits(step.est_cost_aed, locale)}
               </span>
             </span>
@@ -41,7 +41,7 @@ export function RoadmapStepCard({
           {step.est_time && (
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" aria-hidden />{" "}
-              <span className="tb-trim" dir="ltr">{step.est_time}</span>
+              <span dir="ltr">{step.est_time}</span>
             </span>
           )}
         </div>
