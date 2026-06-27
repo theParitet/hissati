@@ -26,7 +26,17 @@ Built first for the **Al Qua'a first-time founder** — e.g. an Emirati woman ma
 | **Early tech founder** (MVP/traction) | Reaching for the "stretch tier" | Accelerator/competition matches (Hub71, Sheraa, Khalifa Award) with the exact gap to close |
 | **Judge / skeptic** | Must verify claims fast | Every figure cited to a primary source with a verified date, checkable from this repo |
 
-## 3. The solution
+## 3. The situation and the problem — in numbers
+
+The founders furthest from capital in the UAE are precisely those in rural, Arabic-speaking communities like Al Qua'a. The case for Hissati rests on three documented realities — a sector that needs capital, a wall that keeps it out, and a target demographic the wall hits hardest.
+
+**The sector that needs capital.** Small and medium enterprises make up **more than 94%** of all companies in the UAE, employ around **86%** of the private-sector workforce, and contribute roughly **63.5% of non-oil GDP**; there were about **557,000 SMEs** by mid-2022, with the government targeting **one million by 2030** [[1]](#references). The sector is regulated and promoted under Federal Law No. 2 of 2014 [[1]](#references). In other words, the country's economic engine is built from exactly the kind of small founder Hissati serves.
+
+**The eligibility wall.** Despite that centrality, access to finance is the sector's defining constraint. By various estimates only about **a quarter to 28%** of UAE SMEs have ever secured bank financing [[2]](#references)[[3]](#references); SME lending stood at roughly **AED 81.7 billion — about 9.7%** of banks' trade-and-industrial facilities at the end of Q1 2024 [[4]](#references). Across the GCC the SME credit gap is estimated at about **US$250 billion** and has barely moved in a decade [[3]](#references). Banks typically demand **200–250% collateral** for an SME loan (versus ~140% for corporates) and take **8–12 weeks** to approve one [[3]](#references). Government programmes help, but carry **limited, often nationality- or emirate-bound eligibility** [[5]](#references). And the support that exists is **fragmented** — multiple federal, emirate-level and specialised entities, each with different criteria and application portals, so that many qualified founders never discover the programme built for their stage, sector, or location [[6]](#references). About **42%** of UAE SMEs also report inadequate financial literacy to navigate these options [[2]](#references). This is the wall Hissati attacks: not a shortage of programmes, but the absence of anything that tells a first-time founder *which one fits and what to do next.*
+
+**The target demographic and their situation.** Hissati is built first for the Al Qua'a / Al Ain first-time founder. Al Ain is the UAE's agricultural heartland — its UNESCO-listed oasis alone holds more than **147,000 date palms** tended by families across generations [[11]](#references) — and home to the country's first dairy and only camel-milk producer [[12]](#references), in a nation that still **imports the overwhelming majority of its food** [[13]](#references). A characteristic founder here is an Emirati woman making date products or handicrafts at home: idea-stage, not yet registered, and rejected by almost every funding calculator she opens. The data shows she is far from alone — women are about **18% of UAE entrepreneurs** (77.6% of them under 40) [[7]](#references), and a 2021 report counted roughly **25,000 Emirati women owning ~50,000 businesses worth about AED 60 billion**, of which **72% are microenterprises** [[8]](#references). Their two most-cited obstacles are **access to markets (41.2%)** and **access to finance (38.8%)** [[8]](#references); **67%** name funding as a primary challenge, and women are three times likelier than men to cite a confidence gap [[9]](#references). The UAE actively backs this group — it scores **highest in the world for social support to women entrepreneurs** [[10]](#references), and Khalifa Fund initiatives such as **Sougha** and **Al Mubdi'ah** exist specifically to help Emirati women artisans turn heritage crafts into businesses [[7]](#references) — yet these are exactly the programmes a founder cannot find or sequence on her own. **For her, the readiness path itself is the product.**
+
+## 4. The solution
 
 A short, **Arabic-first (RTL)** questionnaire of ~6 questions feeds a **deterministic matching engine** that classifies every program into one of three buckets and explains itself:
 
@@ -42,7 +52,7 @@ From the "almost" set, Hissati builds a **Funding Readiness Roadmap** (ordered, 
 - 📑 **Cited or it doesn't ship** — every AED figure and eligibility rule traces to a primary source with a "verified June 2026" date. Nothing is invented.
 - 🤖 **Optional grounded agent** — a Claude-powered chat that turns vague/dialect questions into structured lookups. It calls the *same* engine over the *same* cited data and never emits UI/HTML; the app is fully usable with it switched off.
 
-## 4. How it works
+## 5. How it works
 
 A pure, deterministic pipeline turns the founder's answers into ranked matches, a cited roadmap, and the climbing "AED within reach" figure. Marking a step done re-folds the profile and re-runs the **same** engine — that is the entire live re-check, with no special-casing.
 
@@ -109,7 +119,7 @@ flowchart TD
 
 The engine (`evaluateProgram`, `matchScore`, `progressStats`, `estimateTimeToEligibility`, `deriveRoadmap`) is **pure and deterministic** — same inputs always produce the same outputs, with no clock, network, or randomness. That's what makes the demo unbreakable and every claim below reproducible.
 
-## 5. Architecture
+## 6. Architecture
 
 Layered, offline-first PWA. The deterministic core and the 12-program knowledge base are bundled into the client, so match → score → roadmap → PDF all run with zero network. A hand-written service worker precaches the app shell and static chunks; the optional `/api/agent` route is the lone server surface (it keeps the Anthropic API key off the client) and is bypassed by the cache.
 
@@ -296,7 +306,7 @@ erDiagram
 
 > All three diagrams — with extended notes and the raw `.mmd` sources — live in **[`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md)** and **[`docs/diagrams/`](./docs/diagrams)**. Each passes `mermaid.parse`.
 
-## 6. Testable claims (verify these from the repo)
+## 7. Testable claims (verify these from the repo)
 
 Each claim is falsifiable and checkable in minutes — that's criterion 6.
 
@@ -313,7 +323,37 @@ Each claim is falsifiable and checkable in minutes — that's criterion 6.
 
 > **Honesty note (also criterion 6):** Of the 12 programs, the directly-quantified funding figures are Khalifa Fund SME (up to **AED 2M**, loan) and Hub71 Access (up to **AED 500K**, *in-kind* package), plus the licence-rung costs (Tajer ~AED 790; permits in the AED 0–1,000 band). Grant and VC amounts that are **not publicly fixed** (Ma'an, ADDED, Access Sharjah, Khalifa Award, the VCs) contribute `0` to "AED within reach" and flip an "amounts vary" flag rather than being invented, and the Arabic copy is marked **draft pending native review**. We'd rather under-claim and be verifiable than inflate a headline.
 
-## 7. Tech stack
+## 8. Feasibility study and evidence
+
+Hissati is deliberately scoped to be deployable **today**, in this rural context, at near-zero running cost — judging criteria 3 (feasibility), 4 (readiness) and 5 (scalability).
+
+**Technical & deployment feasibility.** Hissati is software-only: a Next.js PWA that deploys on **free-tier Vercel** with no servers to operate. The deterministic core (matching, scoring, roadmap) and the 12-program knowledge base are bundled into the client, so the headline flow needs **no backend at all**; the single optional server route (`/api/agent`) only keeps the Anthropic key off the client and can be switched off entirely. This fits how the UAE actually goes online: **99% internet penetration**, **21.9 million mobile connections** (195% of the population), and mobile phones as the dominant access device [[14]](#references) — about **64% of UAE web traffic is mobile** [[15]](#references), and mobile-internet penetration is roughly **96%** [[16]](#references). A mobile-first, installable PWA meets that reality. The offline-first service worker adds resilience for the **11.9% of the population in rural areas** [[14]](#references) and for the weak-signal moments that matter most — finishing the wizard on the drive to a TAMM service centre, or pulling up a document checklist where coverage drops. The Arabic-first (RTL) interface is not cosmetic: it serves the Emirati rural founder in the national language rather than the English most funding portals default to.
+
+**Operational & maintenance feasibility.** Eligibility is **data, not code**: every rule lives in [`src/data/programs.json`](./src/data/programs.json), validated against a Zod schema at build time, so adding a programme or a new emirate is a schema-checked data edit rather than an engine change. Each record carries a `source.url` and `verified_date`, making staleness **auditable** rather than silent. The app collects **no personal data server-side** (answers live only in the founder's `localStorage`), so there is no database to secure, no PII to govern, and no two-sided marketplace to seed — the maintenance surface is a JSON file and a static deploy.
+
+**Economic feasibility.** Fixed cost is effectively **zero** on free-tier hosting. The only variable cost is the optional assistant, bounded by a same-origin check, a per-IP rate limit, and an API-key spend cap — and because the deterministic core *is* the product, the app remains fully functional if the assistant is disabled for cost reasons.
+
+**Scalability evidence.** The need is large and growing: about **557,000 SMEs today, targeted to reach one million by 2030** [[1]](#references), against a financing-navigation problem that is **national, not local** [[6]](#references). Because the engine is data-driven, the same build **replicates to any community or emirate by editing the knowledge base** — Tiers 2–3 of the current dataset already reach beyond Abu Dhabi. More programmes, more emirates, and more languages are additive data, not re-engineering.
+
+**Evidence & validation.** Every quantitative claim in §7 is reproducible from the repo (the Vitest suite doubles as evidence), every funding figure in the dataset is cited to a primary source with a verified date, and the offline claim is demonstrable in DevTools. The contextual claims in §3 and this section are referenced in [§References](#references).
+
+## 9. How we score against criteria 1–7
+
+The hackathon scores filtration entirely from this repo on criteria 1–7, and *a criterion with no evidence in the repo is scored in its lowest band.* Here is where each is evidenced.
+
+| # | Criterion (max) | Our evidence |
+|---|---|---|
+| **1** | **Impact & value (10)** | Routes real, named funding (Khalifa Fund, Ma'an, licence rungs) to the exact person every other tool rejects — the idea-stage rural founder. The need is quantified in §3: SMEs are 94%+ of UAE companies and 63.5% of non-oil GDP [[1]](#references), yet only ~25–28% ever access bank finance [[2]](#references)[[3]](#references). |
+| **2** | **Relevance to the challenge (10)** | Squarely Challenge 1: it takes a founder from *idea* to a *concrete first action* (the first licence, its cost, the single next step), then onward to funding — built Arabic-first and offline for the Al Qua'a rural context. |
+| **3** | **Feasibility (10)** | See §8: software-only, deployable today on free-tier Vercel; offline + Arabic + mobile-first suit a context where phones carry ~64% of web traffic [[15]](#references); no hardware, no marketplace, near-zero running cost. |
+| **4** | **Readiness (10)** | Complete and working end-to-end: wizard → classification → roadmap → checklist → bilingual PDF, live at hissati.org and runnable offline. Demo video in [`/docs`](./docs). Not a mockup. |
+| **5** | **Scalability (10)** | Eligibility is data, not code: rules live in [`src/data/programs.json`](./src/data/programs.json). Adding a programme or emirate is a schema-validated data edit. The need scales with the sector — 557k SMEs today, 1M targeted by 2030 [[1]](#references). |
+| **6** | **Falsifiability & evidence (10)** | Every claim in §7 is testable; the Vitest suite doubles as evidence; every figure is cited to a primary source with a verified date, with unconfirmed values openly flagged. |
+| **7** | **Repo documentation (5)** | This README covers every required section; the three architecture diagrams ([`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md)), the engineering ground rules ([`CLAUDE.md`](./CLAUDE.md)), the Vitest suite, screenshots, and sample PDFs let a judge understand, run, and verify from the repo alone. |
+
+*(Criterion 8 — presentation — is scored live on Sunday; our 3-minute offline run-of-show is in [`docs/superpowers/demo-script.md`](./docs/superpowers/demo-script.md).)*
+
+## 10. Tech stack
 
 **Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · Zustand 5 (+persist) · Zod 3 · Vitest 2 · Vercel · Anthropic Claude (optional agent).**
 
@@ -321,7 +361,7 @@ Supporting libraries: **jsPDF + html2canvas** (client-side bilingual PDF), **qrc
 
 The deterministic core is plain TypeScript with no heavy dependencies, and the knowledge base ships in the bundle so matching needs zero network. Offline is a **hand-written service worker** (`public/sw.js`) — Next 16's Turbopack doesn't run the webpack hook that `next-pwa`/Serwist rely on — and the UI is built on **bespoke primitives** (`components/ui.tsx`), not a component library. The only server-side surface is an optional `/api/agent` route that keeps the API key off the client and returns structured results only (never HTML). Full layering, data flows, and the service-worker strategy are in [`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md).
 
-## 8. Run it locally
+## 11. Run it locally
 
 ```bash
 npm install
@@ -341,11 +381,11 @@ The agent is **optional**. Without `ANTHROPIC_API_KEY` the `/api/agent` route re
 5. Run the whole wizard → results → roadmap → PDF flow with no network
 ```
 
-## 9. Data & citations
+## 12. Data & citations
 
 The knowledge base is **hand-verified**, not scraped. Each of the 12 records in [`src/data/programs.json`](./src/data/programs.json) carries bilingual names, operator, tier, instrument, a structured amount, eligibility rules (each with a bilingual blocking message and an optional cited remedy), required documents, an application URL, and a **`source.url` + `verified_date`** (all `2026-06-26`). The dataset is validated against [`src/lib/schema.ts`](./src/lib/schema.ts) at module load and in `tests/programs.test.ts`, so a malformed record fails the build instead of shipping. Amounts that could not be live-confirmed against JavaScript-rendered government portals are left unfixed (they contribute `0` to "AED within reach" rather than an invented figure), and Arabic strings are drafted and flagged for native review before any public launch.
 
-## 10. Documentation
+## 13. Documentation
 
 | Reference | Covers |
 |---|---|
@@ -361,6 +401,29 @@ The knowledge base is **hand-verified**, not scraped. Each of the 12 records in 
 4. **Offline-first** — the whole core flow runs in airplane mode; the only egress is the optional `/api/agent` route (NFR-1).
 5. **Cited or it doesn't ship** — every figure and rule traces to a primary source with a verified date (FR-B2).
 6. **Frozen vocabulary** — enum values and field names are referenced verbatim across dataset, scoring, and engine; additive changes only.
+
+## References
+
+Context and feasibility figures in §3 and §8 are drawn from the following primary and authoritative secondary sources (accessed June 2026):
+
+1. UAE Government Portal (u.ae) — *Small and Medium Enterprises*. https://u.ae/en/information-and-services/business/small-and-medium-enterprises
+2. Ken Research — *UAE SME Financing Market Size, Share, Growth Opportunities 2030* (citing Central Bank of the UAE). https://www.kenresearch.com/uae-sme-financing-market
+3. Channel Capital Advisors LLP — *The $250 Billion Opportunity: Closing the GCC's SME Financing Gap* (citing IFC, AT Kearney, SAMA and CBUAE data). https://channelcapital.io/the-gccs-sme-financing-gap/
+4. Zawya / Central Bank of the UAE — *Banks provide $22.2bln in financial facilities to SMEs by end of Q1-24: CBUAE*. https://www.zawya.com/en/business/banking-and-insurance/banks-provide-222bln-in-financial-facilities-to-smes-by-end-of-q1-24-cbuae-fipt1d67
+5. Hedge Think — *Why SME Lending in the Gulf Still Looks Nothing Like the Rest of the World*. https://www.hedgethink.com/why-sme-lending-in-the-gulf-still-looks-nothing-like-the-rest-of-the-world/
+6. Jazaa — *A Complete Guide to Government Grants for SMEs in the UAE 2026*. https://jazaa.com/blog/guide-to-government-grants-for-smes/
+7. Khaleej Times / Sovereign — *Women account for 18% of all UAE-based entrepreneurs* (Khalifa Fund women support; National Policy for Empowerment of Emirati Women 2023–2031). https://www.khaleejtimes.com/business/women-account-for-18-of-all-uae-based-entrepreneurs
+8. The National — *Female Emirati entrepreneurs' businesses are booming, survey finds* (Nama Women Advancement report, 2022). https://www.thenationalnews.com/uae/government/2022/12/22/female-emirati-entrepreneurs-businesses-are-booming-survey-finds/
+9. Venture Pulse — *Women Entrepreneurship in the UAE: A Flourishing Ecosystem* (citing Mastercard and GEM data). https://www.venturepulsemag.com/2025/04/29/women-entrepreneurship-in-the-uae-a-flourishing-ecosystem/
+10. Global Entrepreneurship Monitor — *Entrepreneurship in United Arab Emirates* (country profile). https://www.gemconsortium.org/country-profile/130
+11. The National — *Tour of Al Ain Oasis date farm shines spotlight on traditional farming methods* (UNESCO World Heritage oasis, 147,000+ date palms). https://www.thenationalnews.com/arts/tour-of-al-ain-oasis-date-farm-shines-spotlight-on-traditional-farming-methods-1.921758
+12. Al Ain Farms — *About / Company history* (first UAE dairy, 1981; camel-milk producer). https://alainfarms.com/
+13. Wikipedia — *Agriculture in the United Arab Emirates* (food-import dependence; UAE date production). https://en.wikipedia.org/wiki/Agriculture_in_the_United_Arab_Emirates
+14. DataReportal (Meltwater & We Are Social) — *Digital 2025: The United Arab Emirates* (99% internet penetration; 21.9M mobile connections; urban/rural split). https://datareportal.com/reports/digital-2025-united-arab-emirates
+15. Global Media Insight — *UAE Internet Statistics* (mobile ≈ 64% of web traffic). https://www.globalmediainsight.com/blog/uae-internet-statistics/
+16. Statista — *Mobile internet usage in UAE — statistics & facts* (≈96% mobile-internet penetration). https://www.statista.com/topics/11137/mobile-internet-usage-in-uae/
+
+> Figures are cited as reported by each source and were current at the time of access. Where independent estimates differ (e.g. the share of SMEs that access bank finance), the README states the range rather than a single number.
 
 ---
 
