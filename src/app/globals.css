@@ -90,6 +90,15 @@
   }
 }
 
+/* Optical text centering: trim a label's line box to its cap-height/baseline so
+   its visible glyphs share the same vertical center as an adjacent icon. Tajawal
+   reserves asymmetric ascent/descent (9/5 at 14px), which otherwise floats text
+   ~2.4px above a flex-centered icon. Ignored by browsers without text-box-trim. */
+.tb-trim {
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
 /* Signature gauge: the sun rises as readiness climbs. */
 @keyframes hissati-rise {
   from {

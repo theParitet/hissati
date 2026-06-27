@@ -19,16 +19,35 @@ const BTN_SIZE: Record<ButtonSize, string> = {
   lg: "h-13 px-7 text-base",
 };
 
+/**
+ * Wrap text labels so they can be optically centered against icons (.tb-trim).
+ * text-box-trim only acts on a real text element, never on a bare flex text
+ * child — so the icon (an element) is left alone and each text run is boxed.
+ * Whitespace-only runs are dropped; the flex `gap` provides icon↔label spacing.
+ */
+export function trimLabels(children: React.ReactNode): React.ReactNode {
+  return React.Children.map(children, (child) => {
+    if (typeof child === "string") return child.trim() ? <span className="tb-trim">{child}</span> : null;
+    if (typeof child === "number") return <span className="tb-trim">{child}</span>;
+    return child;
+  });
+}
+
 export function Button({
   variant = "primary",
   size = "md",
   className,
+  children,
   ...props
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
   size?: ButtonSize;
 }) {
-  return <button className={cn(BTN_BASE, BTN_VARIANT[variant], BTN_SIZE[size], className)} {...props} />;
+  return (
+    <button className={cn(BTN_BASE, BTN_VARIANT[variant], BTN_SIZE[size], className)} {...props}>
+      {trimLabels(children)}
+    </button>
+  );
 }
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
@@ -46,6 +65,7 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
 export function Badge({
   tone = "neutral",
   className,
+  children,
   ...props
 }: React.HTMLAttributes<HTMLSpanElement> & {
   tone?: "neutral" | "palm" | "almost" | "clay" | "oasis" | "night";
@@ -66,7 +86,9 @@ export function Badge({
         className
       )}
       {...props}
-    />
+    >
+      {trimLabels(children)}
+    </span>
   );
 }
 

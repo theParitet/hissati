@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, ExternalLink, FileDown, Share2, ShieldCheck, Clock, FileText, CheckCircle2, Circle } from "lucide-react";
+import { X, ExternalLink, FileDown, Share2, ShieldCheck, Clock, FileText, CheckCircle2, Circle, Wallet } from "lucide-react";
 import { Button, Badge } from "@/components/ui";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
-import { formatAmountRange, localizeDate } from "@/lib/format";
+import { formatAmountRange, localizeDate, isCostInstrument } from "@/lib/format";
 import { useHissati } from "@/lib/store";
 import type { Profile, Program } from "@/lib/schema";
 
@@ -24,6 +24,7 @@ export function ChecklistDialog({
   const checkedAll = useHissati((s) => s.checkedDocs);
   const toggleDoc = useHissati((s) => s.toggleDoc);
   const checked = checkedAll[program.id] ?? [];
+  const cost = isCostInstrument(program.instrument);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -61,14 +62,21 @@ export function ChecklistDialog({
 
         <div className="space-y-5 p-5">
           <div className="flex flex-wrap items-center gap-2 text-sm">
-            <span className="font-semibold text-oasis">{formatAmountRange(program.amount, locale)}</span>
+            <span className={`font-semibold ${cost ? "text-ink" : "text-oasis"}`}>
+              {formatAmountRange(program.amount, locale)}
+            </span>
+            {cost && (
+              <Badge tone="clay">
+                <Wallet className="h-3 w-3" aria-hidden /> {t.youPay}
+              </Badge>
+            )}
             <Badge tone="neutral">{t[`instrument_${program.instrument}`]}</Badge>
           </div>
 
           <div>
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
-              <FileText className="h-4 w-4 text-oasis" aria-hidden /> {t.requiredDocs}
-              <span className="ms-auto text-xs font-normal text-ink-soft">
+              <FileText className="h-4 w-4 text-oasis" aria-hidden /> <span className="tb-trim">{t.requiredDocs}</span>
+              <span className="ms-auto text-xs font-normal text-ink-soft tb-trim">
                 {toLocaleDigits(checked.length, locale)}/{toLocaleDigits(program.required_documents.length, locale)}{" "}
                 {t.docsProgress}
               </span>
@@ -89,7 +97,7 @@ export function ChecklistDialog({
                       ) : (
                         <Circle className="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" aria-hidden />
                       )}
-                      <span className={done ? "text-ink-faint line-through" : "text-ink-soft"}>
+                      <span className={done ? "tb-trim text-ink-faint line-through" : "tb-trim text-ink-soft"}>
                         {locale === "ar" ? d.ar : d.en}
                         {d.format && <span className="text-ink-faint"> · {d.format}</span>}
                       </span>
@@ -108,7 +116,7 @@ export function ChecklistDialog({
             {program.processing_time && (
               <div>
                 <p className="inline-flex items-center gap-1 text-xs text-ink-faint">
-                  <Clock className="h-3.5 w-3.5" aria-hidden /> {t.processingTime}
+                  <Clock className="h-3.5 w-3.5" aria-hidden /> <span className="tb-trim">{t.processingTime}</span>
                 </p>
                 <p className="mt-0.5 text-ink">{program.processing_time}</p>
               </div>
@@ -122,7 +130,7 @@ export function ChecklistDialog({
             className="inline-flex items-center gap-1.5 text-xs text-ink-faint hover:text-oasis"
           >
             <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
-            {t.source} · {t.verified} {localizeDate(program.source.verified_date, locale)}
+            <span className="tb-trim">{t.source} · {t.verified} {localizeDate(program.source.verified_date, locale)}</span>
           </a>
         </div>
 

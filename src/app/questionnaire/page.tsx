@@ -110,7 +110,7 @@ export default function Questionnaire() {
                       : "border border-sand-line text-ink-faint",
                 ].join(" ")}
               >
-                {answered ? <Check className="h-3 w-3" aria-hidden /> : toLocaleDigits(i + 1, locale)}
+                {answered ? <Check className="h-3 w-3" aria-hidden /> : <span className="tb-trim">{toLocaleDigits(i + 1, locale)}</span>}
               </span>
               <span className="truncate">{shortLabel(id, locale)}</span>
             </button>
@@ -145,7 +145,7 @@ export default function Questionnaire() {
         <aside className="no-print mb-6 md:mb-0">
           <details className="group rounded-card border border-sand-line bg-sand-100 p-1.5 md:hidden">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-pill px-3 py-2 text-sm font-medium text-ink hover:bg-sand-200">
-              <span>
+              <span className="tb-trim">
                 {t.contents} · {toLocaleDigits(clamped + 1, locale)}/{toLocaleDigits(total, locale)}
               </span>
               <ChevronDown
@@ -251,7 +251,7 @@ function OptionCard({
           : "border-sand-line bg-sand-100 text-ink hover:border-oasis/40 hover:bg-sand-200",
       ].join(" ")}
     >
-      <span className="font-medium">{label}</span>
+      <span className="font-medium tb-trim">{label}</span>
       <span
         className={[
           "flex h-5 w-5 shrink-0 items-center justify-center rounded-pill border leading-none",

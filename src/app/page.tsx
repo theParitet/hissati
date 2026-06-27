@@ -41,16 +41,18 @@ export default function Home() {
 
           <ul className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-soft">
             <li className="inline-flex items-center gap-2">
-              <WifiOff className="h-4 w-4 text-oasis" aria-hidden /> {t.offlineReady}
+              <WifiOff className="h-4 w-4 text-oasis" aria-hidden /> <span className="tb-trim">{t.offlineReady}</span>
             </li>
             <li className="inline-flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-oasis" aria-hidden /> {t.cited}
+              <ShieldCheck className="h-4 w-4 text-oasis" aria-hidden /> <span className="tb-trim">{t.cited}</span>
             </li>
             <li className="inline-flex items-center gap-2">
               <FileText className="h-4 w-4 text-oasis" aria-hidden />
-              {locale === "ar"
-                ? `${toLocaleDigits(PROGRAMS.length, locale)} برنامجاً عبر ${toLocaleDigits(tiers, locale)} فئات`
-                : `${PROGRAMS.length} cited programs · ${tiers} tiers`}
+              <span className="tb-trim">
+                {locale === "ar"
+                  ? `${toLocaleDigits(PROGRAMS.length, locale)} برنامجاً عبر ${toLocaleDigits(tiers, locale)} فئات`
+                  : `${PROGRAMS.length} cited programs · ${tiers} tiers`}
+              </span>
             </li>
           </ul>
 
@@ -95,7 +97,7 @@ export default function Home() {
           ].map((step, i) => (
             <li key={i} className="print-block">
               <div className="flex h-9 w-9 items-center justify-center rounded-pill bg-oasis text-sm font-bold leading-none text-sand-100">
-                {toLocaleDigits(i + 1, locale)}
+                <span className="tb-trim">{toLocaleDigits(i + 1, locale)}</span>
               </div>
               <h3 className="mt-4 text-lg">{locale === "ar" ? step.ar : step.en}</h3>
               <p className="mt-1.5 text-sm text-ink-soft">{locale === "ar" ? step.sub.ar : step.sub.en}</p>

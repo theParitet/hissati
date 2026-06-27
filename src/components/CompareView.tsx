@@ -3,7 +3,7 @@
 import { ListChecks } from "lucide-react";
 import { Button } from "@/components/ui";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
-import { formatAmountRange } from "@/lib/format";
+import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import type { CompareRow } from "@/lib/compare";
 
 export function CompareView({
@@ -53,11 +53,17 @@ export function CompareView({
           </Row>
 
           <Row label={t.amountRange}>
-            {rows.map((r) => (
-              <Cell key={r.id}>
-                <span className="font-medium text-oasis">{formatAmountRange(r.amount, locale)}</span>
-              </Cell>
-            ))}
+            {rows.map((r) => {
+              const cost = isCostInstrument(r.instrument);
+              return (
+                <Cell key={r.id}>
+                  <span className={`font-medium ${cost ? "text-ink" : "text-oasis"}`}>
+                    {formatAmountRange(r.amount, locale)}
+                  </span>
+                  {cost && <span className="ms-1 text-xs font-medium text-clay">· {t.youPay}</span>}
+                </Cell>
+              );
+            })}
           </Row>
 
           <Row label={t.instrument}>

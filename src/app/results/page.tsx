@@ -144,9 +144,11 @@ export default function Results() {
             {steps.length === 0 && (
               <Card className="flex items-center gap-3 p-4 text-sm text-ink-soft">
                 <Sparkles className="h-5 w-5 text-palm" aria-hidden />
-                {locale === "ar"
-                  ? "لا توجد خطوات قريبة متبقية — راجع البرامج المؤهّلة بالأسفل."
-                  : "No near-term steps left — see your eligible programs below."}
+                <span className="tb-trim">
+                  {locale === "ar"
+                    ? "لا توجد خطوات قريبة متبقية — راجع البرامج المؤهّلة بالأسفل."
+                    : "No near-term steps left — see your eligible programs below."}
+                </span>
               </Card>
             )}
 
@@ -159,12 +161,12 @@ export default function Results() {
                     className="flex items-center gap-2 rounded-pill bg-palm-100 px-3 py-1.5 text-sm text-palm"
                   >
                     <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden />
-                    <span className="min-w-0 flex-1 truncate">{d.label ? pick(d.label, locale) : d.key}</span>
+                    <span className="min-w-0 flex-1 truncate tb-trim">{d.label ? pick(d.label, locale) : d.key}</span>
                     <button
                       onClick={() => unmarkStep(d.key)}
                       className="no-print inline-flex items-center gap-1 text-xs text-ink-faint hover:text-ink"
                     >
-                      <Undo2 className="h-3.5 w-3.5" aria-hidden /> {t.undo}
+                      <Undo2 className="h-3.5 w-3.5" aria-hidden /> <span className="tb-trim">{t.undo}</span>
                     </button>
                   </li>
                 ))}
@@ -227,7 +229,8 @@ export default function Results() {
               <span className="hidden ps-1 text-xs text-ink-faint sm:inline">{t.compareHint}</span>
             )}
             <Button size="sm" disabled={compareIds.length < 2} onClick={() => setCompareOpen(true)}>
-              <GitCompare className="h-4 w-4" aria-hidden /> {t.compareCount} ({toLocaleDigits(compareIds.length, locale)})
+              <GitCompare className="h-4 w-4" aria-hidden />
+              {`${t.compareCount} (${toLocaleDigits(compareIds.length, locale)})`}
             </Button>
             <button
               onClick={() => {

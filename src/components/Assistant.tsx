@@ -109,7 +109,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
           onClick={() => submit(s)}
           className="inline-flex h-9 items-center rounded-pill border border-sand-line bg-sand-100 px-3 text-xs leading-none text-ink-soft transition-colors hover:border-oasis/40 hover:text-ink"
         >
-          {s}
+          <span className="tb-trim">{s}</span>
         </button>
       ))}
     </div>
@@ -138,7 +138,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
                   className="inline-flex items-center gap-1 rounded-pill bg-palm-100 px-2 py-0.5 text-xs text-palm"
                 >
                   <ShieldCheck className="h-3 w-3" aria-hidden />
-                  {t.checked}: {locale === "ar" ? g.labelAr : g.labelEn}
+                  <span className="tb-trim">{t.checked}: {locale === "ar" ? g.labelAr : g.labelEn}</span>
                 </span>
               ))}
             </div>
@@ -287,7 +287,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
         {off && (
           <span className="ms-auto inline-flex h-7 items-center gap-1 rounded-pill bg-sand-200 px-2.5 text-xs leading-none text-ink-faint">
             <PowerOff className="h-3 w-3" aria-hidden />
-            {t.off}
+            <span className="tb-trim">{t.off}</span>
           </span>
         )}
       </div>

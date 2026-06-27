@@ -21,8 +21,8 @@ export function MatchesPanel({ answers, locale }: { answers: Partial<Profile>; l
       <div className="flex items-center justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-faint">{t.stillInRunning}</p>
         <p className="text-sm tabular-nums">
-          <span className="font-semibold text-palm">{toLocaleDigits(surviving, locale)}</span>
-          <span className="text-ink-faint"> / {toLocaleDigits(total, locale)}</span>
+          <span className="font-semibold text-palm tb-trim">{toLocaleDigits(surviving, locale)}</span>
+          <span className="text-ink-faint tb-trim"> / {toLocaleDigits(total, locale)}</span>
         </p>
       </div>
 
@@ -47,7 +47,7 @@ export function MatchesPanel({ answers, locale }: { answers: Partial<Profile>; l
               ].join(" ")}
             >
               {inRun && <span className="h-1.5 w-1.5 shrink-0 rounded-pill bg-palm" aria-hidden />}
-              <span className="max-w-[11rem] truncate">{pick(p.name, locale)}</span>
+              <span className="max-w-[11rem] truncate tb-trim">{pick(p.name, locale)}</span>
             </li>
           );
         })}

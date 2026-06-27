@@ -3,16 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Languages, WifiOff, LayoutGrid, Pencil, Sparkles } from "lucide-react";
-import { useHissati, useLocale, isProfileComplete } from "@/lib/store";
+import { useHissati, useLocale } from "@/lib/store";
 import { ui } from "@/lib/i18n";
 
 export function AppHeader() {
   const locale = useLocale();
   const pathname = usePathname();
   const toggleLocale = useHissati((s) => s.toggleLocale);
-  const answers = useHissati((s) => s.answers);
   const t = ui(locale);
-  const complete = isProfileComplete(answers);
 
   return (
     <header className="sticky top-0 z-30 border-b border-sand-line/70 bg-sand/80 backdrop-blur">
@@ -22,11 +20,10 @@ export function AppHeader() {
         </Link>
 
         <nav className="flex min-w-0 items-center gap-1">
-          {complete && (
-            <NavLink href="/results" active={pathname === "/results"} icon={<LayoutGrid className="h-4 w-4" aria-hidden />}>
-              {t.navMatches}
-            </NavLink>
-          )}
+          {/* Always reachable — /results prompts the questionnaire if the profile isn't done. */}
+          <NavLink href="/results" active={pathname === "/results"} icon={<LayoutGrid className="h-4 w-4" aria-hidden />}>
+            {t.navMatches}
+          </NavLink>
           {/* Always visible — /assistant shows an off-state when no key is configured. */}
           <NavLink href="/assistant" active={pathname === "/assistant"} icon={<Sparkles className="h-4 w-4" aria-hidden />}>
             {t.assistant}
@@ -41,7 +38,7 @@ export function AppHeader() {
 
           <span className="ms-1 hidden h-9 items-center gap-1.5 rounded-pill bg-sand-200 px-2.5 text-xs leading-none text-ink-soft lg:inline-flex">
             <WifiOff className="h-3.5 w-3.5" aria-hidden />
-            {t.offlineReady}
+            <span className="tb-trim">{t.offlineReady}</span>
           </span>
           <button
             onClick={toggleLocale}
@@ -49,7 +46,7 @@ export function AppHeader() {
             aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
           >
             <Languages className="h-4 w-4" aria-hidden />
-            {t.langName}
+            <span className="tb-trim">{t.langName}</span>
           </button>
         </nav>
       </div>
@@ -79,7 +76,7 @@ function NavLink({
       ].join(" ")}
     >
       {icon}
-      <span className="hidden sm:inline">{children}</span>
+      <span className="hidden tb-trim sm:inline">{children}</span>
     </Link>
   );
 }

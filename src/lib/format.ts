@@ -1,4 +1,14 @@
 import { toLocaleDigits, type Locale } from "@/lib/i18n";
+import type { Instrument } from "@/lib/schema";
+
+/**
+ * Is this amount money the founder PAYS rather than receives? A licence is a fee
+ * (a cost/permit), not funding — so its amount must never read as a grant. Driven
+ * by the instrument enum, so a new pay-type instrument only changes this one map.
+ */
+export function isCostInstrument(instrument: Instrument): boolean {
+  return instrument === "license";
+}
 
 /** Compact AED magnitude: 50000 → "50K", 2000000 → "2M", 790 → "790" (localized digits). */
 function compact(n: number, locale: Locale): string {

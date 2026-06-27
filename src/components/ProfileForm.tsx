@@ -70,7 +70,7 @@ export function ProfileForm({
                         : "border-sand-line bg-sand-100 text-ink-soft hover:bg-sand-200",
                     ].join(" ")}
                   >
-                    {opt.label}
+                    <span className="tb-trim">{opt.label}</span>
                   </button>
                 );
               })}

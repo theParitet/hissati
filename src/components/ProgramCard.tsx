@@ -1,9 +1,9 @@
 "use client";
 
-import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers, GitCompare, CheckCircle2, FileText, Pencil } from "lucide-react";
-import { Card, Button } from "@/components/ui";
+import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers, GitCompare, CheckCircle2, FileText, Pencil, Wallet } from "lucide-react";
+import { Card, Button, trimLabels } from "@/components/ui";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
-import { formatAmountRange, localizeDate } from "@/lib/format";
+import { formatAmountRange, localizeDate, isCostInstrument } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
 import { programProgress } from "@/lib/checklist";
 import { useHissati } from "@/lib/store";
@@ -35,6 +35,7 @@ export function ProgramCard({
   const checkedDocs = useHissati((s) => s.checkedDocs);
   const prog = programProgress(ev, checkedDocs[program.id] ?? []);
   const stackable = program.concurrent_compatible_with.length > 0 && status !== "not_fit";
+  const cost = isCostInstrument(program.instrument);
 
   return (
     <Card
@@ -78,8 +79,18 @@ export function ProgramCard({
         </div>
       </div>
 
-      {/* Amount headline + a uniform chip row — every fact reads the same way (item 6). */}
-      <p className="mt-3 text-xl font-semibold text-oasis">{formatAmountRange(program.amount, locale)}</p>
+      {/* Amount headline — a licence is a fee you PAY, not funding, so flag + de-green it. */}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        {cost && (
+          <span className="inline-flex items-center gap-1 rounded-pill bg-clay-100 px-2 py-0.5 text-xs font-semibold text-clay">
+            <Wallet className="h-3 w-3" aria-hidden />
+            <span className="tb-trim">{t.youPay}</span>
+          </span>
+        )}
+        <span className={`text-xl font-semibold ${cost ? "text-ink" : "text-oasis"}`}>
+          {formatAmountRange(program.amount, locale)}
+        </span>
+      </div>
       <div className="mt-2.5 flex flex-wrap gap-1.5">
         <MetaChip>{t[`instrument_${program.instrument}`]}</MetaChip>
         <MetaChip>{tierLabel}</MetaChip>
@@ -99,7 +110,7 @@ export function ProgramCard({
           <p className="flex items-center gap-1.5 text-sm font-semibold text-almost">
             {t.youCouldQualify}
             <span className="ms-auto inline-flex items-center gap-1 font-normal text-ink-soft">
-              <Clock className="h-3.5 w-3.5" aria-hidden /> {eta}
+              <Clock className="h-3.5 w-3.5" aria-hidden /> <span className="tb-trim">{eta}</span>
             </span>
           </p>
           <ul className="mt-2 space-y-2">
@@ -138,7 +149,7 @@ export function ProgramCard({
           className="inline-flex items-center gap-1.5 text-xs text-ink-faint hover:text-oasis"
         >
           <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
-          {t.source} · {t.verified} {localizeDate(program.source.verified_date, locale)}
+          <span className="tb-trim">{t.source} · {t.verified} {localizeDate(program.source.verified_date, locale)}</span>
         </a>
         <div className="flex items-center gap-2 no-print">
           {onToggleSelect && (
@@ -169,7 +180,7 @@ export function ProgramCard({
 function MetaChip({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center gap-1 rounded-pill bg-sand-200 px-2.5 py-1 text-xs font-medium leading-none text-ink-soft">
-      {children}
+      {trimLabels(children)}
     </span>
   );
 }
@@ -196,7 +207,7 @@ function ProgressMeter({
   return (
     <span className="flex items-center gap-1.5 px-1.5 py-1 text-xs text-ink-soft" title={label}>
       {icon}
-      <span className="tabular-nums leading-none">
+      <span className="tabular-nums leading-none tb-trim">
         {toLocaleDigits(value, locale)}/{toLocaleDigits(total, locale)}
       </span>
       <span className="h-1.5 w-10 overflow-hidden rounded-pill bg-sand-200">
