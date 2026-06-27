@@ -8,7 +8,7 @@
 import { PROGRAMS } from "@/lib/programs";
 import { passesRule } from "@/lib/engine";
 import { GATING_QUESTIONS, type QuestionId } from "@/lib/questions";
-import type { Profile, RuleField } from "@/lib/schema";
+import type { Profile, Program, RuleField } from "@/lib/schema";
 
 const FIELD_OF: Record<RuleField, keyof Profile> = {
   nationality_ownership: "nationality_ownership",
@@ -49,13 +49,24 @@ export function wizardSteps(answers: Partial<Profile>): QuestionId[] {
 /**
  * Programs still in the running given partial answers: a program is eliminated
  * only when an ALREADY-ANSWERED rule fails with NO remedy (a hard "out"). Rules
- * on not-yet-answered fields, and remediable near-misses, keep it counted.
+ * on not-yet-answered fields, and remediable near-misses, keep it in.
  */
-export function countStillMatching(answers: Partial<Profile>): number {
+export function stillMatching(answers: Partial<Profile>): Program[] {
   return PROGRAMS.filter((p) => {
     const hardOut = p.eligibility.some(
       (r) => answered(answers, r.field) && !passesRule(answers as Profile, r) && r.remedy === undefined
     );
     return !hardOut;
-  }).length;
+  });
+}
+
+/** Whether a single program is still in the running (drives the live chip state). */
+export function isStillMatching(answers: Partial<Profile>, p: Program): boolean {
+  return !p.eligibility.some(
+    (r) => answered(answers, r.field) && !passesRule(answers as Profile, r) && r.remedy === undefined
+  );
+}
+
+export function countStillMatching(answers: Partial<Profile>): number {
+  return stillMatching(answers).length;
 }

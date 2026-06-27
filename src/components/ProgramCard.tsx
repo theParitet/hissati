@@ -1,7 +1,7 @@
 "use client";
 
-import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers, GitCompare, CheckCircle2, FileText } from "lucide-react";
-import { Card, Badge, Button } from "@/components/ui";
+import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers, GitCompare, CheckCircle2, FileText, Pencil } from "lucide-react";
+import { Card, Button } from "@/components/ui";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, localizeDate } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
@@ -9,13 +9,11 @@ import { programProgress } from "@/lib/checklist";
 import { useHissati } from "@/lib/store";
 import type { EvaluatedProgram, Profile } from "@/lib/schema";
 
-const STATUS_TONE = { eligible: "palm", almost: "almost", not_fit: "clay" } as const;
 const STRIPE = { eligible: "bg-palm", almost: "bg-almost", not_fit: "bg-clay" } as const;
 
 export function ProgramCard({
   ev,
   profile,
-  matchPct,
   locale,
   onOpenChecklist,
   selected,
@@ -23,7 +21,6 @@ export function ProgramCard({
 }: {
   ev: EvaluatedProgram;
   profile: Profile;
-  matchPct: number;
   locale: Locale;
   onOpenChecklist: (id: string) => void;
   selected?: boolean;
@@ -31,35 +28,32 @@ export function ProgramCard({
 }) {
   const t = ui(locale);
   const { program, status } = ev;
-  const statusLabel = status === "eligible" ? t.eligibleNow : status === "almost" ? t.almostEligible : t.notAFit;
   const tierLabel = program.tier === 1 ? t.tier1 : program.tier === 2 ? t.tier2 : t.tier3;
   const eta = estimateTimeToEligibility(profile, program, ev.rules);
   const failedRemediable = ev.rules.filter((r) => !r.passed && r.remediable);
   const failedHard = ev.rules.filter((r) => !r.passed && !r.remediable);
   const checkedDocs = useHissati((s) => s.checkedDocs);
   const prog = programProgress(ev, checkedDocs[program.id] ?? []);
+  const stackable = program.concurrent_compatible_with.length > 0 && status !== "not_fit";
 
   return (
     <Card
-      className={`relative overflow-hidden p-5 ps-6 print-block ${selected ? "ring-2 ring-oasis" : ""}`}
+      className={`relative overflow-hidden p-5 ps-6 print-block transition-shadow ${
+        selected ? "ring-2 ring-oasis ring-offset-2 ring-offset-sand shadow-lift" : ""
+      }`}
     >
       <span className={`absolute inset-y-0 start-0 w-1.5 ${STRIPE[status]}`} aria-hidden />
-      <div className="flex items-start justify-between gap-3">
+
+      <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
           <h3 className="text-lg leading-snug">{pick(program.name, locale)}</h3>
           <p className="mt-0.5 text-sm text-ink-faint">{program.operator}</p>
         </div>
-        <div className="flex shrink-0 flex-col items-end gap-1.5">
-          <Badge tone={STATUS_TONE[status]}>{statusLabel}</Badge>
-          {status !== "not_fit" && (
-            <span className="text-sm font-semibold text-ink">
-              {matchPct}% <span className="font-normal text-ink-faint">{t.match}</span>
-            </span>
-          )}
-          {/* Progress markers (items 14/15): requirements met (auto) + documents ready (manual) */}
-          <CornerProgress
+        {/* Progress is the at-a-glance signal — a full requirements bar IS "eligible". */}
+        <div className="flex shrink-0 flex-col items-stretch gap-1.5">
+          <ProgressMeter
             icon={<CheckCircle2 className="h-3.5 w-3.5 text-palm" aria-hidden />}
-            title={t.requirements}
+            label={t.requirements}
             value={prog.reqMet}
             total={prog.reqTotal}
             tone="palm"
@@ -69,35 +63,34 @@ export function ProgramCard({
             type="button"
             onClick={() => onOpenChecklist(program.id)}
             aria-label={t.documentsReady}
-            className="no-print inline-flex items-center gap-1 hover:opacity-80"
+            className="no-print rounded-md text-start transition-colors hover:bg-sand-200"
           >
-            <CornerProgress
-              icon={<FileText className="h-3.5 w-3.5 text-ink-faint" aria-hidden />}
-              title={t.documentsReady}
+            <ProgressMeter
+              icon={<FileText className="h-3.5 w-3.5 text-amber" aria-hidden />}
+              label={t.documentsReady}
               value={prog.docsReady}
               total={prog.docsTotal}
               tone="amber"
               locale={locale}
+              affordance={<Pencil className="h-3 w-3 text-ink-faint" aria-hidden />}
             />
-            <span className="text-xs text-ink-faint">✎</span>
           </button>
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-ink-soft">
-        <span className="font-semibold text-oasis">{formatAmountRange(program.amount, locale)}</span>
-        <span aria-hidden>·</span>
-        <span>{t[`instrument_${program.instrument}`]}</span>
-        <span aria-hidden>·</span>
-        <Badge tone="neutral">{tierLabel}</Badge>
-      </div>
-
+      {/* Amount headline + a uniform chip row — every fact reads the same way (item 6). */}
+      <p className="mt-3 text-xl font-semibold text-oasis">{formatAmountRange(program.amount, locale)}</p>
       <div className="mt-2.5 flex flex-wrap gap-1.5">
+        <MetaChip>{t[`instrument_${program.instrument}`]}</MetaChip>
+        <MetaChip>{tierLabel}</MetaChip>
         {program.sector_tags.slice(0, 4).map((s) => (
-          <span key={s} className="rounded-pill bg-sand-200 px-2 py-0.5 text-xs text-ink-soft">
-            {enumLabel("sector", s, locale)}
-          </span>
+          <MetaChip key={s}>{enumLabel("sector", s, locale)}</MetaChip>
         ))}
+        {stackable && (
+          <MetaChip>
+            <Layers className="h-3 w-3" aria-hidden /> {t.stackableShort}
+          </MetaChip>
+        )}
       </div>
 
       {/* Almost: you could qualify if… (cited remedies, no dead-end) */}
@@ -137,12 +130,6 @@ export function ProgramCard({
         </div>
       )}
 
-      {program.concurrent_compatible_with.length > 0 && status !== "not_fit" && (
-        <p className="mt-3 inline-flex items-center gap-1.5 text-xs text-ink-faint">
-          <Layers className="h-3.5 w-3.5" aria-hidden /> {t.stackable}
-        </p>
-      )}
-
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-sand-line pt-3">
         <a
           href={program.source.url}
@@ -155,18 +142,14 @@ export function ProgramCard({
         </a>
         <div className="flex items-center gap-2 no-print">
           {onToggleSelect && (
-            <button
+            <Button
+              size="sm"
+              variant={selected ? "primary" : "outline"}
               onClick={() => onToggleSelect(program.id)}
               aria-pressed={selected}
-              className={[
-                "inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1.5 text-xs font-medium transition-colors",
-                selected
-                  ? "border-oasis bg-oasis-100 text-oasis"
-                  : "border-sand-line bg-sand-100 text-ink-soft hover:bg-sand-200",
-              ].join(" ")}
             >
-              <GitCompare className="h-3.5 w-3.5" aria-hidden /> {t.compare}
-            </button>
+              <GitCompare className="h-4 w-4" aria-hidden /> {t.compare}
+            </Button>
           )}
           <Button size="sm" variant="outline" onClick={() => onOpenChecklist(program.id)}>
             <ListChecks className="h-4 w-4" aria-hidden /> {t.viewChecklist}
@@ -182,34 +165,47 @@ export function ProgramCard({
   );
 }
 
-function CornerProgress({
+/** Uniform metadata chip — instrument, tier, sector, stackable all share one look. */
+function MetaChip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-pill bg-sand-200 px-2.5 py-1 text-xs font-medium leading-none text-ink-soft">
+      {children}
+    </span>
+  );
+}
+
+/** Compact "x / y" meter with a bar — the card's primary status signal (item 1). */
+function ProgressMeter({
   icon,
-  title,
+  label,
   value,
   total,
   tone,
   locale,
+  affordance,
 }: {
   icon: React.ReactNode;
-  title: string;
+  label: string;
   value: number;
   total: number;
   tone: "palm" | "amber";
   locale: Locale;
+  affordance?: React.ReactNode;
 }) {
   const pct = total ? Math.round((value / total) * 100) : 0;
   return (
-    <span className="flex items-center gap-1.5 text-xs text-ink-soft" title={title}>
+    <span className="flex items-center gap-1.5 px-1.5 py-1 text-xs text-ink-soft" title={label}>
       {icon}
-      <span className="tabular-nums">
+      <span className="tabular-nums leading-none">
         {toLocaleDigits(value, locale)}/{toLocaleDigits(total, locale)}
       </span>
-      <span className="h-1.5 w-9 overflow-hidden rounded-pill bg-sand-200">
+      <span className="h-1.5 w-10 overflow-hidden rounded-pill bg-sand-200">
         <span
           className={`block h-full rounded-pill ${tone === "palm" ? "bg-palm" : "bg-amber"} transition-[width] duration-500`}
           style={{ width: `${pct}%` }}
         />
       </span>
+      {affordance}
     </span>
   );
 }

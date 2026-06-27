@@ -2,12 +2,13 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, ChevronDown } from "lucide-react";
 import { Button, Eyebrow } from "@/components/ui";
+import { MatchesPanel } from "@/components/MatchesPanel";
 import { useHissati, useLocale, useHydrated, isProfileComplete } from "@/lib/store";
 import { ui, enumLabel, QUESTION_TEXT, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { getQuestion, type QuestionId } from "@/lib/questions";
-import { wizardSteps, countStillMatching } from "@/lib/wizard";
+import { wizardSteps } from "@/lib/wizard";
 import type { Profile } from "@/lib/schema";
 
 /** Short labels for the contents nav (the full prompts are sentences). */
@@ -58,15 +59,12 @@ export default function Questionnaire() {
   const clamped = Math.min(index, steps.length - 1);
   const currentId = steps[clamped];
   const total = steps.length;
-  const matching = countStillMatching(answers);
+  // Item 12: the bar reflects how many questions are actually answered, not the cursor position.
+  const answeredCount = steps.filter((id) => isStepAnswered(id, answers)).length;
+  const progressPct = total ? (answeredCount / total) * 100 : 0;
   const Forward = locale === "ar" ? ArrowLeft : ArrowRight;
-  const Back = locale === "ar" ? ArrowRight : ArrowLeft;
   const complete = isProfileComplete(answers);
 
-  function goBack() {
-    if (clamped > 0) setIndex(clamped - 1);
-    else router.push("/");
-  }
   function goNext() {
     if (clamped < steps.length - 1) setIndex(clamped + 1);
     else router.push("/results");
@@ -78,7 +76,7 @@ export default function Questionnaire() {
     if (clamped < nextSteps.length - 1) setIndex(clamped + 1);
     else router.push("/results");
   }
-  function clearAll() {
+  function startOver() {
     resetAnswers();
     setIndex(0);
   }
@@ -104,7 +102,7 @@ export default function Questionnaire() {
             >
               <span
                 className={[
-                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-pill text-[11px] font-semibold",
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-pill text-[11px] font-semibold leading-none",
                   answered
                     ? "bg-palm text-sand-100"
                     : current
@@ -122,20 +120,45 @@ export default function Questionnaire() {
     </ol>
   );
 
+  // The two global actions live together as a control panel (item 8) — no Back button.
+  const actions = (
+    <div className="flex flex-col gap-2">
+      {complete ? (
+        <Button size="sm" className="w-full" onClick={() => router.push("/results")}>
+          {t.seeMatchesCta} <Forward className="h-4 w-4" aria-hidden />
+        </Button>
+      ) : currentId === "funding" ? (
+        <Button size="sm" className="w-full" onClick={goNext} disabled={!fundingReady}>
+          {t.next} <Forward className="h-4 w-4" aria-hidden />
+        </Button>
+      ) : null}
+      <Button variant="ghost" size="sm" className="w-full" onClick={startOver}>
+        {t.restart}
+      </Button>
+    </div>
+  );
+
   return (
     <div className="mx-auto max-w-4xl px-4 pb-20 pt-8 sm:px-6">
       <div className="md:grid md:grid-cols-[210px_1fr] md:gap-8">
-        {/* Contents nav — jump straight to any question (answered or not). */}
+        {/* Contents nav — jump straight to any question, plus the global actions. */}
         <aside className="no-print mb-6 md:mb-0">
-          <details className="rounded-card border border-sand-line bg-sand-100 p-1.5 md:hidden">
-            <summary className="cursor-pointer list-none px-3 py-1.5 text-sm font-medium text-ink">
-              {t.contents} · {toLocaleDigits(clamped + 1, locale)}/{toLocaleDigits(total, locale)}
+          <details className="group rounded-card border border-sand-line bg-sand-100 p-1.5 md:hidden">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-2 rounded-pill px-3 py-2 text-sm font-medium text-ink hover:bg-sand-200">
+              <span>
+                {t.contents} · {toLocaleDigits(clamped + 1, locale)}/{toLocaleDigits(total, locale)}
+              </span>
+              <ChevronDown
+                className="h-4 w-4 shrink-0 text-ink-faint transition-transform duration-200 group-open:rotate-180"
+                aria-hidden
+              />
             </summary>
             <div className="mt-1">{navList}</div>
           </details>
           <div className="sticky top-20 hidden md:block">
             <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-ink-faint">{t.contents}</p>
             {navList}
+            <div className="mt-4 border-t border-sand-line pt-4">{actions}</div>
           </div>
         </aside>
 
@@ -146,19 +169,21 @@ export default function Questionnaire() {
               <span>
                 {t.questionOf} {toLocaleDigits(clamped + 1, locale)} {t.of} {toLocaleDigits(total, locale)}
               </span>
-              <span className="font-medium text-oasis">
-                {toLocaleDigits(matching, locale)} {matching === 1 ? t.stillMatchOne : t.stillMatch}
-              </span>
             </div>
             <div className="mt-2 h-2 overflow-hidden rounded-pill bg-sand-200">
               <div
                 className="h-full rounded-pill bg-oasis transition-[width] duration-500"
-                style={{ width: `${((clamped + 1) / total) * 100}%` }}
+                style={{ width: `${progressPct}%` }}
               />
             </div>
           </div>
 
-          <section className="mt-8" key={currentId}>
+          {/* Live shortlist — the founder sees which programs are still in the running (item 9). */}
+          <div className="no-print mt-4">
+            <MatchesPanel answers={answers} locale={locale} />
+          </div>
+
+          <section className="mt-7" key={currentId}>
             <Eyebrow>{t.appName}</Eyebrow>
             <h1 className="mt-3 text-3xl">{qt.prompt[locale]}</h1>
             {qt.help && <p className="mt-2 text-ink-soft">{qt.help[locale]}</p>}
@@ -197,25 +222,8 @@ export default function Questionnaire() {
             </div>
           </section>
 
-          <div className="no-print mt-10 flex items-center justify-between gap-3">
-            <Button variant="ghost" onClick={goBack}>
-              <Back className="h-4 w-4" aria-hidden /> {t.back}
-            </Button>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={clearAll}>
-                {t.clearAll}
-              </Button>
-              {complete ? (
-                <Button onClick={() => router.push("/results")}>
-                  {t.saveAndSee} <Forward className="h-4 w-4" aria-hidden />
-                </Button>
-              ) : currentId === "funding" ? (
-                <Button onClick={goNext} disabled={!fundingReady}>
-                  {t.next} <Forward className="h-4 w-4" aria-hidden />
-                </Button>
-              ) : null}
-            </div>
-          </div>
+          {/* Mobile actions — the sidebar's control panel is collapsed into the summary above. */}
+          <div className="no-print mt-10 md:hidden">{actions}</div>
         </div>
       </div>
     </div>
@@ -246,7 +254,7 @@ function OptionCard({
       <span className="font-medium">{label}</span>
       <span
         className={[
-          "flex h-5 w-5 shrink-0 items-center justify-center rounded-pill border",
+          "flex h-5 w-5 shrink-0 items-center justify-center rounded-pill border leading-none",
           selected ? "border-oasis bg-oasis text-sand-100" : "border-sand-line",
         ].join(" ")}
       >

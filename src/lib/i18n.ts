@@ -203,6 +203,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     source: "المصدر",
     verified: "تم التحقق",
     amountRange: "قيمة التمويل",
+    instrument: "الأداة",
     tier: "الفئة",
     tier1: "محلي غير مخفِّف",
     tier2: "مسرّعة / مسابقة",
@@ -239,6 +240,10 @@ export const UI: Record<Locale, Record<string, string>> = {
     documentsReady: "المستندات الجاهزة",
     docsProgress: "جاهزة",
     contents: "الأسئلة",
+    navDetails: "بياناتي",
+    navMatches: "مطابقاتي",
+    seeMatchesCta: "اعرض مطابقاتي",
+    stillInRunning: "ما زالت في القائمة",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -304,6 +309,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     source: "Source",
     verified: "verified",
     amountRange: "Funding amount",
+    instrument: "Instrument",
     tier: "Tier",
     tier1: "Local non-dilutive",
     tier2: "Accelerator / competition",
@@ -340,6 +346,10 @@ export const UI: Record<Locale, Record<string, string>> = {
     documentsReady: "Documents ready",
     docsProgress: "ready",
     contents: "Contents",
+    navDetails: "My details",
+    navMatches: "My matches",
+    seeMatchesCta: "See my matches",
+    stillInRunning: "Still in the running",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",

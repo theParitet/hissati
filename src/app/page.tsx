@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, WifiOff, FileText, ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ShieldCheck, WifiOff, FileText, ArrowLeft, ArrowRight } from "lucide-react";
 import { Button, Eyebrow } from "@/components/ui";
+import { AskBar } from "@/components/AskBar";
 import { useHissati, useLocale, isProfileComplete } from "@/lib/store";
-import { useAssistant } from "@/lib/assistant-store";
 import { ui, toLocaleDigits } from "@/lib/i18n";
 import { PROGRAMS } from "@/lib/programs";
 
@@ -16,22 +15,6 @@ export default function Home() {
   const answers = useHissati((s) => s.answers);
   const hasProgress = isProfileComplete(answers);
   const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
-
-  const assistantEnabled = useAssistant((s) => s.enabled);
-  const checkEnabled = useAssistant((s) => s.checkEnabled);
-  const send = useAssistant((s) => s.send);
-  const [ask, setAsk] = useState("");
-  useEffect(() => {
-    checkEnabled();
-  }, [checkEnabled]);
-
-  function askAssistant() {
-    const v = ask.trim();
-    if (!v) return;
-    void send(v, locale);
-    setAsk("");
-    router.push("/assistant");
-  }
 
   const tiers = new Set(PROGRAMS.map((p) => p.tier)).size;
 
@@ -71,32 +54,11 @@ export default function Home() {
             </li>
           </ul>
 
-          {/* Optional: ask the grounded assistant directly — expands into the /assistant tab */}
-          {assistantEnabled === true && (
-            <div className="mt-9 max-w-xl border-t border-sand-line pt-7">
-              <label htmlFor="ask-hissati" className="mb-2.5 block text-sm text-ink-soft">
-                {t.askLandingLabel}
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  id="ask-hissati"
-                  value={ask}
-                  onChange={(e) => setAsk(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && askAssistant()}
-                  placeholder={t.askLandingPlaceholder}
-                  className="h-12 flex-1 rounded-pill border border-sand-line bg-sand-100 px-4 text-[15px] outline-none focus-visible:border-oasis"
-                />
-                <button
-                  onClick={askAssistant}
-                  disabled={!ask.trim()}
-                  aria-label={t.askLandingLabel}
-                  className="flex h-12 w-12 shrink-0 items-center justify-center rounded-pill bg-amber text-night transition-colors hover:bg-amber-600 disabled:opacity-40"
-                >
-                  <Sparkles className="h-5 w-5" aria-hidden />
-                </button>
-              </div>
-            </div>
-          )}
+          {/* Ask the assistant directly — always shown; routes to the /assistant tab. */}
+          <div className="mt-9 max-w-xl border-t border-sand-line pt-7">
+            <label className="mb-2.5 block text-sm text-ink-soft">{t.askLandingLabel}</label>
+            <AskBar />
+          </div>
         </div>
 
         {/* Signature: the sun rising over the dunes — readiness as a desert dawn */}
@@ -132,7 +94,7 @@ export default function Home() {
             },
           ].map((step, i) => (
             <li key={i} className="print-block">
-              <div className="flex h-9 w-9 items-center justify-center rounded-pill bg-oasis text-sm font-bold text-sand-100">
+              <div className="flex h-9 w-9 items-center justify-center rounded-pill bg-oasis text-sm font-bold leading-none text-sand-100">
                 {toLocaleDigits(i + 1, locale)}
               </div>
               <h3 className="mt-4 text-lg">{locale === "ar" ? step.ar : step.en}</h3>

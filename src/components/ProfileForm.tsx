@@ -64,7 +64,7 @@ export function ProfileForm({
                     onClick={() => setVals((v) => ({ ...v, [f]: opt.value }))}
                     aria-pressed={selected}
                     className={[
-                      "rounded-pill border px-3 py-1.5 text-xs font-medium transition-colors",
+                      "inline-flex h-9 items-center rounded-pill border px-3 text-xs font-medium leading-none transition-colors",
                       selected
                         ? "border-oasis bg-oasis-100 text-oasis"
                         : "border-sand-line bg-sand-100 text-ink-soft hover:bg-sand-200",

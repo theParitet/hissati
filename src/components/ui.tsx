@@ -6,7 +6,7 @@ type ButtonVariant = "primary" | "accent" | "outline" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
 const BTN_BASE =
-  "inline-flex items-center justify-center gap-2 rounded-pill font-medium transition-colors disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2";
+  "inline-flex items-center justify-center gap-2 rounded-pill font-medium leading-none transition-colors disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-2 focus-visible:outline-offset-2";
 const BTN_VARIANT: Record<ButtonVariant, string> = {
   primary: "bg-oasis text-sand-100 hover:bg-oasis-700",
   accent: "bg-amber text-ink hover:bg-amber-600 hover:text-sand-100",

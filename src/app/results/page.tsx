@@ -9,7 +9,7 @@ import { ProgramCard } from "@/components/ProgramCard";
 import { RoadmapStepCard } from "@/components/RoadmapStepCard";
 import { ChecklistDialog } from "@/components/ChecklistDialog";
 import { CompareView } from "@/components/CompareView";
-import { Assistant } from "@/components/Assistant";
+import { AskBar } from "@/components/AskBar";
 import {
   useHissati,
   useLocale,
@@ -111,8 +111,8 @@ export default function Results() {
         </div>
       </div>
 
-      {/* Optional grounded assistant — top of the tab; shows an "off" state without a key */}
-      <Assistant variant="embedded" />
+      {/* One-line prompt → routes to the full assistant tab (always shown). */}
+      <AskBar className="mt-6" />
 
       {/* Gauge + roadmap */}
       <section className="mt-6 grid gap-5 md:grid-cols-[0.9fr_1.1fr]">
@@ -176,12 +176,11 @@ export default function Results() {
 
       {/* Program groups */}
       <ProgramGroup title={t.eligibleNow} tone="palm" count={eligible.length} locale={locale}>
-        {eligible.map(({ ev, pct }) => (
+        {eligible.map(({ ev }) => (
           <ProgramCard
             key={ev.program.id}
             ev={ev}
             profile={profile}
-            matchPct={pct}
             locale={locale}
             onOpenChecklist={setChecklistId}
             selected={compareIds.includes(ev.program.id)}
@@ -191,12 +190,11 @@ export default function Results() {
       </ProgramGroup>
 
       <ProgramGroup title={t.almostEligible} tone="almost" count={almost.length} locale={locale}>
-        {almost.map(({ ev, pct }) => (
+        {almost.map(({ ev }) => (
           <ProgramCard
             key={ev.program.id}
             ev={ev}
             profile={profile}
-            matchPct={pct}
             locale={locale}
             onOpenChecklist={setChecklistId}
             selected={compareIds.includes(ev.program.id)}
@@ -207,12 +205,11 @@ export default function Results() {
 
       {notFit.length > 0 && (
         <ProgramGroup title={t.notAFit} tone="clay" count={notFit.length} locale={locale}>
-          {notFit.map(({ ev, pct }) => (
+          {notFit.map(({ ev }) => (
             <ProgramCard
             key={ev.program.id}
             ev={ev}
             profile={profile}
-            matchPct={pct}
             locale={locale}
             onOpenChecklist={setChecklistId}
             selected={compareIds.includes(ev.program.id)}
@@ -238,7 +235,7 @@ export default function Results() {
                 setCompareOpen(false);
               }}
               aria-label={t.clearAll}
-              className="rounded-pill p-1.5 text-ink-soft hover:bg-sand-200"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-pill text-ink-soft hover:bg-sand-200"
             >
               <X className="h-4 w-4" aria-hidden />
             </button>
@@ -263,7 +260,7 @@ export default function Results() {
               <button
                 onClick={() => setCompareOpen(false)}
                 aria-label={t.close}
-                className="rounded-pill p-1.5 text-ink-soft hover:bg-sand-200"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-pill text-ink-soft hover:bg-sand-200"
               >
                 <X className="h-5 w-5" aria-hidden />
               </button>

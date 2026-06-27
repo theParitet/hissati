@@ -54,7 +54,7 @@ export function ChecklistDialog({
             <h2 className="text-lg leading-snug">{pick(program.name, locale)}</h2>
             <p className="mt-0.5 text-sm text-ink-faint">{program.operator}</p>
           </div>
-          <button onClick={onClose} aria-label={t.close} className="rounded-pill p-1.5 text-ink-soft hover:bg-sand-200">
+          <button onClick={onClose} aria-label={t.close} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-pill text-ink-soft hover:bg-sand-200">
             <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
