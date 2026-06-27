@@ -62,6 +62,7 @@ interface HissatiState {
   locale: Locale;
   answers: Partial<Profile>;
   doneSteps: DoneStep[];
+  checkedDocs: Record<string, number[]>; // programId -> checked document indices
   _hydrated: boolean;
 
   setLocale: (l: Locale) => void;
@@ -71,6 +72,7 @@ interface HissatiState {
   markStep: (step: DoneStep) => void;
   unmarkStep: (key: string) => void;
   isStepDone: (key: string) => boolean;
+  toggleDoc: (programId: string, index: number) => void;
 }
 
 export const useHissati = create<HissatiState>()(
@@ -79,12 +81,13 @@ export const useHissati = create<HissatiState>()(
       locale: "ar", // Arabic-first
       answers: {},
       doneSteps: [],
+      checkedDocs: {},
       _hydrated: false,
 
       setLocale: (l) => set({ locale: l }),
       toggleLocale: () => set((s) => ({ locale: s.locale === "ar" ? "en" : "ar" })),
       setAnswer: (patch) => set((s) => ({ answers: { ...s.answers, ...patch } })),
-      resetAnswers: () => set({ answers: {}, doneSteps: [] }),
+      resetAnswers: () => set({ answers: {}, doneSteps: [], checkedDocs: {} }),
       markStep: (step) =>
         set((s) =>
           s.doneSteps.some((d) => d.key === step.key)
@@ -93,11 +96,17 @@ export const useHissati = create<HissatiState>()(
         ),
       unmarkStep: (key) => set((s) => ({ doneSteps: s.doneSteps.filter((d) => d.key !== key) })),
       isStepDone: (key) => get().doneSteps.some((d) => d.key === key),
+      toggleDoc: (programId, index) =>
+        set((s) => {
+          const cur = s.checkedDocs[programId] ?? [];
+          const next = cur.includes(index) ? cur.filter((i) => i !== index) : [...cur, index];
+          return { checkedDocs: { ...s.checkedDocs, [programId]: next } };
+        }),
     }),
     {
       name: "hissati-v1",
       storage: createJSONStorage(() => localStorage),
-      partialize: (s) => ({ locale: s.locale, answers: s.answers, doneSteps: s.doneSteps }),
+      partialize: (s) => ({ locale: s.locale, answers: s.answers, doneSteps: s.doneSteps, checkedDocs: s.checkedDocs }),
       onRehydrateStorage: () => (state) => {
         if (state) state._hydrated = true;
       },

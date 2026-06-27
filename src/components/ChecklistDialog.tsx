@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, ExternalLink, FileDown, Share2, ShieldCheck, Clock, FileText } from "lucide-react";
+import { X, ExternalLink, FileDown, Share2, ShieldCheck, Clock, FileText, CheckCircle2, Circle } from "lucide-react";
 import { Button, Badge } from "@/components/ui";
-import { ui, pick, type Locale } from "@/lib/i18n";
+import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, localizeDate } from "@/lib/format";
+import { useHissati } from "@/lib/store";
 import type { Profile, Program } from "@/lib/schema";
 
 export function ChecklistDialog({
@@ -20,6 +21,9 @@ export function ChecklistDialog({
   onDownloadPdf?: () => void;
 }) {
   const t = ui(locale);
+  const checkedAll = useHissati((s) => s.checkedDocs);
+  const toggleDoc = useHissati((s) => s.toggleDoc);
+  const checked = checkedAll[program.id] ?? [];
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -64,17 +68,35 @@ export function ChecklistDialog({
           <div>
             <h3 className="flex items-center gap-2 text-sm font-semibold text-ink">
               <FileText className="h-4 w-4 text-oasis" aria-hidden /> {t.requiredDocs}
+              <span className="ms-auto text-xs font-normal text-ink-soft">
+                {toLocaleDigits(checked.length, locale)}/{toLocaleDigits(program.required_documents.length, locale)}{" "}
+                {t.docsProgress}
+              </span>
             </h3>
-            <ul className="mt-2 space-y-1.5">
-              {program.required_documents.map((d, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-ink-soft">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-pill bg-amber" aria-hidden />
-                  <span>
-                    {locale === "ar" ? d.ar : d.en}
-                    {d.format && <span className="text-ink-faint"> · {d.format}</span>}
-                  </span>
-                </li>
-              ))}
+            <ul className="mt-2 space-y-0.5">
+              {program.required_documents.map((d, i) => {
+                const done = checked.includes(i);
+                return (
+                  <li key={i}>
+                    <button
+                      type="button"
+                      onClick={() => toggleDoc(program.id, i)}
+                      aria-pressed={done}
+                      className="flex w-full items-start gap-2.5 rounded-md px-1.5 py-1.5 text-start text-sm transition-colors hover:bg-sand-200"
+                    >
+                      {done ? (
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-palm" aria-hidden />
+                      ) : (
+                        <Circle className="mt-0.5 h-4 w-4 shrink-0 text-ink-faint" aria-hidden />
+                      )}
+                      <span className={done ? "text-ink-faint line-through" : "text-ink-soft"}>
+                        {locale === "ar" ? d.ar : d.en}
+                        {d.format && <span className="text-ink-faint"> · {d.format}</span>}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 

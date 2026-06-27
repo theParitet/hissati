@@ -236,6 +236,8 @@ export const UI: Record<Locale, Record<string, string>> = {
     formPrompt: "لأجيبك بدقة، اختر ما يناسبك:",
     formContinue: "متابعة",
     myDetails: "تفاصيلي:",
+    documentsReady: "المستندات الجاهزة",
+    docsProgress: "جاهزة",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -334,6 +336,8 @@ export const UI: Record<Locale, Record<string, string>> = {
     formPrompt: "To answer precisely, pick what fits:",
     formContinue: "Continue",
     myDetails: "My details:",
+    documentsReady: "Documents ready",
+    docsProgress: "ready",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",
