@@ -270,6 +270,9 @@ export const UI: Record<Locale, Record<string, string>> = {
     compareTitle: "مقارنة البرامج",
     compareHint: "اختر برنامجين أو ثلاثة للمقارنة جنباً إلى جنب.",
     compareCount: "قارن",
+    pin: "تثبيت",
+    unpin: "إلغاء التثبيت",
+    pinned: "مثبَّتة",
     requirements: "المتطلبات المستوفاة",
     stackableShort: "قابل للجمع",
     formPrompt: "لأجيبك بدقة، اختر ما يناسبك:",
@@ -295,7 +298,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     copyLink: "نسخ",
     copied: "تم النسخ",
     seeMatchesCta: "اعرض مطابقاتي",
-    stillInRunning: "ما زالت في القائمة",
+    stillInRunning: "لا تزال مطابِقة",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -401,6 +404,9 @@ export const UI: Record<Locale, Record<string, string>> = {
     compareTitle: "Compare programs",
     compareHint: "Pick 2–3 programs to compare side by side.",
     compareCount: "Compare",
+    pin: "Pin",
+    unpin: "Unpin",
+    pinned: "Pinned",
     requirements: "Requirements met",
     stackableShort: "Stackable",
     formPrompt: "To answer precisely, pick what fits:",
@@ -426,7 +432,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     copyLink: "Copy",
     copied: "Copied",
     seeMatchesCta: "See my matches",
-    stillInRunning: "Still in the running",
+    stillInRunning: "Still matching",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",

@@ -19,7 +19,7 @@
  * prefers-reduced-motion killswitch freezes both.
  */
 import { Money } from "@/components/ui";
-import { pick, toLocaleDigits, type Locale } from "@/lib/i18n";
+import { pick, type Locale } from "@/lib/i18n";
 import type { EligibilityStatus } from "@/lib/schema";
 
 export interface SkyStar {
@@ -47,27 +47,29 @@ const BAND: Record<EligibilityStatus, [number, number]> = {
   not_fit: [64, 82],
 };
 
+// Three visibly distinct stars: bright white (open) vs warm gold (almost) vs cool
+// grey-blue (not yet) — distinguished by HUE and SIZE, so the tiers read at a glance.
 const STAR_STYLE: Record<
   EligibilityStatus,
   { size: number; fill: string; glow: string; opacity: number }
 > = {
   eligible: {
-    size: 16,
-    fill: "#fbf8f1",
-    glow: "drop-shadow(0 0 7px rgba(217,138,30,0.85)) drop-shadow(0 0 2px rgba(251,248,241,0.95))",
+    size: 18,
+    fill: "#fffdf7",
+    glow: "drop-shadow(0 0 8px rgba(217,138,30,0.9)) drop-shadow(0 0 2px rgba(255,255,255,0.95))",
     opacity: 1,
   },
   almost: {
-    size: 12,
-    fill: "#f7e6c8",
-    glow: "drop-shadow(0 0 5px rgba(217,138,30,0.55))",
-    opacity: 0.95,
+    size: 13,
+    fill: "#f4c97a",
+    glow: "drop-shadow(0 0 6px rgba(217,138,30,0.7))",
+    opacity: 0.98,
   },
   not_fit: {
-    size: 7,
-    fill: "rgba(246,241,231,0.30)",
-    glow: "none",
-    opacity: 0.55,
+    size: 9,
+    fill: "rgba(200,210,235,0.6)",
+    glow: "drop-shadow(0 0 1.5px rgba(200,210,235,0.5))",
+    opacity: 0.72,
   },
 };
 
@@ -105,10 +107,11 @@ export function FundingSky({
   const TRANSITION =
     "top 650ms var(--ease-out), opacity 650ms var(--ease-out), transform 650ms var(--ease-out), filter 650ms var(--ease-out)";
 
-  const legend: { label: string; dot: string; color: string }[] = [
-    { label: locale === "ar" ? "مطابقة مفتوحة" : "Open match", dot: "●", color: "#fbf8f1" },
-    { label: locale === "ar" ? "قريب" : "Almost", dot: "●", color: "#f7e6c8" },
-    { label: locale === "ar" ? "ليس بعد" : "Not yet", dot: "○", color: "rgba(246,241,231,0.55)" },
+  // Legend renders the EXACT star glyphs (fill + glow) used in the sky above.
+  const legend: { status: EligibilityStatus; label: string }[] = [
+    { status: "eligible", label: locale === "ar" ? "مطابقة مفتوحة" : "Open match" },
+    { status: "almost", label: locale === "ar" ? "قريب" : "Almost" },
+    { status: "not_fit", label: locale === "ar" ? "ليس بعد" : "Not yet" },
   ];
 
   return (
@@ -130,40 +133,17 @@ export function FundingSky({
           transition: "opacity 650ms var(--ease-out)",
         }}
       />
-      {/* The rising sun — its height tracks the dawn fraction. */}
-      <div
-        aria-hidden
-        className="animate-rise pointer-events-none absolute start-1/2 h-14 w-14 -translate-x-1/2 rounded-full"
-        style={{
-          bottom: `calc(${(6 + frac * 30).toFixed(1)}% )`,
-          background:
-            "radial-gradient(circle, rgba(255,250,240,0.95), rgba(247,200,120,0.55) 40%, rgba(217,138,30,0.16) 66%, transparent 76%)",
-          filter: "blur(1px)",
-          transition: "bottom 650ms var(--ease-out)",
-        }}
-      />
-
       {/* Caption — within-reach folded in small (the strip owns the big number). */}
-      <div className="relative z-10 flex items-start justify-between gap-3 p-5 sm:p-6">
-        <div className="max-w-md">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-100/80">
-            {locale === "ar" ? "سماء التمويل" : "Your funding sky"}
-          </p>
-          <p className="mt-2 text-sm leading-relaxed text-sand-100/75">
-            <span className="text-base font-semibold text-amber-100">
-              <Money aed={aedReachableNow} locale={locale} />
-              {hasOpenEnded ? "+" : ""}
-            </span>{" "}
-            {locale === "ar"
-              ? "ضمن متناولك — كل نجمة برنامج تمويل، أنجِز خطوة لترتفع وتُضيء."
-              : "within reach — each star is a funding program; complete a step to make it rise."}
-          </p>
-        </div>
-        <div className="shrink-0 rounded-pill bg-night-100/70 px-3 py-1.5 font-mono text-xs text-sand-100/85">
+      <div className="relative z-10 p-5 sm:p-6">
+        <p className="max-w-md text-sm leading-relaxed text-sand-100/75">
+          <span className="text-base font-semibold text-amber-100">
+            <Money aed={aedReachableNow} locale={locale} />
+            {hasOpenEnded ? "+" : ""}
+          </span>{" "}
           {locale === "ar"
-            ? `${toLocaleDigits(lit, locale)}/${toLocaleDigits(total, locale)} مُضيئة`
-            : `${lit}/${total} lit`}
-        </div>
+            ? "ضمن متناولك — كل نجمة برنامج تمويل واحد."
+            : "within reach — each star is one funding program."}
+        </p>
       </div>
 
       {/* The constellation. Decorative for AT; the sr-only list below carries the data. */}
@@ -207,14 +187,15 @@ export function FundingSky({
 
       {/* Legend + accessible program list. */}
       <div className="relative z-10 flex flex-wrap items-center gap-x-4 gap-y-1.5 px-5 pb-5 sm:px-6">
-        {legend.map((l) => (
-          <span key={l.label} className="inline-flex items-center gap-1.5 text-xs text-sand-100/75">
-            <span aria-hidden style={{ color: l.color }}>
-              {l.dot}
+        {legend.map((l) => {
+          const st = STAR_STYLE[l.status];
+          return (
+            <span key={l.status} className="inline-flex items-center gap-1.5 text-xs text-sand-100/75">
+              <StarGlyph size={Math.min(st.size, 13)} fill={st.fill} style={{ filter: st.glow }} />
+              <span className="tb-trim">{l.label}</span>
             </span>
-            {l.label}
-          </span>
-        ))}
+          );
+        })}
       </div>
 
       <ul className="sr-only">

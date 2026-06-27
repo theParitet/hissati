@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Check, ChevronDown } from "lucide-react";
-import { Button, Eyebrow } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { MatchesPanel } from "@/components/MatchesPanel";
 import { useHissati, useLocale, useHydrated, isProfileComplete } from "@/lib/store";
 import { ui, enumLabel, QUESTION_TEXT, toLocaleDigits, type Locale } from "@/lib/i18n";
@@ -183,14 +183,8 @@ export default function Questionnaire() {
             </div>
           </div>
 
-          {/* Live shortlist — the founder sees which programs are still in the running (item 9). */}
-          <div className="no-print mt-4">
-            <MatchesPanel answers={answers} locale={locale} />
-          </div>
-
           <section className="mt-7" key={currentId}>
-            <Eyebrow>{t.appName}</Eyebrow>
-            <h1 className="mt-3 text-3xl">{qt.prompt[locale]}</h1>
+            <h1 className="text-3xl">{qt.prompt[locale]}</h1>
             {qt.help && <p className="mt-2 text-ink-soft">{qt.help[locale]}</p>}
 
             <div className="mt-7">
@@ -226,6 +220,11 @@ export default function Questionnaire() {
               )}
             </div>
           </section>
+
+          {/* Live shortlist — below the question: which programs still match as you answer (item 9). */}
+          <div className="no-print mt-8">
+            <MatchesPanel answers={answers} locale={locale} />
+          </div>
 
           {/* Mobile actions — the sidebar's control panel is collapsed into the summary above. */}
           <div className="no-print mt-10 md:hidden">{actions}</div>

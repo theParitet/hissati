@@ -28,7 +28,7 @@ import { buildSharePayload } from "@/lib/share";
 import { exportPlanPdf } from "@/lib/pdf";
 import type { Profile } from "@/lib/schema";
 
-/** Funding instruments only — licences are roadmap rungs, not stars in the sky. */
+/** The sky mirrors the metric's funding set exactly, so its lit/total == OPEN MATCHES. */
 const FUNDING = new Set(["grant", "loan", "equity", "accelerator"]);
 type TabId = "overview" | "programs" | "checklist";
 
@@ -73,6 +73,7 @@ export default function Results() {
   const notFit = scored.filter((x) => x.ev.status === "not_fit");
   const steps = deriveRoadmap(evaluated);
 
+  // Each star is one funding program (same set the OPEN MATCHES metric counts).
   const stars: SkyStar[] = scored
     .filter((x) => FUNDING.has(x.ev.program.instrument) && isCurrentlyAvailable(x.ev.program))
     .map((x) => ({ id: x.ev.program.id, name: x.ev.program.name, status: x.ev.status }));

@@ -110,7 +110,7 @@ export function Hero() {
               locale={locale}
               aedReachableNow={skyStats.aedReachableNow}
               hasOpenEnded={skyStats.hasOpenEndedAmounts}
-              className="rounded-card border border-amber/20 shadow-lift"
+              className="rounded-card border border-amber/20 shadow-[0_30px_90px_-24px_rgba(11,19,38,0.75)]"
             />
           </div>
         </div>

@@ -8,7 +8,7 @@
  * Mobile collapses to one pane with a back step. Mirrors in RTL via logical props.
  */
 import { useState } from "react";
-import { GitCompare, X, ChevronLeft, ChevronRight, Check, Plus } from "lucide-react";
+import { GitCompare, X, ChevronLeft, ChevronRight, Check, Pin } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui";
 import { ProgramDetail } from "@/components/dashboard/ProgramDetail";
@@ -43,17 +43,27 @@ export function ProgramsTab({
   onOpenChecklist: (id: string) => void;
 }) {
   const t = ui(locale);
-  const groups = [
-    { key: "eligible" as const, label: t.eligibleNow, items: eligible },
-    { key: "almost" as const, label: t.almostEligible, items: almost },
-    { key: "not_fit" as const, label: t.notAFit, items: notFit },
-  ].filter((g) => g.items.length > 0);
   const flat = [...eligible, ...almost, ...notFit];
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [pinnedIds, setPinnedIds] = useState<string[]>([]);
   const [view, setView] = useState<"detail" | "compare">("detail");
   const [mobilePane, setMobilePane] = useState<"list" | "detail">("list");
+
+  // Pinned programs float into a "Pinned" group at the top and leave their status group.
+  const isPinned = (id: string) => pinnedIds.includes(id);
+  const pinnedItems = flat.filter((x) => isPinned(x.ev.program.id));
+  const notPinned = (x: Scored) => !isPinned(x.ev.program.id);
+  const groups = [
+    { key: "pinned" as const, label: t.pinned, items: pinnedItems },
+    { key: "eligible" as const, label: t.eligibleNow, items: eligible.filter(notPinned) },
+    { key: "almost" as const, label: t.almostEligible, items: almost.filter(notPinned) },
+    { key: "not_fit" as const, label: t.notAFit, items: notFit.filter(notPinned) },
+  ].filter((g) => g.items.length > 0);
+
+  const togglePin = (id: string) =>
+    setPinnedIds((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]));
 
   const current =
     flat.find((x) => x.ev.program.id === selectedId) ?? flat[0] ?? null;
@@ -135,8 +145,9 @@ export function ProgramsTab({
                     const active = current?.ev.program.id === program.id && view === "detail";
                     const inCompare = compareIds.includes(program.id);
                     const cost = isCostInstrument(program.instrument);
+                    const pinned = isPinned(program.id);
                     return (
-                      <li key={program.id} className="flex items-stretch gap-1">
+                      <li key={program.id} className="flex items-center gap-1">
                         <button
                           type="button"
                           onClick={() => select(program.id)}
@@ -181,25 +192,42 @@ export function ProgramsTab({
                             </span>
                           )}
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => toggleCompare(program.id)}
-                          aria-pressed={inCompare}
-                          aria-label={`${t.compare} — ${pick(program.name, locale)}`}
-                          title={t.compare}
-                          className={cn(
-                            "my-1 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border transition-colors",
-                            inCompare
-                              ? "border-oasis bg-oasis text-sand-100"
-                              : "border-sand-line text-ink-faint hover:border-ink-faint hover:text-ink-soft"
-                          )}
-                        >
-                          {inCompare ? (
-                            <Check className="h-3.5 w-3.5" aria-hidden />
-                          ) : (
-                            <Plus className="h-3.5 w-3.5" aria-hidden />
-                          )}
-                        </button>
+                        <div className="flex shrink-0 items-center gap-0.5">
+                          <button
+                            type="button"
+                            onClick={() => toggleCompare(program.id)}
+                            aria-pressed={inCompare}
+                            aria-label={`${t.compare} — ${pick(program.name, locale)}`}
+                            title={t.compare}
+                            className={cn(
+                              "inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors",
+                              inCompare
+                                ? "border-oasis bg-oasis text-sand-100"
+                                : "border-sand-line text-ink-faint hover:border-ink-faint hover:text-ink-soft"
+                            )}
+                          >
+                            {inCompare ? (
+                              <Check className="h-3.5 w-3.5" aria-hidden />
+                            ) : (
+                              <GitCompare className="h-3.5 w-3.5" aria-hidden />
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => togglePin(program.id)}
+                            aria-pressed={pinned}
+                            aria-label={`${pinned ? t.unpin : t.pin} — ${pick(program.name, locale)}`}
+                            title={pinned ? t.unpin : t.pin}
+                            className={cn(
+                              "inline-flex h-7 w-7 items-center justify-center rounded-md border transition-colors",
+                              pinned
+                                ? "border-amber bg-amber-100 text-amber-600"
+                                : "border-sand-line text-ink-faint hover:border-ink-faint hover:text-ink-soft"
+                            )}
+                          >
+                            <Pin className={cn("h-3.5 w-3.5", pinned && "fill-current")} aria-hidden />
+                          </button>
+                        </div>
                       </li>
                     );
                   })}
@@ -255,8 +283,6 @@ export function ProgramsTab({
               profile={profile}
               locale={locale}
               onOpenChecklist={onOpenChecklist}
-              selected={compareIds.includes(current.ev.program.id)}
-              onToggleSelect={toggleCompare}
             />
           ) : null}
         </div>

@@ -6,6 +6,18 @@ import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import type { Profile } from "@/lib/schema";
 
 /**
+ * Compact pill label: the brand/operator before the first " — " separator, with
+ * any "(...)" parenthetical dropped. Data-driven (no per-program map), so it stays
+ * correct as the KB changes — e.g. "Khalifa Fund — SME Funding (…)" → "Khalifa Fund".
+ */
+function shortName(name: string): string {
+  return name
+    .split(/\s[—–-]\s/)[0]
+    .replace(/\s*\([^)]*\)/g, "")
+    .trim();
+}
+
+/**
  * Live shortlist (FR-A, item 9): every program as a chip that visibly drops out
  * the moment an answered rule rules it out (hard, no-remedy). Driven entirely by
  * the KB + engine — add or edit a program and this re-derives with no changes.
@@ -40,14 +52,14 @@ export function MatchesPanel({ answers, locale }: { answers: Partial<Profile>; l
             <li
               key={p.id}
               className={[
-                "inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1 text-xs leading-none transition-all duration-300",
+                "inline-flex items-center gap-1 rounded-pill border px-2 py-0.5 text-[11px] leading-none transition-all duration-300",
                 inRun
                   ? "border-palm/30 bg-palm-100 text-palm"
                   : "border-sand-line bg-sand-200/40 text-ink-faint line-through opacity-55",
               ].join(" ")}
             >
               {inRun && <span className="h-1.5 w-1.5 shrink-0 rounded-pill bg-palm" aria-hidden />}
-              <span className="max-w-[11rem] truncate tb-trim">{pick(p.name, locale)}</span>
+              <span className="max-w-[8.5rem] truncate tb-trim">{shortName(pick(p.name, locale))}</span>
             </li>
           );
         })}

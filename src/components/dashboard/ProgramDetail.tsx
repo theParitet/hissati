@@ -9,9 +9,6 @@
  * place to *understand* a program, not manage it.
  */
 import {
-  ExternalLink,
-  ListChecks,
-  GitCompare,
   CheckCircle2,
   Layers,
   Clock,
@@ -19,7 +16,7 @@ import {
   ArrowUpRight,
   FileText,
 } from "lucide-react";
-import { AmountDirectionBadge, AvailabilityPill, Button, StatusPill, VerifiedStamp } from "@/components/ui";
+import { AmountDirectionBadge, AvailabilityPill, StatusPill, VerifiedStamp } from "@/components/ui";
 import { CostContext } from "@/components/CostContext";
 import { ShareSheet } from "@/components/ShareSheet";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
@@ -36,16 +33,12 @@ export function ProgramDetail({
   profile,
   locale,
   onOpenChecklist,
-  selected,
-  onToggleSelect,
 }: {
   ev: EvaluatedProgram;
   pct?: number;
   profile: Profile;
   locale: Locale;
   onOpenChecklist: (id: string) => void;
-  selected?: boolean;
-  onToggleSelect?: (id: string) => void;
 }) {
   const t = ui(locale);
   const { program, status } = ev;
@@ -199,24 +192,6 @@ export function ProgramDetail({
           locale={locale}
         />
         <div className="no-print mt-3 flex flex-wrap items-center gap-2">
-          <a href={program.application_url} target="_blank" rel="noreferrer">
-            <Button size="sm">
-              {["open", "rolling"].includes(program.availability.status) ? t.apply : t.source} <ExternalLink className="h-4 w-4" aria-hidden />
-            </Button>
-          </a>
-          <Button size="sm" variant="outline" onClick={() => onOpenChecklist(program.id)}>
-            <ListChecks className="h-4 w-4" aria-hidden /> {t.viewChecklist}
-          </Button>
-          {onToggleSelect && (
-            <Button
-              size="sm"
-              variant={selected ? "primary" : "ghost"}
-              onClick={() => onToggleSelect(program.id)}
-              aria-pressed={selected}
-            >
-              <GitCompare className="h-4 w-4" aria-hidden /> {t.compare}
-            </Button>
-          )}
           <ShareSheet payload={buildSharePayload({ kind: "program", locale, program })} locale={locale} />
         </div>
       </div>
