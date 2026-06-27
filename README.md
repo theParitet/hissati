@@ -1,11 +1,11 @@
 # Hissati · حصتي
 
-**A bilingual, offline-first funding *readiness navigator* for first-time founders in the UAE.**
+**A bilingual, offline-first funding *readiness navigator* for first-time founders in UAE.**
 
 Hissati (حصتي, *"my share"*) matches a UAE founder to real funding programs and — for the ones they don't yet qualify for — names the **exact blocking rule** and generates the **shortest cited path** to becoming eligible. Every existing tool dead-ends at *"you don't qualify."* Hissati turns that "no" into a sequenced, sourced next step.
 
- **Live demo:** https://hissati.org  ·   **Repo:** https://github.com/theParitet/TatweerHackathon404Team
- **Tatweer Hackathon — Challenge 1: Taking the first entrepreneurial step**
+🔗 **Live demo:** https://hissati.org  ·  💻 **Repo:** https://github.com/theParitet/TatweerHackathon404Team
+🎬 **Demo video:** [`/docs/demo.mp4`](./docs)  ·  🏷️ **Tatweer Hackathon — Challenge 1: Taking the first entrepreneurial step**
 
 ---
 
@@ -37,10 +37,10 @@ A short, **Arabic-first (RTL)** questionnaire of ~6 questions feeds a **determin
 From the "almost" set, Hissati builds a **Funding Readiness Roadmap** (ordered, cited steps) and a single **Readiness Score (0–100)** that climbs as steps are marked done — programs visibly unlock in real time. The output exports as a **downloadable Arabic PDF plan** with per-program document checklists.
 
 **Key characteristics**
--  **Offline-first PWA** — the entire wizard → results → roadmap → PDF flow runs in airplane mode. Built for Al Qua'a's connectivity, not a city's.
--  **Bilingual, Arabic-first** — full RTL with an English toggle; self-hosted Tajawal font (no runtime CDN).
--  **Cited or it doesn't ship** — every AED figure and eligibility rule traces to a primary source with a "verified June 2026" date. Nothing is invented.
--  **Optional grounded agent** — a Claude-powered chat that turns vague/dialect questions into structured lookups. It calls the *same* engine over the *same* cited data; the app is fully usable with it switched off.
+- 🛰️ **Offline-first PWA** — the entire wizard → results → roadmap → PDF flow runs in airplane mode. Built for Al Qua'a's connectivity, not a city's.
+- 🌐 **Bilingual, Arabic-first** — full RTL with an English toggle; self-hosted Tajawal font (no runtime CDN).
+- 📑 **Cited or it doesn't ship** — every AED figure and eligibility rule traces to a primary source with a "verified June 2026" date. Nothing is invented.
+- 🤖 **Optional grounded agent** — a Claude-powered chat that turns vague/dialect questions into structured lookups. It calls the *same* engine over the *same* cited data; the app is fully usable with it switched off.
 
 ## 4. How it works
 
@@ -77,13 +77,29 @@ Each claim is falsifiable and checkable in minutes — that's criterion 6.
 
 > **Honesty note (also criterion 6):** Of the 12 programs, the directly-quantified funding figures are Khalifa Fund SME (up to **AED 2M**, loan) and Hub71 Access (up to **AED 500K**, *in-kind* package), plus the licence-rung costs (Tajer ~AED 790; Mobdea/DCT permits in the AED 0–1,000 band). Grant and VC amounts that are **not publicly fixed** (Ma'an, ADDED, Access Sharjah, Khalifa Award, the VCs) are shown as such rather than invented. Figures not confirmable against a live portal fetch are flagged in [`programs-sources.md`](./programs-sources.md), and the Arabic copy is marked **draft pending native review**. We'd rather under-claim and be verifiable than inflate a headline.
 
-## 6. Tech stack
+## 6. How we score against criteria 1–7
+
+The hackathon scores filtration entirely from this repo on criteria 1–7, and *a criterion with no evidence in the repo is scored in its lowest band.* Here is where each is evidenced.
+
+| # | Criterion | Our evidence |
+|---|---|---|
+| **1** | **Impact & value** | Routes real, named funding (Khalifa Fund, Ma'an, licence rungs) to the exact person every other tool rejects — the idea-stage rural founder. The benefit is a concrete, sequenced path to capital, not a listicle. |
+| **2** | **Relevance to the challenge** | Squarely Challenge 1: it takes a founder from *idea* to a *concrete first action* (the first licence, its cost, the single next step), then onward to funding. |
+| **3** | **Feasibility** | Software-only, deployable today on free-tier Vercel; offline PWA + Arabic suit the rural, low-connectivity setting; no hardware, no second-sided marketplace, near-zero running cost. |
+| **4** | **Readiness** | Complete and working end-to-end: wizard → classification → roadmap → checklist → Arabic PDF, live at hissati.org and runnable offline. Demo video in [`/docs`](./docs). Not a mockup. |
+| **5** | **Scalability** | Eligibility is data, not code: rules live in `programs.json`. Adding a program or a new emirate is a schema-validated data edit — no engine change. Tiers 2–3 already prove cross-UAE reach. |
+| **6** | **Falsifiability & evidence** | Every claim in §5 is testable; the Vitest suite doubles as evidence; every figure is cited to a primary source with a verified date, with unconfirmed values openly flagged. |
+| **7** | **Repo documentation** | This README covers every required section; the [`/docs`](#10-documentation) architecture set, the source manifest, the test suite, and the demo video let a judge understand, run, and verify from the repo alone. |
+
+*(Criterion 8 — presentation — is scored live on Sunday; our 3-minute offline run-of-show is in [`/docs/demo-script.md`](./docs).)*
+
+## 7. Tech stack
 
 **Next.js (App Router) · TypeScript · Tailwind + shadcn/ui · Zustand (+persist) · next-pwa / Workbox · Tajawal (self-hosted) · Vitest · Vercel · Anthropic Claude (optional agent).**
 
 The deterministic core is plain TypeScript with no heavy dependencies; the knowledge base ships in the bundle so matching needs zero network. The only server-side surface is an optional `/api/agent` route that keeps the API key off the client. Full layering, data flows, and the service-worker strategy are in [`system-architecture.md`](./system-architecture.md).
 
-## 7. Run it locally
+## 8. Run it locally
 
 ```bash
 pnpm install
@@ -102,11 +118,11 @@ pnpm build && pnpm start
 5. Run the whole wizard → results → roadmap → PDF flow with no network
 ```
 
-## 8. Data & citations
+## 9. Data & citations
 
 The knowledge base is **hand-verified**, not scraped. Each of the 12 records carries bilingual names, operator, eligibility rules, required documents, an application URL, and a **source URL + verified date** (all `2026-06-26`). The full citation manifest — including an explicit list of figures that could not be live-confirmed against JavaScript-rendered government portals — is in [`programs-sources.md`](./programs-sources.md). Arabic strings are drafted and flagged for native review before any public launch.
 
-## 9. Documentation
+## 10. Documentation
 
 Engineering reference (the internal architecture set). Every doc is derived from, and agrees with, the frozen data contract — `data-model.md`, `scoring.md`, `programs.json`, `programs-sources.md`. **If any doc disagrees with those four, the contract wins.**
 
