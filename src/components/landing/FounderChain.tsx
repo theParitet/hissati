@@ -34,7 +34,6 @@ export function FounderChain({ locale }: { locale: Locale }) {
 
   const aed = Math.round(lerp(RUNGS[i].aed, RUNGS[i + 1].aed, f));
   const eligible = Math.round(lerp(RUNGS[i].eligible, RUNGS[i + 1].eligible, f));
-  const litCount = RUNGS.filter((_, k) => seg >= k - 0.001).length;
   const litFrac = (k: number) => clamp01(seg - k + 1); // 0..1 ignition of rung k
 
   const renderLedger = (compact = false) => (
@@ -94,24 +93,27 @@ export function FounderChain({ locale }: { locale: Locale }) {
       <div className="mx-auto grid max-w-6xl gap-x-12 px-4 sm:px-6 lg:grid-cols-[1fr_22rem]">
         {/* The chain */}
         <div className="relative py-16 sm:py-20">
-          <header className="mb-4 max-w-md">
+          <header className="mb-4 max-w-md ps-12">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint">
               {ar ? "قصة مؤسِّسة" : "Meet a founder"}
             </p>
             <h2 className="mt-2 text-3xl sm:text-4xl">
               {ar ? "من مطبخ في القوع إلى مسار مموَّل" : "From a kitchen in Al Qua'a to a funded path"}
             </h2>
-            <p className="mt-2 text-sm text-ink-soft">
-              {ar
-                ? "مرّر للأسفل لتُضيء كل خطوة — وراقب التمويل يرتفع."
-                : "Scroll to light each step — and watch the funding climb."}
-            </p>
           </header>
 
-          {/* Vertical spine: a track + a fill that follows the scroll. */}
+          {/* Vertical spine: a track + a fill that follows the scroll. It spans the
+              full section and fades at both ends, so it reads as coming from under
+              the section above and continuing under the one below. */}
           <div
-            className="absolute bottom-20 top-44 w-0.5 bg-sand-line sm:top-48"
-            style={{ insetInlineStart: "calc(1rem - 1px)" }}
+            className="absolute -bottom-16 -top-16 w-0.5 bg-sand-line sm:-bottom-20 sm:-top-20"
+            style={{
+              insetInlineStart: "calc(1rem - 1px)",
+              WebkitMaskImage:
+                "linear-gradient(to bottom, transparent, #000 6%, #000 94%, transparent)",
+              maskImage:
+                "linear-gradient(to bottom, transparent, #000 6%, #000 94%, transparent)",
+            }}
             aria-hidden
           >
             <div
@@ -207,10 +209,6 @@ export function FounderChain({ locale }: { locale: Locale }) {
               );
             })}
           </ol>
-          <p className="ms-12 mt-2 font-mono text-[11px] text-ink-faint" dir="ltr" aria-hidden>
-            {toLocaleDigits(litCount, locale)}/{toLocaleDigits(n, locale)}{" "}
-            {ar ? "خطوات مُضيئة" : "steps lit"}
-          </p>
         </div>
 
         {/* Desktop ledger — pinned beside the chain. */}

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Star, WifiOff, Languages, ShieldCheck } from "lucide-react";
-import { Button, Money } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { AskBar } from "@/components/AskBar";
 import { DawnSky } from "@/components/landing/DawnSky";
 import { FundingSky } from "@/components/dashboard/FundingSky";
@@ -61,20 +61,9 @@ export function Hero() {
 
             <p className="mt-5 max-w-lg text-lg leading-relaxed text-sand-200/85">
               {ar
-                ? "المنح والقروض والمسرّعات مبعثرة بين صندوق خليفة، ومَعاً، وأبوظبي للاقتصاد، وتَم، وHub71. تجمعها حِصّتي في مكان واحد — تطابق ما أنت مؤهَّل له، وتحوّل كل «لا» إلى خطوة موثّقة في قائمة واحدة."
-                : "Grants, loans and accelerators are scattered across Khalifa Fund, Ma'an, ADDED, TAMM and Hub71. Hissati ties them into one place — matches what you qualify for, and turns every “no” into a cited next step on one checklist."}
+                ? "تمويل الإمارات مبعثر بين عشرات البوابات. تجمعه حِصّتي في خطة واحدة موثّقة تطابق ما أنت مؤهَّل له — وتحوّل كل «لا» إلى خطوة تالية."
+                : "UAE funding is scattered across a dozen portals. Hissati ties it into one cited plan — matched to you, with every “no” turned into a next step."}
             </p>
-
-            {/* The one cited claim, in the ledger voice. */}
-            <div className="mt-6 inline-flex items-center gap-2.5 rounded-pill border border-amber/30 bg-night-700/40 py-1.5 pe-3 ps-3.5 backdrop-blur-sm">
-              <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-amber-100/70">
-                {t.withinReach}
-              </span>
-              <Money aed={2_000_000} locale={locale} className="text-base font-semibold text-amber-100" />
-              <span className="rounded-full bg-clay-100/80 px-1.5 py-0.5 font-mono text-[10px] leading-none text-clay">
-                ✓ {t.cited}
-              </span>
-            </div>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button size="lg" onClick={() => router.push("/questionnaire")}>

@@ -3,6 +3,7 @@ import { Tajawal, Fraunces, IBM_Plex_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { DirectionManager } from "@/components/DirectionManager";
 import { AppHeader } from "@/components/AppHeader";
+import { Footer } from "@/components/Footer";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 
@@ -101,6 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ServiceWorkerRegister />
         <AppHeader />
         <main className="min-h-0 min-w-0 flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );

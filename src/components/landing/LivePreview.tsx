@@ -58,12 +58,12 @@ export function LivePreview({ locale }: { locale: Locale }) {
           {ar ? "جرّبه الآن" : "Try it, right here"}
         </p>
         <h2 className="mt-2 text-3xl sm:text-4xl">
-          {ar ? "ليست صورة — هذه الواجهة الحقيقية" : "Not a screenshot — the real interface"}
+          {ar ? "لوحتك الشخصية" : "Your personal dashboard"}
         </h2>
         <p className="mt-2 text-ink-soft">
           {ar
-            ? "اشطب المستندات، وأعلِن إطلاق منتجك — وشاهد «ضمن متناولك» يقفز فوراً."
-            : "Tick the documents, mark your MVP launched — and watch “within reach” jump."}
+            ? "اشطب المستندات، وأنجِز خطواتك — وراقب نفسك تقترب من حلمك."
+            : "Tick documents, mark completed steps, and watch yourself come closer to your dream."}
         </p>
       </div>
 
