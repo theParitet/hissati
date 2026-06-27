@@ -313,23 +313,7 @@ Each claim is falsifiable and checkable in minutes — that's criterion 6.
 
 > **Honesty note (also criterion 6):** Of the 12 programs, the directly-quantified funding figures are Khalifa Fund SME (up to **AED 2M**, loan) and Hub71 Access (up to **AED 500K**, *in-kind* package), plus the licence-rung costs (Tajer ~AED 790; permits in the AED 0–1,000 band). Grant and VC amounts that are **not publicly fixed** (Ma'an, ADDED, Access Sharjah, Khalifa Award, the VCs) contribute `0` to "AED within reach" and flip an "amounts vary" flag rather than being invented, and the Arabic copy is marked **draft pending native review**. We'd rather under-claim and be verifiable than inflate a headline.
 
-## 7. How we score against criteria 1–7
-
-The hackathon scores filtration entirely from this repo on criteria 1–7, and *a criterion with no evidence in the repo is scored in its lowest band.* Here is where each is evidenced.
-
-| # | Criterion | Our evidence |
-|---|---|---|
-| **1** | **Impact & value** | Routes real, named funding (Khalifa Fund, Ma'an, licence rungs) to the exact person every other tool rejects — the idea-stage rural founder. The benefit is a concrete, sequenced path to capital, not a listicle. |
-| **2** | **Relevance to the challenge** | Squarely Challenge 1: it takes a founder from *idea* to a *concrete first action* (the first licence, its cost, the single next step), then onward to funding. |
-| **3** | **Feasibility** | Software-only, deployable today on free-tier Vercel; offline PWA + Arabic suit the rural, low-connectivity setting; no hardware, no second-sided marketplace, near-zero running cost. |
-| **4** | **Readiness** | Complete and working end-to-end: wizard → classification → roadmap → checklist → bilingual PDF, live at hissati.org and runnable offline. Demo video in [`/docs`](./docs). Not a mockup. |
-| **5** | **Scalability** | Eligibility is data, not code: rules live in [`src/data/programs.json`](./src/data/programs.json). Adding a program or a new emirate is a schema-validated data edit — no engine change. Tiers 2–3 already prove cross-UAE reach. |
-| **6** | **Falsifiability & evidence** | Every claim in §6 is testable; the Vitest suite doubles as evidence; every figure is cited to a primary source with a verified date, with unconfirmed values openly flagged. |
-| **7** | **Repo documentation** | This README covers every required section; the three architecture diagrams ([`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md)), the engineering ground rules ([`CLAUDE.md`](./CLAUDE.md)), the Vitest suite, screenshots, and sample PDFs let a judge understand, run, and verify from the repo alone. |
-
-*(Criterion 8 — presentation — is scored live on Sunday; our 3-minute offline run-of-show is in [`docs/superpowers/demo-script.md`](./docs/superpowers/demo-script.md).)*
-
-## 8. Tech stack
+## 7. Tech stack
 
 **Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · Zustand 5 (+persist) · Zod 3 · Vitest 2 · Vercel · Anthropic Claude (optional agent).**
 
@@ -337,7 +321,7 @@ Supporting libraries: **jsPDF + html2canvas** (client-side bilingual PDF), **qrc
 
 The deterministic core is plain TypeScript with no heavy dependencies, and the knowledge base ships in the bundle so matching needs zero network. Offline is a **hand-written service worker** (`public/sw.js`) — Next 16's Turbopack doesn't run the webpack hook that `next-pwa`/Serwist rely on — and the UI is built on **bespoke primitives** (`components/ui.tsx`), not a component library. The only server-side surface is an optional `/api/agent` route that keeps the API key off the client and returns structured results only (never HTML). Full layering, data flows, and the service-worker strategy are in [`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md).
 
-## 9. Run it locally
+## 8. Run it locally
 
 ```bash
 npm install
@@ -357,11 +341,11 @@ The agent is **optional**. Without `ANTHROPIC_API_KEY` the `/api/agent` route re
 5. Run the whole wizard → results → roadmap → PDF flow with no network
 ```
 
-## 10. Data & citations
+## 9. Data & citations
 
 The knowledge base is **hand-verified**, not scraped. Each of the 12 records in [`src/data/programs.json`](./src/data/programs.json) carries bilingual names, operator, tier, instrument, a structured amount, eligibility rules (each with a bilingual blocking message and an optional cited remedy), required documents, an application URL, and a **`source.url` + `verified_date`** (all `2026-06-26`). The dataset is validated against [`src/lib/schema.ts`](./src/lib/schema.ts) at module load and in `tests/programs.test.ts`, so a malformed record fails the build instead of shipping. Amounts that could not be live-confirmed against JavaScript-rendered government portals are left unfixed (they contribute `0` to "AED within reach" rather than an invented figure), and Arabic strings are drafted and flagged for native review before any public launch.
 
-## 11. Documentation
+## 10. Documentation
 
 | Reference | Covers |
 |---|---|
