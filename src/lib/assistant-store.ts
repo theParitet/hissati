@@ -9,6 +9,7 @@
 
 import { create } from "zustand";
 import type { Locale } from "@/lib/i18n";
+import { useHissati, effectiveProfile } from "@/lib/store";
 
 export interface Grounding {
   name: string;
@@ -21,6 +22,7 @@ export interface AssistantMsg {
   grounding?: Grounding[];
   programIds?: string[];
   compareIds?: string[];
+  form?: { fields: string[]; reason?: string };
 }
 
 const errText = (locale: Locale) =>
@@ -58,11 +60,13 @@ export const useAssistant = create<AssistantState>((set, get) => ({
     if (!clean || get().loading || get().enabled === false) return;
     const next: AssistantMsg[] = [...get().messages, { role: "user", content: clean }];
     set({ messages: next, loading: true });
+    const { answers, doneSteps } = useHissati.getState();
+    const profile = effectiveProfile(answers, doneSteps);
     try {
       const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ locale, messages: next.map((m) => ({ role: m.role, content: m.content })) }),
+        body: JSON.stringify({ locale, profile, messages: next.map((m) => ({ role: m.role, content: m.content })) }),
       });
       const data = await res.json();
       set({
@@ -72,10 +76,11 @@ export const useAssistant = create<AssistantState>((set, get) => ({
             ? { role: "assistant", content: errText(locale) }
             : {
                 role: "assistant",
-                content: data.reply || "…",
+                content: data.reply || (data.form ? "" : "…"),
                 grounding: data.grounding,
                 programIds: data.programIds,
                 compareIds: data.compareIds,
+                form: data.form,
               },
         ],
       });

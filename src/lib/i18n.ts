@@ -233,6 +233,9 @@ export const UI: Record<Locale, Record<string, string>> = {
     compareCount: "قارن",
     requirements: "المتطلبات المستوفاة",
     stackableShort: "قابل للجمع",
+    formPrompt: "لأجيبك بدقة، اختر ما يناسبك:",
+    formContinue: "متابعة",
+    myDetails: "تفاصيلي:",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -328,6 +331,9 @@ export const UI: Record<Locale, Record<string, string>> = {
     compareCount: "Compare",
     requirements: "Requirements met",
     stackableShort: "Stackable",
+    formPrompt: "To answer precisely, pick what fits:",
+    formContinue: "Continue",
+    myDetails: "My details:",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",

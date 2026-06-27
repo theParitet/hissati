@@ -57,6 +57,36 @@ function buildProfile(input: unknown): Profile {
   return p;
 }
 
+/**
+ * Only the fields actually present and valid — NO defaults. Used to seed the
+ * model with what the founder already answered (FR-I, item 11) so it never
+ * re-asks; absent fields stay absent (we don't assert a guess as a known fact).
+ */
+export function validatedProfileFields(input: unknown): Partial<Profile> {
+  const out: Partial<Profile> = {};
+  if (input && typeof input === "object") {
+    const obj = input as Record<string, unknown>;
+    for (const [key, schema] of Object.entries(FIELD_ENUMS)) {
+      const r = schema.safeParse(obj[key]);
+      if (r.success) (out as Record<string, unknown>)[key] = r.data;
+    }
+    if (typeof obj.relocation_willing === "boolean") out.relocation_willing = obj.relocation_willing;
+  }
+  return out;
+}
+
+/** Profile fields the assistant may request via the collect_profile form. */
+export const REQUESTABLE_FIELDS = [
+  "nationality_ownership",
+  "location",
+  "stage",
+  "registration",
+  "sector",
+  "funding_type",
+  "amount_band",
+  "relocation_willing",
+] as const;
+
 const PROFILE_SCHEMA = {
   type: "object" as const,
   description: "The founder's profile, inferred from the conversation. Provide every field you can.",
@@ -95,6 +125,24 @@ export const TOOLS = [
       type: "object",
       properties: { program_id: { type: "string", enum: PROGRAMS.map((p) => p.id) } },
       required: ["program_id"],
+    },
+  },
+  {
+    name: "collect_profile",
+    description:
+      "Ask the founder for specific profile fields you still need (e.g. location, stage, registration) BEFORE answering. The app renders a quick tap-to-answer form (the founder can also just type). Use this instead of re-asking the same question in prose. Only request fields you don't already know from the conversation or the KNOWN PROFILE.",
+    input_schema: {
+      type: "object",
+      properties: {
+        fields: {
+          type: "array",
+          items: { type: "string", enum: [...REQUESTABLE_FIELDS] },
+          minItems: 1,
+          maxItems: 5,
+        },
+        reason: { type: "string", description: "One short line on why you need these (shown above the form)." },
+      },
+      required: ["fields"],
     },
   },
   {
@@ -215,6 +263,8 @@ export function toolLabel(name: string, input: unknown): { labelEn: string; labe
       return { labelEn: `Looked up ${id ?? "a program"}`, labelAr: `بحث في ${id ?? "برنامج"}` };
     case "compare_programs":
       return { labelEn: "Compared the programs side by side", labelAr: "قارن بين البرامج جنباً إلى جنب" };
+    case "collect_profile":
+      return { labelEn: "Asked for a few details", labelAr: "طلب بعض التفاصيل" };
     default:
       return { labelEn: name, labelAr: name };
   }

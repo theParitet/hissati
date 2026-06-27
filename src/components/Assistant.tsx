@@ -7,12 +7,14 @@ import { Markdown } from "@/components/Markdown";
 import { ProgramCard } from "@/components/ProgramCard";
 import { ChecklistDialog } from "@/components/ChecklistDialog";
 import { CompareView } from "@/components/CompareView";
+import { ProfileForm } from "@/components/ProfileForm";
 import { useHissati, useLocale, effectiveProfile, isProfileComplete } from "@/lib/store";
 import { useAssistant } from "@/lib/assistant-store";
 import { getProgramById } from "@/lib/programs";
 import { evaluateProgramFull } from "@/lib/engine";
 import { matchScore } from "@/lib/scoring";
 import { buildComparison } from "@/lib/compare";
+import { ui, enumLabel } from "@/lib/i18n";
 import type { Profile } from "@/lib/schema";
 
 const T = {
@@ -51,8 +53,10 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
   const t = T[locale];
   const answers = useHissati((s) => s.answers);
   const doneSteps = useHissati((s) => s.doneSteps);
+  const setAnswer = useHissati((s) => s.setAnswer);
   const complete = isProfileComplete(answers);
   const profile = effectiveProfile(answers, doneSteps) as Profile;
+  const uiT = ui(locale);
 
   const enabled = useAssistant((s) => s.enabled);
   const messages = useAssistant((s) => s.messages);
@@ -62,6 +66,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
 
   const [input, setInput] = useState("");
   const [checklistId, setChecklistId] = useState<string | null>(null);
+  const [formDone, setFormDone] = useState<Set<number>>(new Set());
   const scrollRef = useRef<HTMLDivElement>(null);
   const isPage = variant === "page";
 
@@ -83,6 +88,17 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
     if (!value) return;
     setInput("");
     void send(value, locale);
+  }
+
+  // Form submit (item 11): persist the answers to the store (helps the whole app),
+  // then re-ask with a confirmation — send() now seeds the fuller profile.
+  function handleFormSubmit(idx: number, patch: Partial<Profile>) {
+    setFormDone((s) => new Set(s).add(idx));
+    setAnswer(patch);
+    const parts = Object.entries(patch).map(([k, v]) =>
+      typeof v === "boolean" ? (v ? uiT.yes : uiT.no) : enumLabel(k, String(v), locale)
+    );
+    void send(`${uiT.myDetails} ${parts.join(locale === "ar" ? "، " : ", ")}`, locale);
   }
 
   const card = (
@@ -133,11 +149,11 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
                 <div className="inline-block max-w-[85%] whitespace-pre-wrap break-words [overflow-wrap:anywhere] rounded-card bg-oasis px-3.5 py-2 text-sm text-sand-100">
                   {m.content}
                 </div>
-              ) : (
+              ) : m.content ? (
                 <div className="block w-fit max-w-[92%] rounded-card bg-sand-200 px-3.5 py-2.5 text-ink [&_*]:break-words">
                   <Markdown>{m.content}</Markdown>
                 </div>
-              )}
+              ) : null}
 
               {m.grounding && m.grounding.length > 0 && (
                 <div className="mt-1.5 flex flex-wrap gap-1.5">
@@ -190,6 +206,16 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
                     onOpenChecklist={setChecklistId}
                   />
                 </div>
+              )}
+
+              {/* collect_profile form (item 11) — tap to answer; the founder can also just type */}
+              {m.role === "assistant" && m.form && m.form.fields.length > 0 && !formDone.has(i) && (
+                <ProfileForm
+                  fields={m.form.fields}
+                  reason={m.form.reason}
+                  locale={locale}
+                  onSubmit={(patch) => handleFormSubmit(i, patch)}
+                />
               )}
             </div>
           ))}

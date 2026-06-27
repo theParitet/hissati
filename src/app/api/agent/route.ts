@@ -7,7 +7,7 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
-import { TOOLS, executeTool, toolLabel } from "@/lib/agent-tools";
+import { TOOLS, executeTool, toolLabel, validatedProfileFields, REQUESTABLE_FIELDS } from "@/lib/agent-tools";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,7 +18,7 @@ const SYSTEM = `You are Hissati's assistant — you help first-time founders in 
 
 SCOPE: only UAE business funding and licensing. If asked anything else, briefly decline and steer back.
 GROUNDING (critical): every fact about a program — eligibility, amounts, steps, sources — MUST come from a tool result. Never invent a program, figure, or rule. If no tool result supports an answer, say you don't have a program for that.
-PROFILE: infer the founder's fields (nationality/ownership, location, stage, registration, sector, funding type, amount) from the conversation and pass them to match_programs / steps_to_qualify. Ask one short clarifying question only when a missing field would change the answer.
+PROFILE: a "KNOWN PROFILE" block may be provided — treat those fields as already answered and NEVER ask them again. For fields you still need to give a good answer, call collect_profile (the app shows the founder a quick tap-to-answer form) instead of re-asking in prose. Pass the fullest profile you have to match_programs / steps_to_qualify / compare_programs.
 STYLE: concise; information, not legal or financial advice. Plain text only — never output HTML or markup; the app renders the UI.`;
 
 interface InMsg {
@@ -101,7 +101,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
 
-  const { messages, locale } = (body ?? {}) as { messages?: unknown; locale?: string };
+  const { messages, locale, profile } = (body ?? {}) as { messages?: unknown; locale?: string; profile?: unknown };
+  // Seed the model with what the founder already answered so it never re-asks.
+  const known = validatedProfileFields(profile);
+  const knownStr = Object.keys(known).length
+    ? `\n\nKNOWN PROFILE (already answered — DO NOT ask these again; pass them to the tools): ${JSON.stringify(known)}`
+    : "";
   const convo: InMsg[] = (Array.isArray(messages) ? messages : [])
     .filter(
       (m): m is InMsg =>
@@ -126,7 +131,7 @@ export async function POST(req: Request) {
       const resp = await client.messages.create({
         model: MODEL,
         max_tokens: 1024,
-        system: SYSTEM + `\nRespond in ${locale === "ar" ? "Arabic" : "English"}.`,
+        system: SYSTEM + knownStr + `\nRespond in ${locale === "ar" ? "Arabic" : "English"}.`,
         tools: TOOLS as Anthropic.Tool[],
         messages: work,
       });
@@ -139,6 +144,29 @@ export async function POST(req: Request) {
       if (resp.stop_reason === "tool_use") {
         work.push({ role: "assistant", content: resp.content });
         const toolUses = resp.content.filter((b): b is Anthropic.ToolUseBlock => b.type === "tool_use");
+
+        // collect_profile pauses the server loop and hands a form spec to the client.
+        // The client gathers answers, persists them, and re-asks with an enriched
+        // profile seed — far more robust than threading tool_results across requests.
+        const formReq = toolUses.find((tu) => tu.name === "collect_profile");
+        if (formReq) {
+          const f = (formReq.input ?? {}) as { fields?: unknown; reason?: unknown };
+          const fields = Array.isArray(f.fields)
+            ? f.fields
+                .filter((x): x is string => typeof x === "string" && (REQUESTABLE_FIELDS as readonly string[]).includes(x))
+                .slice(0, 5)
+            : [];
+          grounding.push({ name: "collect_profile", ...toolLabel("collect_profile", formReq.input) });
+          return NextResponse.json({
+            enabled: true,
+            reply: text,
+            grounding,
+            programIds: Array.from(programIds).slice(0, 6),
+            compareIds: Array.from(compareIds).slice(0, 3),
+            form: { fields, reason: typeof f.reason === "string" ? f.reason : undefined },
+          });
+        }
+
         const results: Anthropic.ToolResultBlockParam[] = toolUses.map((tu) => {
           grounding.push({ name: tu.name, ...toolLabel(tu.name, tu.input) });
           const result = executeTool(tu.name, tu.input);
