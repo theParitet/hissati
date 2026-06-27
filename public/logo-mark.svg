@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 88 88" fill="none" role="img" aria-label="Hissati">
+  <!-- Atomic, transparent compass mark. Default colours: oasis lines + gold arc.
+       For in-app theming use the <Logo> component (currentColor-aware). -->
+  <circle cx="50" cy="50" r="28" stroke="#14584a" stroke-width="13"/>
+  <path d="M 26.25 35.16 A 28 28 0 0 1 73.75 35.16" stroke="#cba35c" stroke-width="13"/>
+  <path d="M50 57 L50 38" stroke="#14584a" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M50 47 Q 46 40 41 40.5" stroke="#14584a" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M50 47 Q 54 40 59 40.5" stroke="#14584a" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M50 47 Q 44.5 44 38.5 46" stroke="#14584a" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M50 47 Q 55.5 44 61.5 46" stroke="#14584a" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="47.2" cy="46.2" r="1.5" fill="#14584a"/>
+  <circle cx="52.8" cy="46.2" r="1.5" fill="#14584a"/>
+</svg>
