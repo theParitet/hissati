@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, Undo2, Sparkles, FileDown, Share2, GitCompare, X } from "lucide-react";
 import { Button, Card, Eyebrow, Badge } from "@/components/ui";
-import { ReadinessGauge } from "@/components/ReadinessGauge";
 import { ProgramCard } from "@/components/ProgramCard";
 import { RoadmapStepCard } from "@/components/RoadmapStepCard";
 import { ChecklistDialog } from "@/components/ChecklistDialog";
@@ -20,10 +19,11 @@ import {
 import { ui, pick, toLocaleDigits } from "@/lib/i18n";
 import { PROGRAMS, getProgramById } from "@/lib/programs";
 import { evaluateAllFull } from "@/lib/engine";
-import { matchScore, readinessBreakdown } from "@/lib/scoring";
+import { matchScore } from "@/lib/scoring";
+import { progressStats } from "@/lib/metrics";
 import { deriveRoadmap } from "@/lib/roadmap";
 import { buildComparison } from "@/lib/compare";
-import { exportReadinessPdf } from "@/lib/pdf";
+import { exportPlanPdf } from "@/lib/pdf";
 import type { Profile } from "@/lib/schema";
 
 export default function Results() {
@@ -57,7 +57,7 @@ export default function Results() {
 
   const profile = effectiveProfile(answers, doneSteps) as Profile;
   const evaluated = evaluateAllFull(profile, PROGRAMS);
-  const breakdown = readinessBreakdown(profile, evaluated);
+  const stats = progressStats(profile, evaluated, doneSteps);
   const scored = evaluated.map((ev) => ({
     ev,
     pct: matchScore(profile, ev.program, ev.status, ev.rules),
@@ -81,13 +81,14 @@ export default function Results() {
   );
 
   const downloadPdf = () =>
-    exportReadinessPdf({ profile, evaluated, steps, score: breakdown.score, locale });
+    exportPlanPdf({ profile, evaluated, steps, stats, locale });
+  const reach = toLocaleDigits(stats.aedReachableNow, locale) + (stats.hasOpenEndedAmounts ? "+" : "");
   const waSummary =
     locale === "ar"
-      ? `حِصّتي · درجة جاهزيتي للتمويل: ${toLocaleDigits(breakdown.score, locale)}/${toLocaleDigits(100, locale)}. مؤهّل الآن: ${
+      ? `حِصّتي · ضمن متناولي: ${reach} درهم عبر ${toLocaleDigits(stats.programsEligible, locale)} برنامج. مؤهّل الآن: ${
           eligible.map((x) => pick(x.ev.program.name, locale)).slice(0, 3).join("، ") || "—"
         }.`
-      : `Hissati · My funding readiness: ${breakdown.score}/100. Eligible now: ${
+      : `Hissati · Within reach: AED ${reach} across ${stats.programsEligible} programs. Eligible now: ${
           eligible.map((x) => pick(x.ev.program.name, locale)).slice(0, 3).join(", ") || "—"
         }.`;
   const waHref = `https://wa.me/?text=${encodeURIComponent(waSummary)}`;
@@ -117,13 +118,23 @@ export default function Results() {
       {/* Gauge + roadmap */}
       <section className="mt-6 grid gap-5 md:grid-cols-[0.9fr_1.1fr]">
         <Card className="p-5">
-          <ReadinessGauge
-            score={breakdown.score}
-            locale={locale}
-            label={t.yourReadiness}
-            hint={t.readinessHint}
-            breakdown={breakdown}
-          />
+          {/* Placeholder stat block — the Dashboard leaf (L1) replaces this with
+              the funding-sky Overview + Stat/Money primitives. */}
+          <div className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint">
+            {locale === "ar" ? "ضمن متناولك" : "Within reach"}
+          </div>
+          <div className="mt-2 text-3xl font-bold text-oasis">
+            {locale === "ar" ? "" : "AED "}
+            {toLocaleDigits(stats.aedReachableNow, locale)}
+            {stats.hasOpenEndedAmounts ? "+" : ""}
+          </div>
+          <div className="mt-1 text-sm text-ink-soft">
+            {toLocaleDigits(stats.programsEligible, locale)} / {toLocaleDigits(stats.programsTotal, locale)}{" "}
+            {locale === "ar" ? "برنامج مؤهَّل" : "programs eligible"}
+            {" · "}
+            {toLocaleDigits(stats.stepsDone, locale)} / {toLocaleDigits(stats.stepsTotal, locale)}{" "}
+            {locale === "ar" ? "خطوة" : "steps"}
+          </div>
         </Card>
 
         <div>

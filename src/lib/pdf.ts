@@ -8,8 +8,14 @@ import { jsPDF } from "jspdf";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, localizeDate } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
+import type { ProgressStats } from "@/lib/metrics";
 import type { EvaluatedProgram, Profile } from "@/lib/schema";
 import type { RoadmapStep } from "@/lib/roadmap";
+
+/** Minimal grouped AED for the PDF header (L5 swaps in the shared formatAED). */
+function pdfAed(aed: number, locale: Locale): string {
+  return toLocaleDigits(aed.toLocaleString("en-US"), locale);
+}
 
 const C = {
   ink: "#21180f",
@@ -68,14 +74,14 @@ function programBlock(ev: EvaluatedProgram, profile: Profile, locale: Locale, t:
   </div>`;
 }
 
-export async function exportReadinessPdf(opts: {
+export async function exportPlanPdf(opts: {
   profile: Profile;
   evaluated: EvaluatedProgram[];
   steps: RoadmapStep[];
-  score: number;
+  stats: ProgressStats;
   locale: Locale;
 }): Promise<void> {
-  const { profile, evaluated, steps, score, locale } = opts;
+  const { profile, evaluated, steps, stats, locale } = opts;
   const t = ui(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
   const eligible = evaluated.filter((e) => e.status === "eligible");
@@ -103,8 +109,8 @@ export async function exportReadinessPdf(opts: {
         <div style="color:${C.soft};font-size:13px">${t.tagline} · ${t.builtFor}</div>
       </div>
       <div style="text-align:end">
-        <div style="font-size:40px;font-weight:800;color:${C.ink};line-height:1">${toLocaleDigits(score, locale)}<span style="font-size:18px;color:${C.faint}">/${toLocaleDigits(100, locale)}</span></div>
-        <div style="font-size:12px;color:${C.soft}">${t.yourReadiness}</div>
+        <div style="font-size:34px;font-weight:800;color:${C.oasis};line-height:1">${locale === "ar" ? "" : "AED "}${toLocaleDigits(stats.aedReachableNow, locale)}${stats.hasOpenEndedAmounts ? "+" : ""}</div>
+        <div style="font-size:12px;color:${C.soft}">${locale === "ar" ? "ضمن متناولك الآن" : "Within reach now"} · ${toLocaleDigits(stats.programsEligible, locale)}/${toLocaleDigits(stats.programsTotal, locale)} ${locale === "ar" ? "برنامج" : "programs"}</div>
       </div>
     </div>
 

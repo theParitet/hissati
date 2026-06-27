@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { evaluateAllFull, evaluateProgramFull } from "@/lib/engine";
 import { PROGRAMS, getProgramById } from "@/lib/programs";
-import { matchScore, readinessScore, estimateTimeToEligibility } from "@/lib/scoring";
+import { matchScore, estimateTimeToEligibility } from "@/lib/scoring";
 import type { Profile } from "@/lib/schema";
 import {
   dateFounderIdea,
@@ -11,38 +11,7 @@ import {
   mvpTechFounder,
 } from "./fixtures";
 
-const readinessFor = (p: Profile) => readinessScore(p, evaluateAllFull(p, PROGRAMS));
-
-describe("Readiness Score — THE CLIMB (FR-D2/D3, scoring.md §2.4)", () => {
-  const r0 = readinessFor(dateFounderIdea); // idea / unregistered
-  const r1 = readinessFor(dateFounderRegistered); // + trade licence
-  const r2 = readinessFor(dateFounderMvp); // + launched MVP
-  const r3 = readinessFor(dateFounderEstablished); // matured: established, 2yr+
-
-  // Deterministic, falsifiable claim — the exact rehearsed demo trajectory
-  // (CLAUDE.md build-order §4: "14 → 51 → 59 (±3)"; established → 75).
-  it("starts genuinely low — no funding open yet → 14", () => {
-    expect(r0).toBe(14);
-  });
-
-  it("jumps when registration unlocks two Tier-1 grants → 51", () => {
-    expect(r1).toBe(51);
-  });
-
-  it("rises again when the Khalifa loan flips eligible → 59", () => {
-    expect(r2).toBe(59);
-  });
-
-  it("climbs further as the business matures → 75", () => {
-    expect(r3).toBe(75);
-  });
-
-  it("is MONOTONIC across the whole climb — the gauge never regresses (FR-D3)", () => {
-    expect(r0).toBeLessThan(r1);
-    expect(r1).toBeLessThan(r2);
-    expect(r2).toBeLessThan(r3);
-  });
-});
+// The progress climb (AED within reach) is asserted in tests/metrics.test.ts.
 
 describe("Headline demo beat: Khalifa Fund loan flips almost → eligible at step 2", () => {
   const khalifa = getProgramById("khalifa-fund-sme")!;

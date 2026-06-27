@@ -181,11 +181,9 @@ export const UI: Record<Locale, Record<string, string>> = {
     no: "لا",
     fundingType: "نوع التمويل",
     fundingAmount: "المبلغ المطلوب",
-    optionalNote: "اختياري — يرفع درجة جاهزيتك",
+    optionalNote: "اختياري — يحسّن مطابقاتك",
 
     // results
-    yourReadiness: "جاهزيتك للتمويل",
-    readinessHint: "ترتفع الدرجة كلما أنجزت خطوة",
     eligibleNow: "مؤهّل الآن",
     almostEligible: "قريب من التأهّل",
     notAFit: "غير مناسب الآن",
@@ -289,10 +287,8 @@ export const UI: Record<Locale, Record<string, string>> = {
     no: "No",
     fundingType: "Type of funding",
     fundingAmount: "Amount you need",
-    optionalNote: "Optional — raises your readiness score",
+    optionalNote: "Optional — sharpens your matches",
 
-    yourReadiness: "Your funding readiness",
-    readinessHint: "The score climbs as you complete steps",
     eligibleNow: "Eligible now",
     almostEligible: "Almost eligible",
     notAFit: "Not a fit yet",
