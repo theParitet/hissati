@@ -5,13 +5,13 @@
  *
  * The persona is the project's hero user: an Emirati woman making date products at
  * home in Al Qua'a. Her climb (idea → registered → MVP) is the exact path the
- * dashboard + metrics tests pin: eligible funding programs 0 → 2 → 5 and "AED within
- * reach" 0 → 0 → 2,000,000 when Khalifa Fund's cited AED 2M loan flips eligible.
+ * dashboard + metrics tests pin: open matches 0 → 1 → 4 and "AED within reach"
+ * 0 → 0 → 2,000,000 when Khalifa Fund's cited financing flips.
  */
 import type { Profile, EvaluatedProgram } from "@/lib/schema";
 import type { SkyStar } from "@/components/dashboard/FundingSky";
 import { evaluateAllFull } from "@/lib/engine";
-import { progressStats, type ProgressStats } from "@/lib/metrics";
+import { isCurrentlyAvailable, progressStats, type ProgressStats } from "@/lib/metrics";
 import { PROGRAMS } from "@/lib/programs";
 import type { Locale } from "@/lib/i18n";
 
@@ -26,6 +26,9 @@ const IDEA: Profile = {
   sector: "dates",
   funding_type: "grant",
   amount_band: "lt_50k",
+  gender: "female",
+  farm_tenure: false,
+  social_impact: true,
 };
 const REGISTERED: Profile = { ...IDEA, registration: "lt_1yr" };
 const MVP: Profile = { ...REGISTERED, stage: "mvp" };
@@ -43,7 +46,7 @@ export function statsFor(profile: Profile): ProgressStats {
 /** Funding programs as sky stars (the dashboard's signature surface), for one profile. */
 export function fundingStars(profile: Profile): SkyStar[] {
   return evalFor(profile)
-    .filter((e) => FUNDING.has(e.program.instrument))
+    .filter((e) => FUNDING.has(e.program.instrument) && isCurrentlyAvailable(e.program))
     .map((e) => ({ id: e.program.id, name: e.program.name, status: e.status }));
 }
 
@@ -53,7 +56,8 @@ export const KHALIFA_ID = "khalifa-fund-sme";
 export const KHALIFA = {
   ceiling: 2_000_000,
   sourceUrl: "https://www.khalifafund.ae/services/funding-scheme/",
-  verifiedDate: "2026-06-26",
+  verifiedDate: "2026-06-27",
+  confidence: "confirmed" as const,
 };
 
 /* ── The scroll chain's rungs ──────────────────────────────────────────────
@@ -89,8 +93,8 @@ export const RUNGS: Rung[] = [
   {
     title: { en: "Get a home licence", ar: "احصل على رخصة منزلية" },
     note: {
-      en: "Mobdea via TAMM, a fee you pay (~AED 1,000) — it makes the business real.",
-      ar: "مبدِعة عبر تَم، رسوم تدفعها (~١٬٠٠٠ درهم) — تجعل المشروع حقيقياً.",
+      en: "Mobdea costs AED 860 — a fee she pays, never counted as funding.",
+      ar: "تبلغ رسوم مبدعة ٨٦٠ درهماً — تكلفة تدفعها ولا تُحتسب تمويلاً.",
     },
     profile: IDEA,
     aed: ideaStats.aedReachableNow,
@@ -99,8 +103,8 @@ export const RUNGS: Rung[] = [
   {
     title: { en: "Register the business", ar: "سجّل المشروع" },
     note: {
-      en: "Grants open up — Ma'an and ADDED become eligible (their awards vary).",
-      ar: "تنفتح المنح — تصبح مَعاً وأبوظبي للاقتصاد مؤهَّلة (مبالغها تختلف).",
+      en: "Ma’an Funding Requests opens; Tanami support unlocks, but is not counted as cash.",
+      ar: "تنفتح طلبات تمويل معاً ودعم تنامي، لكن الدعم غير النقدي لا يُحتسب تمويلاً.",
     },
     profile: REGISTERED,
     aed: regStats.aedReachableNow,
@@ -109,8 +113,8 @@ export const RUNGS: Rung[] = [
   {
     title: { en: "Launch your MVP → Khalifa Fund unlocks", ar: "أطلِق منتجك → يفتح صندوق خليفة" },
     note: {
-      en: "Khalifa's AED 2,000,000 loan flips from “almost” to eligible — within reach.",
-      ar: "يتحوّل تمويل صندوق خليفة (٢٬٠٠٠٬٠٠٠ درهم) من «قريب» إلى مؤهَّل — ضمن متناولك.",
+      en: "Khalifa's AED 2,000,000 financing path meets the published gates—without counting its overlapping products twice.",
+      ar: "يستوفي مسار تمويل صندوق خليفة بقيمة مليوني درهم الشروط المنشورة — من دون احتساب المنتجات المتداخلة مرتين.",
     },
     profile: MVP,
     aed: mvpStats.aedReachableNow,

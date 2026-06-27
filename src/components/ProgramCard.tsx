@@ -1,7 +1,7 @@
 "use client";
 
 import { ExternalLink, ListChecks, Clock, Layers, GitCompare, CheckCircle2, FileText, Pencil, Wallet } from "lucide-react";
-import { Card, Button, StatusPill, VerifiedStamp, trimLabels } from "@/components/ui";
+import { AvailabilityPill, Card, Button, StatusPill, VerifiedStamp, trimLabels } from "@/components/ui";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
@@ -56,6 +56,7 @@ export function ProgramCard({
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1.5">
           <StatusPill status={status} locale={locale} />
+          <AvailabilityPill availability={program.availability} locale={locale} />
           {showPct && (
             <span className="font-mono text-xs text-ink-faint" dir="ltr">
               {toLocaleDigits(pct!, locale)}% {t.match}
@@ -159,6 +160,8 @@ export function ProgramCard({
         <VerifiedStamp
           sourceUrl={program.source.url}
           verifiedDate={program.source.verified_date}
+          sourceDate={program.source.source_date}
+          confidence={program.source.confidence}
           locale={locale}
         />
         <div className="flex items-center gap-2 no-print">
@@ -177,7 +180,7 @@ export function ProgramCard({
           </Button>
           <a href={program.application_url} target="_blank" rel="noreferrer">
             <Button size="sm" variant="ghost">
-              {t.apply} <ExternalLink className="h-4 w-4" aria-hidden />
+              {["open", "rolling"].includes(program.availability.status) ? t.apply : t.source} <ExternalLink className="h-4 w-4" aria-hidden />
             </Button>
           </a>
         </div>

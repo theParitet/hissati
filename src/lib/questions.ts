@@ -16,6 +16,9 @@ export type QuestionId =
   | "registration"
   | "sector"
   | "funding"
+  | "gender"
+  | "farm_tenure"
+  | "social_impact"
   | "relocation_willing"
   | "team"
   | "has_pitch_deck"
@@ -44,17 +47,9 @@ export interface Question {
 /**
  * The full questionnaire, in default ask-order (most eliminating first; the
  * wizard skips/branches adaptively — FR-A0). 6 core gating + 1 conditional, then
- * 3 optional readiness questions that feed the Readiness Score + checklist only.
+ * 3 optional application-preparation questions that feed checklists only.
  */
 export const QUESTIONS: Question[] = [
-  {
-    id: "nationality_ownership",
-    kind: "single",
-    writes: ["nationality_ownership"],
-    coversRuleFields: ["nationality_ownership"],
-    gating: true,
-    options: ["emirati_majority", "emirati_minority", "gcc", "expat"],
-  },
   {
     id: "location",
     kind: "single",
@@ -62,6 +57,14 @@ export const QUESTIONS: Question[] = [
     coversRuleFields: ["location"],
     gating: true,
     options: ["al_quaa_al_ain", "abu_dhabi_other", "sharjah", "dubai", "other_uae", "outside_uae"],
+  },
+  {
+    id: "nationality_ownership",
+    kind: "single",
+    writes: ["nationality_ownership"],
+    coversRuleFields: ["nationality_ownership"],
+    gating: true,
+    options: ["emirati_majority", "emirati_minority", "gcc", "expat"],
   },
   {
     id: "stage",
@@ -106,6 +109,31 @@ export const QUESTIONS: Question[] = [
     filter: true,
   },
   {
+    id: "gender",
+    kind: "single",
+    writes: ["gender"],
+    coversRuleFields: ["gender"],
+    gating: true,
+    conditional: true,
+    options: ["female", "male"],
+  },
+  {
+    id: "farm_tenure",
+    kind: "boolean",
+    writes: ["farm_tenure"],
+    coversRuleFields: ["farm_tenure"],
+    gating: true,
+    conditional: true,
+  },
+  {
+    id: "social_impact",
+    kind: "boolean",
+    writes: ["social_impact"],
+    coversRuleFields: ["social_impact"],
+    gating: true,
+    conditional: true,
+  },
+  {
     id: "relocation_willing",
     kind: "boolean",
     writes: ["relocation_willing"],
@@ -113,12 +141,12 @@ export const QUESTIONS: Question[] = [
     gating: true,
     conditional: true,
   },
-  // --- optional readiness (non-gating; feed Readiness Score + checklist) ---
+  // --- optional preparation inputs (non-gating; feed checklists) ---
   {
     id: "team",
     kind: "single",
     writes: ["team"],
-    // The optional readiness block also covers the (numeric) employee_count gate (§4).
+    // The optional preparation block also covers the numeric employee_count gate.
     coversRuleFields: ["employee_count"],
     gating: false,
     options: ["solo", "cofounder", "technical_cofounder"],
@@ -156,6 +184,9 @@ export const RULE_FIELD_COVERAGE: Record<RuleField, QuestionId> = {
   relocation_willing: "relocation_willing",
   business_age: "registration",
   employee_count: "team",
+  gender: "gender",
+  farm_tenure: "farm_tenure",
+  social_impact: "social_impact",
 };
 
 export function getQuestion(id: QuestionId): Question | undefined {

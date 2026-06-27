@@ -1,8 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { evaluateAllFull, evaluateProgramFull } from "@/lib/engine";
-import { PROGRAMS, getProgramById } from "@/lib/programs";
+import { evaluateProgramFull } from "@/lib/engine";
+import { getProgramById } from "@/lib/programs";
 import { matchScore, estimateTimeToEligibility } from "@/lib/scoring";
-import type { Profile } from "@/lib/schema";
 import {
   dateFounderIdea,
   dateFounderRegistered,
@@ -30,10 +29,10 @@ describe("Match Score — worked examples (FR-C2, scoring.md §1.4)", () => {
     expect(matchScore(dateFounderEstablished, ev.program, ev.status, ev.rules)).toBe(83);
   });
 
-  it("Example B: hub71-access for the MVP tech founder (almost, needs relocation) = 54", () => {
+  it("Example B: hub71-access reflects the verified AED 750K package = 51", () => {
     const ev = evaluateProgramFull(mvpTechFounder, getProgramById("hub71-access")!);
     expect(ev.status).toBe("almost");
-    expect(matchScore(mvpTechFounder, ev.program, ev.status, ev.rules)).toBe(54);
+    expect(matchScore(mvpTechFounder, ev.program, ev.status, ev.rules)).toBe(51);
   });
 
   it("not_fit programs are not ranked (score 0)", () => {

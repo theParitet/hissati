@@ -120,6 +120,8 @@ export const useHissati = create<HissatiState>()(
  */
 export function useHydrated(): boolean {
   const [hydrated, setHydrated] = useState(false);
+  // This effect deliberately marks the client hydration boundary.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setHydrated(true), []);
   return hydrated;
 }

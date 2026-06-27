@@ -20,7 +20,7 @@ import {
 import { PROGRAMS, getProgramById } from "@/lib/programs";
 import { evaluateAllFull, evaluateProgramFull } from "@/lib/engine";
 import { matchScore, estimateTimeToEligibility } from "@/lib/scoring";
-import { progressStats } from "@/lib/metrics";
+import { isCurrentlyAvailable, progressStats } from "@/lib/metrics";
 import { deriveRoadmap } from "@/lib/roadmap";
 
 /** Conservative defaults so scoring never NaNs on a partial, model-supplied profile. */
@@ -184,6 +184,7 @@ export function executeTool(name: string, input: unknown): unknown {
           .filter((r) => !r.passed)
           .map((r) => ({ field: r.field, why: r.blocking_message, remediable: r.remediable, fix: r.remedy?.action })),
         source: e.program.source,
+        availability: e.program.availability,
       });
       const scored = evals.map(fmt);
       const stats = progressStats(profile, evals, []);
@@ -191,8 +192,13 @@ export function executeTool(name: string, input: unknown): unknown {
         aed_reachable_now: stats.aedReachableNow,
         aed_reachable_after_steps: stats.aedReachableAfterSteps,
         programs_eligible: stats.programsEligible,
-        eligible: scored.filter((s) => s.status === "eligible").sort((a, b) => b.match - a.match),
-        almost: scored.filter((s) => s.status === "almost").sort((a, b) => b.match - a.match),
+        eligible: scored
+          .filter((s) => s.status === "eligible" && isCurrentlyAvailable(getProgramById(s.id)!))
+          .sort((a, b) => b.match - a.match),
+        almost: scored
+          .filter((s) => s.status === "almost" && isCurrentlyAvailable(getProgramById(s.id)!))
+          .sort((a, b) => b.match - a.match),
+        unavailable: scored.filter((s) => !isCurrentlyAvailable(getProgramById(s.id)!)),
         not_fit: scored.filter((s) => s.status === "not_fit"),
       };
     }

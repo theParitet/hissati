@@ -48,6 +48,8 @@ export function ChecklistTab({
 
   useEffect(() => {
     if (selectedId) {
+      // Synchronize an explicit selection received from the parent dashboard.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setOpenId(selectedId);
       setMobilePane("detail");
     }

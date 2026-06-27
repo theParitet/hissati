@@ -28,8 +28,8 @@ Next.js (App Router) + TypeScript · Tailwind + shadcn/ui · Zustand+persist (lo
 - **Offline-first:** all assets (code, `programs.json`, fonts, icons) bundled locally; no runtime CDN; core flow works in airplane mode.
 - **Bilingual:** Arabic-first RTL + English LTR toggle (`dir` + Tailwind logical utilities). Web-first; mobile responsive only if time allows.
 - **Deterministic core, no backend:** matching/scoring are pure TS over `programs.json`, run in-browser. Never redefine the enums from `data-model.md`.
-- **No dead-ends:** every "not eligible today" surfaces ≥1 cited remedial step.
-- **Cited evidence:** every figure/rule shows its source + verified date. Do NOT present `programs-sources.md`'s unconfirmed figures as verified.
+- **No dead-ends:** every remediable near-match surfaces ≥1 cited next step.
+- **Cited evidence:** every record shows an access date and confidence; never present a pool, in-kind package, closed cycle, or reported figure as guaranteed cash.
 - **Agent (FR-I, P1, optional):** tool-calling only — the model returns text + tool calls; the app renders ALL UI from structured results; the model never emits HTML. App must fully work with the agent OFF; key server-side.
 - **Test fixtures are dev-only** (ER-3): not shipped, no in-app case-selector; cases entered manually in the demo.
 
@@ -37,8 +37,8 @@ Next.js (App Router) + TypeScript · Tailwind + shadcn/ui · Zustand+persist (lo
 1. Scaffold (Next.js+TS+Tailwind+shadcn); deploy empty to Vercel; confirm live URL + offline PWA shell.
 2. Types + Zod schema; load & validate `programs.json` (per data-model.md).
 3. `evaluateProgram`/`evaluateAll` + Vitest tests (classification, orphan-rule/question, no-dead-ends).
-4. Scoring (per-program match score) + the metric layer (`lib/metrics.ts`, **"AED within reach"** — replaced the readiness score) + tests asserting the climb: dates founder AED **0 → 0 → 2,000,000**, eligible programs **0 → 2 → 5 → 6**, Khalifa flips **almost → eligible at the MVP step**.
-5. Questionnaire wizard (FR-A: 6 + 1 conditional, adaptive, localStorage, offline).
+4. Scoring + availability-aware metric layer (`lib/metrics.ts`): date founder AED **0 → 0 → 2,000,000 → 7,000,000**, open matches **0 → 1 → 4 → 5**.
+5. Questionnaire wizard: 6 core + relevant conditional questions (gender, farm tenure, social impact, relocation), localStorage, offline.
 6. Results = 3-tab dashboard (Overview/funding-sky · Programs · Checklist) + almost/roadmap.
 7. Checklist + Arabic PDF export.
 8. Arabic/RTL polish, theme tokens (Al Qua'a look), README ("how we score against criteria 1–7" + ER-1 testable claims).
@@ -55,10 +55,10 @@ Note that this can be challenged if doesn't serve the final goal - winning hacka
 
 ## Build status (living)
 - ✅ 1 Scaffold (Next 16/TS/Tailwind v4) — builds; **Vercel deploy handled by user**.
-- ✅ 2 Types + Zod schema; `programs.json` (12 programs, 3 tiers) loads & validates.
+- ✅ 2 Types + Zod schema; `programs.json` (16 opportunities, 3 tiers) loads & validates.
 - ✅ 3 Engine (`evaluateProgram`/`evaluateAll`) + completeness tests.
 - ✅ 4 Per-program match score + metric layer (`lib/metrics.ts`).
-- ✅ 5 Wizard (adaptive, 6 + 1 conditional, localStorage, offline).
+- ✅ 5 Wizard (6 core + adaptive narrow-gate questions, localStorage, offline).
 - ✅ 6 Dashboard — 3 tabs (Overview/funding-sky · Programs · Checklist) + roadmap.
 - ✅ 7 Checklist + Arabic/English PDF export (`lib/pdf.ts`) + WhatsApp/QR share (`lib/share.ts`).
 - ✅ 8 RTL/theme tokens (Al Qua'a look) + README mapped to criteria 1–7 + hand-written SW.
@@ -66,7 +66,7 @@ Note that this can be challenged if doesn't serve the final goal - winning hacka
 
 ### Design/website overhaul (merged — branch `overhaul`)
 Multi-agent overhaul: a foundation trunk + 5 parallel worktree leaves (Header, PDF/Share, Dashboard, Assistant, Landing), merged green. What changed:
-- **Readiness Score → "AED within reach"** (`lib/metrics.ts`): an honest, cited number = Σ `max_aed` of *eligible funding* programs (licences excluded). Climb is now AED **0 → 0 → 2,000,000**, eligible programs **0 → 2 → 5 → 6**, Khalifa flips at the MVP step. `ReadinessGauge` and `readinessScore`/`readinessBreakdown` deleted; `tests/metrics.test.ts` pins the new climb. **49 tests green; `npm run build` clean.**
+- **Readiness Score → "AED within reach"** (`lib/metrics.ts`): sums conservative per-applicant values for open/rolling matches, excludes pools/costs/services/closed windows, and groups alternative products. Climb: AED **0 → 0 → 2,000,000 → 7,000,000**; open matches **0 → 1 → 4 → 5**. `tests/metrics.test.ts` pins the result. **55 tests green.**
 - **3-tab dashboard** (`src/components/dashboard/`): Overview (compact stat strip + the dark **"funding sky"** signature) · Programs · Checklist. Nav labels: **My plan** (`/results`) · **Assistant** · **My details** (`/questionnaire`).
 - **Tailwind-v4 token system** reconciled in `globals.css` (`oasis/amber/clay/sand/ink/night/palm/almost`); Al Sadu restrained to one signature band (hero + PDF seal). Fonts: Tajawal + Fraunces + IBM Plex Mono.
 - New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), **PDF plan** + **share sheet**. Real app screenshots in `docs/screenshots/`. Docs (README, `.local-docs/design.md`, this file, demo script) reconciled to shipped reality.

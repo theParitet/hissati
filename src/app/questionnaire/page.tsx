@@ -19,6 +19,9 @@ const SHORT_LABEL: Record<string, { en: string; ar: string }> = {
   registration: { en: "Registration", ar: "التسجيل" },
   sector: { en: "Sector", ar: "المجال" },
   funding: { en: "Funding", ar: "التمويل" },
+  gender: { en: "Women-only", ar: "برامج النساء" },
+  farm_tenure: { en: "Farm", ar: "المزرعة" },
+  social_impact: { en: "Social impact", ar: "الأثر الاجتماعي" },
   relocation_willing: { en: "Relocation", ar: "الانتقال" },
   team: { en: "Team", ar: "الفريق" },
   has_pitch_deck: { en: "Pitch deck", ar: "العرض" },
@@ -52,6 +55,8 @@ export default function Questionnaire() {
     if (!hydrated || resumed) return;
     const s = wizardSteps(answers);
     const firstUnanswered = s.findIndex((id) => !isStepAnswered(id, answers));
+    // One-time synchronization from the persisted external store after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIndex(firstUnanswered === -1 ? s.length - 1 : firstUnanswered);
     setResumed(true);
   }, [hydrated, resumed, answers]);
@@ -63,7 +68,7 @@ export default function Questionnaire() {
   const answeredCount = steps.filter((id) => isStepAnswered(id, answers)).length;
   const progressPct = total ? (answeredCount / total) * 100 : 0;
   const Forward = locale === "ar" ? ArrowLeft : ArrowRight;
-  const complete = isProfileComplete(answers);
+  const complete = isProfileComplete(answers) && steps.every((id) => isStepAnswered(id, answers));
 
   function goNext() {
     if (clamped < steps.length - 1) setIndex(clamped + 1);

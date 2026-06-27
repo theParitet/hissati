@@ -21,7 +21,7 @@ import { ui, enumLabel } from "@/lib/i18n";
 import { PROGRAMS } from "@/lib/programs";
 import { evaluateAllFull } from "@/lib/engine";
 import { matchScore } from "@/lib/scoring";
-import { progressStats } from "@/lib/metrics";
+import { isCurrentlyAvailable, progressStats } from "@/lib/metrics";
 import { deriveRoadmap, type RoadmapStep } from "@/lib/roadmap";
 import { buildSharePayload } from "@/lib/share";
 import { exportPlanPdf } from "@/lib/pdf";
@@ -73,7 +73,7 @@ export default function Results() {
   const steps = deriveRoadmap(evaluated);
 
   const stars: SkyStar[] = scored
-    .filter((x) => FUNDING.has(x.ev.program.instrument))
+    .filter((x) => FUNDING.has(x.ev.program.instrument) && isCurrentlyAvailable(x.ev.program))
     .map((x) => ({ id: x.ev.program.id, name: x.ev.program.name, status: x.ev.status }));
 
   const downloadPdf = () => exportPlanPdf({ profile, evaluated, steps, stats, locale });
@@ -86,8 +86,8 @@ export default function Results() {
 
   const navItems: NavItem[] = [
     { id: "overview", label: t.tabOverview, icon: LayoutGrid },
-    { id: "programs", label: t.tabPrograms, icon: Layers, count: eligible.length, tone: "palm" },
-    { id: "checklist", label: t.tabChecklist, icon: ListChecks, count: eligible.length + almost.length },
+    { id: "programs", label: t.tabPrograms, icon: Layers, count: stats.programsEligible, tone: "palm" },
+    { id: "checklist", label: t.tabChecklist, icon: ListChecks, count: stats.programsEligible + stats.programsAlmost },
   ];
 
   // Slim per-section actions for the dashboard top strip.

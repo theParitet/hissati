@@ -14,9 +14,8 @@ const statsFor = (p: Profile) => progressStats(p, evaluateAllFull(p, PROGRAMS), 
 
 /**
  * The "climb" — replaces the readiness-score climb. The headline metric is the
- * honest, cited "AED within reach": the sum of the upper funding bound (max_aed)
- * of each ELIGIBLE funding program. Licences are fees the founder pays, not funding,
- * so they never count; open-ended grants contribute 0 and flip hasOpenEndedAmounts.
+ * conservative "AED within reach": explicit per-applicant countable values for
+ * currently available matches, with alternative products de-duplicated.
  *
  * Date-founder path: idea → register a trade licence → launch an MVP → mature.
  * The cited money beat is at MVP, where Khalifa's AED 2M loan flips eligible.
@@ -28,17 +27,16 @@ describe("progressStats — the climb (replaces the readiness score)", () => {
     expect(s.aedReachableNow).toBe(0);
   });
 
-  it("registration unlocks eligible grants — count rises (their awards are honestly open-ended)", () => {
+  it("registration unlocks Ma’an Funding Requests — count rises without inventing an amount", () => {
     const idea = statsFor(dateFounderIdea);
     const reg = statsFor(dateFounderRegistered);
     expect(reg.programsEligible).toBeGreaterThan(idea.programsEligible);
-    // Ma'an / ADDED awards are not publicly fixed → no invented AED figure, but
-    // Khalifa's AED 2M is one roadmap step away (counted in aedReachableAfterSteps).
+    // Ma'an publishes no fixed ceiling; Khalifa/EDB financing remains on the roadmap.
     expect(reg.hasOpenEndedAmounts).toBe(true);
     expect(reg.aedReachableAfterSteps).toBeGreaterThan(0);
   });
 
-  it("Khalifa Fund (AED 2M loan) flips eligible at MVP → AED within reach jumps to 2,000,000", () => {
+  it("Khalifa alternatives flip at MVP without double-counting → AED 2,000,000", () => {
     const reg = statsFor(dateFounderRegistered);
     const mvp = statsFor(dateFounderMvp);
     expect(mvp.programsEligible).toBeGreaterThan(reg.programsEligible);
@@ -64,10 +62,13 @@ describe("progressStats — the climb (replaces the readiness score)", () => {
     expect(s.aedReachableNow).toBeLessThanOrEqual(s.aedReachableAfterSteps);
   });
 
-  it("licences (fees the founder pays) never count toward funding programs", () => {
-    // tajer-abu-dhabi + mobdea are eligible licences even at idea stage, yet excluded.
+  it("licences, support, closed cycles and unpublished VC windows never count", () => {
     expect(statsFor(dateFounderIdea).programsTotal).toBe(
-      PROGRAMS.filter((p) => p.instrument !== "license").length
+      PROGRAMS.filter(
+        (p) =>
+          ["grant", "loan", "equity", "accelerator"].includes(p.instrument) &&
+          ["open", "rolling"].includes(p.availability.status),
+      ).length
     );
   });
 
@@ -84,19 +85,25 @@ describe("progressStats — the climb (replaces the readiness score)", () => {
  * the real numbers the engine computes today; if the dataset changes, update here.
  */
 describe("progressStats — exact cited values (README evidence)", () => {
-  it("9 funding programs total (12 minus 3 licences)", () => {
-    expect(statsFor(dateFounderIdea).programsTotal).toBe(9);
+  it("6 currently available funding programs out of 16 tracked opportunities", () => {
+    expect(PROGRAMS).toHaveLength(16);
+    expect(statsFor(dateFounderIdea).programsTotal).toBe(6);
   });
-  it("eligible-program climb: 0 → 2 → 5 → 6", () => {
+  it("open-match climb: 0 → 1 → 4 → 5", () => {
     expect(statsFor(dateFounderIdea).programsEligible).toBe(0);
-    expect(statsFor(dateFounderRegistered).programsEligible).toBe(2);
-    expect(statsFor(dateFounderMvp).programsEligible).toBe(5);
-    expect(statsFor(dateFounderEstablished).programsEligible).toBe(6);
+    expect(statsFor(dateFounderRegistered).programsEligible).toBe(1);
+    expect(statsFor(dateFounderMvp).programsEligible).toBe(4);
+    expect(statsFor(dateFounderEstablished).programsEligible).toBe(5);
   });
-  it("AED-within-reach climb: 0 → 0 → 2,000,000 → 2,000,000 (Khalifa AED 2M loan)", () => {
+  it("AED climb is 0 → 0 → 2M → 7M after EDB becomes available", () => {
     expect(statsFor(dateFounderIdea).aedReachableNow).toBe(0);
     expect(statsFor(dateFounderRegistered).aedReachableNow).toBe(0);
     expect(statsFor(dateFounderMvp).aedReachableNow).toBe(2_000_000);
-    expect(statsFor(dateFounderEstablished).aedReachableNow).toBe(2_000_000);
+    expect(statsFor(dateFounderEstablished).aedReachableNow).toBe(7_000_000);
+  });
+  it("does not count closed collective prize pools or both Khalifa alternatives", () => {
+    const mvp = statsFor(dateFounderMvp);
+    expect(mvp.aedReachableNow).toBe(2_000_000);
+    expect(PROGRAMS.find((p) => p.id === "khalifa-entrepreneurship-competition")?.amount.countable_max_aed).toBeNull();
   });
 });

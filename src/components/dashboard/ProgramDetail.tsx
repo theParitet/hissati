@@ -20,7 +20,7 @@ import {
   ArrowUpRight,
   FileText,
 } from "lucide-react";
-import { Button, StatusPill, VerifiedStamp } from "@/components/ui";
+import { AvailabilityPill, Button, StatusPill, VerifiedStamp } from "@/components/ui";
 import { ShareSheet } from "@/components/ShareSheet";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
@@ -70,6 +70,7 @@ export function ProgramDetail({
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1.5">
           <StatusPill status={status} locale={locale} />
+          <AvailabilityPill availability={program.availability} locale={locale} />
           {showPct && (
             <span className="font-mono text-xs leading-none text-ink-faint" dir="ltr">
               {toLocaleDigits(pct!, locale)}% {t.match}
@@ -122,7 +123,13 @@ export function ProgramDetail({
         {status === "eligible" && (
           <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-palm">
             <CheckCircle2 className="h-4 w-4" aria-hidden />
-            {locale === "ar" ? "كل المتطلبات مستوفاة — يمكنك التقديم اليوم." : "All requirements met — you can apply today."}
+            {["open", "rolling"].includes(program.availability.status)
+              ? locale === "ar"
+                ? "تستوفي الشروط المنشورة — يمكنك فتح مسار التقديم."
+                : "Published criteria met — you can open the application route."
+              : locale === "ar"
+                ? "تستوفي الشروط المنشورة، لكن نافذة التقديم ليست مفتوحة حالياً."
+                : "Published criteria met, but the application window is not currently open."}
           </p>
         )}
 
@@ -190,12 +197,14 @@ export function ProgramDetail({
         <VerifiedStamp
           sourceUrl={program.source.url}
           verifiedDate={program.source.verified_date}
+          sourceDate={program.source.source_date}
+          confidence={program.source.confidence}
           locale={locale}
         />
         <div className="no-print mt-3 flex flex-wrap items-center gap-2">
           <a href={program.application_url} target="_blank" rel="noreferrer">
             <Button size="sm">
-              {t.apply} <ExternalLink className="h-4 w-4" aria-hidden />
+              {["open", "rolling"].includes(program.availability.status) ? t.apply : t.source} <ExternalLink className="h-4 w-4" aria-hidden />
             </Button>
           </a>
           <Button size="sm" variant="outline" onClick={() => onOpenChecklist(program.id)}>

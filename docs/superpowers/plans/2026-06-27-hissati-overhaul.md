@@ -1,5 +1,7 @@
 # Hissati Design & Website Overhaul — Implementation Plan
 
+> Historical implementation plan. Metric and dataset details were superseded by the schema-3 reliability pass in `docs/verification-report.md`.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (foundation) and superpowers:dispatching-parallel-agents (leaves). Steps use checkbox (`- [ ]`) syntax for tracking. Spec: `docs/superpowers/specs/2026-06-27-hissati-overhaul-design.md`.
 
 **Goal:** Overhaul Hissati's design/UX (identity, 3-tab dashboard, landing, assistant, header, PDF/WhatsApp, docs) around one cited number — "AED within reach" — replacing the readiness score, to win the Tatweer Hackathon.

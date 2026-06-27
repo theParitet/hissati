@@ -28,7 +28,7 @@ export interface SharePayload {
  * The message a founder is PROUD to forward to family or a mentor: one punchy line
  * leading with the exciting, specific outcome (the cited AED within reach), the top
  * 1–3 eligible programs, and a cited tag — short, warm, tasteful emoji, bilingual.
- * When nothing is eligible yet it leads on momentum ("N one step away") so it never
+ * When nothing is open yet it leads on roadmap momentum so it never
  * reads as a dead end. The per-program variant is the founder claiming one match.
  */
 export function buildSharePayload(args: {
@@ -47,11 +47,16 @@ export function buildSharePayload(args: {
     const name = pick(program.name, locale);
     const range = formatAmountRange(program.amount, locale);
     const how = ui(locale)[`intro_${program.intro_method}`] ?? "";
+    const available = program.availability.status === "open" || program.availability.status === "rolling";
     return {
       title: "Hissati",
       body: isAr
-        ? `🎯 وجدت تمويلي: «${name}» — ${range}${how ? `، عبر ${how}` : ""}.\nكل التفاصيل بمصدرها 👇`
-        : `🎯 Found my funding match: ${name} — ${range}${how ? `, via ${how}` : ""}.\nAll details source-checked 👇`,
+        ? available
+          ? `🎯 وجدت مطابقة تمويل مفتوحة: «${name}» — ${range}${how ? ` · ${how}` : ""}.\nكل التفاصيل بمصدرها 👇`
+          : `🔎 أتابع الدورة القادمة من «${name}» — ${range}.\nالحالة والتفاصيل موثّقة هنا 👇`
+        : available
+          ? `🎯 Found an open funding match: ${name} — ${range}${how ? ` · ${how}` : ""}.\nAll details source-checked 👇`
+          : `🔎 I’m tracking the next cycle of ${name} — ${range}.\nIts status and source-checked details are here 👇`,
       // Per-program: the apply link is the useful destination for the recipient.
       url: url ?? program.application_url,
     };
@@ -69,8 +74,8 @@ export function buildSharePayload(args: {
   // No money in hand yet → lead on momentum so the message still feels like a win.
   if (count === 0 || stats?.aedReachableNow === 0) {
     const body = isAr
-      ? `🌱 رسمت طريقي نحو التمويل الإماراتي${almost ? ` — ${almost} برنامج على بُعد خطوة واحدة` : ""}.\nهذه خطتي بخطواتها الموثّقة 👇`
-      : `🌱 I mapped my path to UAE funding${almost ? ` — ${almost} programs are one step away` : ""}.\nHere's my cited plan and exact next steps 👇`;
+      ? `🌱 رسمت طريقي نحو التمويل الإماراتي${almost ? ` — ${almost} برنامج ضمن خارطة طريقي` : ""}.\nهذه خطتي بخطواتها الموثّقة 👇`
+      : `🌱 I mapped my path to UAE funding${almost ? ` — ${almost} programs are on my roadmap` : ""}.\nHere's my cited plan and exact next steps 👇`;
     return { title: "Hissati", body, url };
   }
 

@@ -22,6 +22,9 @@ export const dateFounderIdea: Profile = {
   sector: "dates",
   funding_type: "grant",
   amount_band: "lt_50k",
+  gender: "female",
+  farm_tenure: false,
+  social_impact: true,
 };
 
 /** Step 1 — after "Register a trade licence (Tajer Abu Dhabi)" is done. */

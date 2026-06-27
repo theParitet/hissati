@@ -1,153 +1,133 @@
-# Hissati · حصتي
+# Hissati · حِصّتي
 
-**A bilingual, offline-first funding *readiness navigator* for first-time founders in UAE.**
+**An Arabic-first, offline funding-path navigator for first-time UAE founders.**
 
-Hissati (حصتي, *"my share"*) matches a UAE founder to real funding programs and — for the ones they don't yet qualify for — names the **exact blocking rule** and generates the **shortest cited path** to becoming eligible. Every existing tool dead-ends at *"you don't qualify."* Hissati turns that "no" into a sequenced, sourced next step.
+Hissati matches a founder against published programme criteria, names each blocking rule, and turns “not yet” into a cited next step. It was built for Tatweer Hackathon Challenge 1: helping people in Al Qua’a take the first entrepreneurial step.
 
-🔗 **Live demo:** https://hissati.org  ·  💻 **Repo:** https://github.com/theParitet/TatweerHackathon404Team
-🎬 **Demo video:** [`/docs/demo.mp4`](./docs)  ·  🏷️ **Tatweer Hackathon — Challenge 1: Taking the first entrepreneurial step**
+**Live:** https://hissati.org · **Repository:** https://github.com/theParitet/TatweerHackathon404Team
 
----
+## 1. The challenge and beneficiary
 
-## 1. The challenge and the problem
+First-time founders face fragmented programme pages, unclear eligibility, English-heavy portals, and poor connectivity. A founder making date products at home may be ineligible for financing today, but still needs to know which licence to obtain, what it costs, and what that step unlocks.
 
-**Challenge 1 — Taking the first entrepreneurial step.** Many people in Al Qua'a have a viable idea or a real skill but never start a business. The barrier is rarely ambition — it's not knowing the first move, what's required, or where to begin.
+Hissati is designed first for Al Qua’a and Al Ain:
 
-The specific problem we target: **the eligibility wall.** A first-time founder researching funding meets a wall of "you don't qualify" — Khalifa Fund's calculator covers one fund, and everything else is a static list. None of them tells the founder *what to do next*. The information that would actually move them forward (which licence, what it costs, what it unlocks) is scattered, in English, and online-only — which fails a dispersed, weak-connectivity, Arabic-first community.
+- Idea-stage founders who have not registered a business.
+- Operating camel, date, food, or tourism businesses seeking growth finance.
+- MVP-stage founders considering accelerators or competitions.
 
-## 2. Who it's for
+## 2. What the product does
 
-Built first for the **Al Qua'a first-time founder** — e.g. an Emirati woman making date products at home, idea-stage, not yet registered. She is the person every existing tool rejects, so for her *the readiness path itself is the value.*
+1. An adaptive six-question core collects location, ownership, stage, registration, sector, and funding need.
+2. Narrow questions appear only when relevant: women-only programmes, farm tenure, social impact, and Hub71 relocation.
+3. A deterministic TypeScript engine evaluates the bundled dataset into:
+   - **Published criteria met**
+   - **Almost** — one or two remediable gaps
+   - **Not a fit** — a published hard gate fails
+4. The dashboard produces an ordered roadmap, application checklist, Arabic/English PDF, and WhatsApp share.
 
-| Persona | Situation | What Hissati gives them |
-|---|---|---|
-| **New founder** (idea-stage, unregistered) | Rejected by almost every program | The fastest cited path to a first licence, then to first funding — never a zero-results screen |
-| **Operating founder** (e.g. 1–2yr camel-dairy) | Seeking expansion funding | Programs they're eligible for now, ranked, with document checklists |
-| **Early tech founder** (MVP/traction) | Reaching for the "stretch tier" | Accelerator/competition matches (Hub71, Sheraa, Khalifa Award) with the exact gap to close |
-| **Judge / skeptic** | Must verify claims fast | Every figure cited to a primary source with a verified date, checkable from this repo |
+The assessment is a preliminary screen, not approval. Loans, investments, accelerators, and competitions retain their own credit, due-diligence, and selection processes.
 
-## 3. The solution
+## 3. Data reliability
 
-A short, **Arabic-first (RTL)** questionnaire of ~6 questions feeds a **deterministic matching engine** that classifies every program into one of three buckets and explains itself:
+The knowledge base contains **16 tracked opportunities across three tiers**:
 
-- **Eligible now** — you meet every rule.
-- **Almost eligible** — 1–2 *remediable* rules block you; the card shows "You could qualify if…" with the exact missing condition and the next action.
-- **Not a fit** — a non-remediable gate, shown in the "why not" explainer rather than padded into results.
+- Three licence rungs.
+- One non-cash enablement framework.
+- Twelve funding, accelerator, competition, or investment opportunities.
 
-From the "almost" set, Hissati builds a **Funding Readiness Roadmap** (ordered, cited steps) and a single **Readiness Score (0–100)** that climbs as steps are marked done — programs visibly unlock in real time. The output exports as a **downloadable Arabic PDF plan** with per-program document checklists.
+As checked on **2026-06-27**, **six funding opportunities have an open or rolling application route**. Closed annual competitions remain visible with a “next cycle” label; unpublished VC windows are not counted as open.
 
-**Key characteristics**
-- 🛰️ **Offline-first PWA** — the entire wizard → results → roadmap → PDF flow runs in airplane mode. Built for Al Qua'a's connectivity, not a city's.
-- 🌐 **Bilingual, Arabic-first** — full RTL with an English toggle; self-hosted Tajawal font (no runtime CDN).
-- 📑 **Cited or it doesn't ship** — every AED figure and eligibility rule traces to a primary source with a "verified June 2026" date. Nothing is invented.
-- 🤖 **Optional grounded agent** — a Claude-powered chat that turns vague/dialect questions into structured lookups. It calls the *same* engine over the *same* cited data; the app is fully usable with it switched off.
+Every record contains:
 
-## 4. How it works
+- A primary source and access date.
+- The source’s own date where published.
+- A confidence tag: `confirmed`, `reported`, or `estimated`.
+- A frozen availability state: `open`, `rolling`, `closed`, or `unknown`.
+- A conservative per-applicant amount used by the headline metric.
 
-```
-Questionnaire (≈6 Qs, offline, persisted)
-        ▼
-evaluateAll(profile) → matchScore → readinessScore → buildRoadmap
-        ▼
- ┌───────────┬───────────────┬──────────────────┐
- Eligible now   Almost eligible    Not a fit
- (cards +       (cards + the        (explained,
-  checklist)     missing rule +      never an empty
-                 the cited fix)      screen → pre-reg track)
-        ▼
- Mark a roadmap step done → profile re-evaluated → score tweens up,
- "almost" cards flip to "eligible" in real time
-```
+See [programs-sources.md](programs-sources.md) and [the verification report](docs/verification-report.md).
 
-The engine (`evaluateProgram`, `matchScore`, `readinessScore`, `estimateTimeToEligibility`, `buildRoadmap`) is **pure and deterministic** — same inputs always produce the same outputs, with no clock, network, or randomness. That's what makes the demo unbreakable and every claim below reproducible.
+## 4. “AED within reach” without inflation
 
-## 5. Testable claims (verify these from the repo)
+The headline metric counts only `amount.countable_max_aed` for open or rolling matches.
 
-Each claim is falsifiable and checkable in minutes — that's criterion 6.
+It deliberately excludes:
 
-| Claim | How to verify |
+- Licence fees and support services.
+- Closed competitions.
+- Collective prize pools presented as though one founder receives the pool.
+- In-kind-only benefits.
+- Unknown VC ticket sizes.
+- Duplicate alternatives from the same Khalifa Fund product family.
+
+For the tested Al Qua’a date-products founder, the deterministic climb is:
+
+| Stage | Open matches | AED within reach |
+|---|---:|---:|
+| Idea, unregistered | 0 / 6 | AED 0 |
+| Registered | 1 / 6 | AED 0 |
+| Operating MVP | 4 / 6 | AED 2,000,000 |
+| Established, 2+ years | 5 / 6 | AED 7,000,000 |
+
+The final step adds the separately sourced EDB AgriTech facility. Khalifa’s general and agricultural products remain two useful paths in the UI but contribute only one AED 2M grouped ceiling.
+
+## 5. Testable claims
+
+| Claim | Verification |
 |---|---|
-| **12 currently-open programs** across 3 tiers, each linked to a primary source with a verified date | Open [`data/programs.json`](./data/programs.json) + [`programs-sources.md`](./programs-sources.md) |
-| **100% of "not eligible today" profiles return ≥1 actionable, cited step** (the no-dead-ends guarantee) | `pnpm test` → `tests/deadends.test.ts` |
-| **Matched result in < 1s on throttled 3G** | DevTools → Network: *Slow 3G* → run the wizard (engine is O(programs × rules), sub-millisecond) |
-| **A new founder reaches a concrete first action in ≤ 3 clicks** | "I only have an idea" → wizard → results with roadmap visible |
-| **The full flow runs offline** | DevTools → Network → *Offline* → reload → complete wizard → PDF (see airplane-mode screenshot in [`/docs/evidence`](./docs/evidence)) |
-| **The Readiness Score climbs monotonically 14 → 51 → 58 → 75** for the seeded idea-stage founder as steps complete | `pnpm test` → `tests/scoring.readiness.test.ts` |
-| **The knowledge base validates against a committed Zod schema** | `pnpm run validate:kb` |
+| 16 records validate against the committed Zod schema | `npm test -- --no-cache` → `tests/programs.test.ts` |
+| Source confidence and availability dates exist on every record | `tests/programs.test.ts` |
+| Questionnaire fields and eligibility rules cannot drift | `tests/completeness.test.ts` |
+| Every almost-match has a concrete remedy | `tests/engine.test.ts` |
+| AED totals exclude pools, costs, closed cycles, and duplicate alternatives | `tests/metrics.test.ts` |
+| The exact `0 → 0 → 2M → 7M` climb is reproducible | `tests/metrics.test.ts` |
+| The core runs with no network or backend | bundled JSON + pure functions in `src/lib/` |
 
-> **Honesty note (also criterion 6):** Of the 12 programs, the directly-quantified funding figures are Khalifa Fund SME (up to **AED 2M**, loan) and Hub71 Access (up to **AED 500K**, *in-kind* package), plus the licence-rung costs (Tajer ~AED 790; Mobdea/DCT permits in the AED 0–1,000 band). Grant and VC amounts that are **not publicly fixed** (Ma'an, ADDED, Access Sharjah, Khalifa Award, the VCs) are shown as such rather than invented. Figures not confirmable against a live portal fetch are flagged in [`programs-sources.md`](./programs-sources.md), and the Arabic copy is marked **draft pending native review**. We'd rather under-claim and be verifiable than inflate a headline.
+## 6. Architecture and feasibility
 
-## 6. How we score against criteria 1–7
+- **Next.js 16 / React 19 / TypeScript**
+- **Tailwind CSS v4**
+- **Zod** for dataset validation
+- **Zustand persist** for on-device answers and progress
+- **Vitest** for deterministic evidence
+- **html2canvas + jsPDF** for bilingual plans
+- Hand-written service worker for the offline shell
 
-The hackathon scores filtration entirely from this repo on criteria 1–7, and *a criterion with no evidence in the repo is scored in its lowest band.* Here is where each is evidenced.
+The programme dataset is imported into the client bundle. Matching, scoring, roadmaps, and metrics run locally without a network call. The optional assistant calls domain tools wrapping the same engine; the product remains fully functional when the assistant is disabled.
 
-| # | Criterion | Our evidence |
-|---|---|---|
-| **1** | **Impact & value** | Routes real, named funding (Khalifa Fund, Ma'an, licence rungs) to the exact person every other tool rejects — the idea-stage rural founder. The benefit is a concrete, sequenced path to capital, not a listicle. |
-| **2** | **Relevance to the challenge** | Squarely Challenge 1: it takes a founder from *idea* to a *concrete first action* (the first licence, its cost, the single next step), then onward to funding. |
-| **3** | **Feasibility** | Software-only, deployable today on free-tier Vercel; offline PWA + Arabic suit the rural, low-connectivity setting; no hardware, no second-sided marketplace, near-zero running cost. |
-| **4** | **Readiness** | Complete and working end-to-end: wizard → classification → roadmap → checklist → Arabic PDF, live at hissati.org and runnable offline. Demo video in [`/docs`](./docs). Not a mockup. |
-| **5** | **Scalability** | Eligibility is data, not code: rules live in `programs.json`. Adding a program or a new emirate is a schema-validated data edit — no engine change. Tiers 2–3 already prove cross-UAE reach. |
-| **6** | **Falsifiability & evidence** | Every claim in §5 is testable; the Vitest suite doubles as evidence; every figure is cited to a primary source with a verified date, with unconfirmed values openly flagged. |
-| **7** | **Repo documentation** | This README covers every required section; the [`/docs`](#10-documentation) architecture set, the source manifest, the test suite, and the demo video let a judge understand, run, and verify from the repo alone. |
+Adding an ordinary programme is data-only when it uses existing rule fields. New narrow gates are additive and must add a conditional question plus a completeness test.
 
-*(Criterion 8 — presentation — is scored live on Sunday; our 3-minute offline run-of-show is in [`/docs/demo-script.md`](./docs).)*
-
-## 7. Tech stack
-
-**Next.js (App Router) · TypeScript · Tailwind + shadcn/ui · Zustand (+persist) · next-pwa / Workbox · Tajawal (self-hosted) · Vitest · Vercel · Anthropic Claude (optional agent).**
-
-The deterministic core is plain TypeScript with no heavy dependencies; the knowledge base ships in the bundle so matching needs zero network. The only server-side surface is an optional `/api/agent` route that keeps the API key off the client. Full layering, data flows, and the service-worker strategy are in [`system-architecture.md`](./system-architecture.md).
-
-## 8. Run it locally
+## 7. Run and verify
 
 ```bash
-pnpm install
-pnpm run validate:kb   # Zod-validate the knowledge base (build gate)
-pnpm test              # Vitest: matcher, scores, dead-ends, traceability, personas
-pnpm dev               # http://localhost:3000
-pnpm build && pnpm start
+npm ci
+npm test -- --no-cache
+npm run build
+npm run dev
 ```
 
-**Verify offline (the headline claim):**
-```
-1. pnpm build && pnpm start
-2. Load the app once — the service worker precaches the shell, KB, and fonts
-3. DevTools → Network → Offline
-4. Reload — the app loads fully from cache
-5. Run the whole wizard → results → roadmap → PDF flow with no network
-```
+Then open http://localhost:3000.
 
-## 9. Data & citations
+To verify offline behaviour:
 
-The knowledge base is **hand-verified**, not scraped. Each of the 12 records carries bilingual names, operator, eligibility rules, required documents, an application URL, and a **source URL + verified date** (all `2026-06-26`). The full citation manifest — including an explicit list of figures that could not be live-confirmed against JavaScript-rendered government portals — is in [`programs-sources.md`](./programs-sources.md). Arabic strings are drafted and flagged for native review before any public launch.
+1. Load the production app once.
+2. Enable browser DevTools → Network → Offline.
+3. Reload and complete questionnaire → results → checklist → PDF.
 
-## 10. Documentation
+## 8. How we score against criteria 1–7
 
-Engineering reference (the internal architecture set). Every doc is derived from, and agrees with, the frozen data contract — `data-model.md`, `scoring.md`, `programs.json`, `programs-sources.md`. **If any doc disagrees with those four, the contract wins.**
+1. **Impact:** gives a first-time rural founder a concrete first action instead of a rejection screen.
+2. **Relevance:** directly addresses Challenge 1 and Al Qua’a’s date, livestock, and low-connectivity context.
+3. **Feasibility:** the core is a static, offline-capable web application with no account or database requirement.
+4. **Readiness:** questionnaire, matching, roadmap, checklist, sharing, and bilingual PDF work end to end.
+5. **Scalability:** programmes and emirates are represented as validated data over a reusable rule grammar.
+6. **Falsifiability:** exact matches and AED totals are pinned by tests; uncertain and closed opportunities are visibly labelled.
+7. **Documentation:** this repository contains setup instructions, primary-source manifest, verification report, tests, screenshots, and sample PDFs.
 
-| Document | Covers |
-|---|---|
-| [`system-architecture.md`](./system-architecture.md) | Layered architecture, module map, data flows, service-worker strategy, performance budget |
-| [`database-erd.md`](./database-erd.md) | Data model, Zod schemas, the eligibility algorithm, localStorage shape, question→rule traceability |
-| [`service-functions.md`](./service-functions.md) | Every engine function with signatures, invariants, the two scoring pipelines, the test matrix |
-| [`functionalities-workflow.md`](./functionalities-workflow.md) | End-to-end journeys, wizard flow, classification + scoring walkthrough, agent flow |
-| [`security-architecture.md`](./security-architecture.md) | Threat model, API-key isolation, agent guardrails, input validation, privacy posture |
-| [`deployment-architecture.md`](./deployment-architecture.md) | GitHub → Vercel pipeline, env vars, PWA/offline config, CI gates |
-| [`diagrams.md`](./diagrams.md) | 17 `mermaid.parse`-validated diagrams |
+## 9. Important limitations
 
-**Core invariants (true across every document)**
-1. **Deterministic core** — pure functions; same inputs → same outputs (NFR-7).
-2. **Three buckets only** — `eligible` (0 failed rules) · `almost` (1–2 failed, all remediable) · `not_fit` (FR-C1).
-3. **No dead ends** — every `almost` carries 1–2 cited steps; idea-stage founders always see a pre-registration path (FR-C3 / FR-G).
-4. **Offline-first** — the whole core flow runs in airplane mode; the only egress is the optional `/api/agent` route (NFR-1).
-5. **Cited or it doesn't ship** — every figure and rule traces to a primary source with a verified date (FR-B2 / ER-4).
-6. **Frozen vocabulary** — enum values and field names are referenced verbatim across dataset, scoring, and engine; additive changes only.
-
----
-
-## Team & license
-
-Built for the **Tatweer Hackathon** (26–28 June 2026, Al Qua'a · in collaboration with Abu Dhabi University). Open-sourced per the hackathon's rural-infrastructure track so other communities can adapt the data and the engine.
-
-*Hissati is an information tool, not a licensed financial or legal advisor. It surfaces public funding programs and their stated rules; it does not file applications on anyone's behalf.*
+- “Published criteria met” is not a funding approval.
+- Availability is a checked snapshot and must be refreshed periodically.
+- Arabic programme copy is a careful draft pending native legal/content review.
+- Hissati provides public information, not financial or legal advice.

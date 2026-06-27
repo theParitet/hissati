@@ -20,7 +20,7 @@ import { ui, toLocaleDigits, pick, type Locale } from "@/lib/i18n";
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
 
-const FUNDING_TOTAL = statsFor(DEMO_PROFILES.MVP).programsTotal; // 9
+const FUNDING_TOTAL = statsFor(DEMO_PROFILES.MVP).programsTotal;
 
 export function FounderChain({ locale }: { locale: Locale }) {
   const t = ui(locale);
@@ -37,7 +37,7 @@ export function FounderChain({ locale }: { locale: Locale }) {
   const litCount = RUNGS.filter((_, k) => seg >= k - 0.001).length;
   const litFrac = (k: number) => clamp01(seg - k + 1); // 0..1 ignition of rung k
 
-  const Ledger = ({ compact }: { compact?: boolean }) => (
+  const renderLedger = (compact = false) => (
     <div
       className="relative isolate overflow-hidden rounded-card border border-night-100/60 bg-night p-5 shadow-lift sm:p-6"
       style={{
@@ -58,6 +58,7 @@ export function FounderChain({ locale }: { locale: Locale }) {
         <VerifiedStamp
           sourceUrl={KHALIFA.sourceUrl}
           verifiedDate={KHALIFA.verifiedDate}
+          confidence={KHALIFA.confidence}
           locale={locale}
         />
         <span className="font-mono text-[11px] text-sand-100/60" dir="ltr">
@@ -87,7 +88,7 @@ export function FounderChain({ locale }: { locale: Locale }) {
     <section ref={ref} className="relative border-t border-sand-line bg-sand-100/50">
       {/* Mobile ledger — pinned under the header while the chain scrolls. */}
       <div className="sticky top-16 z-20 px-4 pt-4 lg:hidden">
-        <Ledger compact />
+        {renderLedger(true)}
       </div>
 
       <div className="mx-auto grid max-w-6xl gap-x-12 px-4 sm:px-6 lg:grid-cols-[1fr_22rem]">
@@ -215,7 +216,7 @@ export function FounderChain({ locale }: { locale: Locale }) {
         {/* Desktop ledger — pinned beside the chain. */}
         <div className="hidden lg:block">
           <div className="sticky top-24 py-20">
-            <Ledger />
+            {renderLedger()}
           </div>
         </div>
       </div>

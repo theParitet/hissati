@@ -122,6 +122,8 @@ export function ChecklistBody({ ev, locale }: { ev: EvaluatedProgram; locale: Lo
       <VerifiedStamp
         sourceUrl={program.source.url}
         verifiedDate={program.source.verified_date}
+        sourceDate={program.source.source_date}
+        confidence={program.source.confidence}
         locale={locale}
       />
     </div>

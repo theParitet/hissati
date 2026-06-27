@@ -6,7 +6,7 @@ import {
   evaluateAll,
 } from "@/lib/engine";
 import { PROGRAMS, getProgramById } from "@/lib/programs";
-import type { Profile, Rule } from "@/lib/schema";
+import type { Rule } from "@/lib/schema";
 import { dateFounderIdea } from "./fixtures";
 
 const msg = { en: "", ar: "" };
@@ -51,7 +51,7 @@ describe("evaluateProgram — 3-bucket classification (FR-C1) for the idea-stage
     expect(evaluateProgram(dateFounderIdea, getProgramById("tajer-abu-dhabi")!).status).toBe("eligible");
   });
 
-  it("ALMOST (1 step): Ma'an grant — only registration missing, and it's remediable", () => {
+  it("ALMOST (1 step): Ma'an funding request — only registration missing, and it's remediable", () => {
     const r = evaluateProgram(dateFounderIdea, getProgramById("maan-social-grants")!);
     expect(r.status).toBe("almost");
     expect(r.failedRules.map((x) => x.field)).toEqual(["registration"]);

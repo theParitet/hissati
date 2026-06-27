@@ -22,7 +22,7 @@ function fieldLabel(field: string, locale: Locale): string {
 }
 
 function fieldOptions(field: string, locale: Locale): { value: string | boolean; label: string }[] {
-  if (field === "relocation_willing") {
+  if (["relocation_willing", "farm_tenure", "social_impact"].includes(field)) {
     const t = ui(locale);
     return [
       { value: true, label: t.yes },

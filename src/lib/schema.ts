@@ -65,6 +65,9 @@ export type Sector = z.infer<typeof Sector>;
 export const FundingType = z.enum(["grant", "loan", "equity", "unsure"]);
 export type FundingType = z.infer<typeof FundingType>;
 
+export const Gender = z.enum(["female", "male"]);
+export type Gender = z.infer<typeof Gender>;
+
 export const AmountBand = z.enum([
   "lt_50k",
   "aed_50_200k",
@@ -74,10 +77,10 @@ export const AmountBand = z.enum([
 ]);
 export type AmountBand = z.infer<typeof AmountBand>;
 
-export const Instrument = z.enum(["grant", "loan", "equity", "accelerator", "license"]);
+export const Instrument = z.enum(["grant", "loan", "equity", "accelerator", "license", "support"]);
 export type Instrument = z.infer<typeof Instrument>;
 
-export const IntroMethod = z.enum(["open_form", "tamm", "warm_intro", "competition"]);
+export const IntroMethod = z.enum(["open_form", "tamm", "warm_intro", "competition", "email"]);
 export type IntroMethod = z.infer<typeof IntroMethod>;
 
 export const Tier = z.union([z.literal(1), z.literal(2), z.literal(3)]);
@@ -98,12 +101,15 @@ export const ProfileSchema = z.object({
 
   // --- conditional gate (only consulted by programs that require relocation) ---
   relocation_willing: z.boolean().optional(),
+  gender: Gender.optional(),
+  farm_tenure: z.boolean().optional(),
+  social_impact: z.boolean().optional(),
 
   // --- optional numeric gates (consumed by business_age / employee_count rules) ---
   business_age_years: z.number().nonnegative().optional(),
   employee_count: z.number().int().nonnegative().optional(),
 
-  // --- optional readiness inputs (NON-gating; feed Readiness Score + checklist) ---
+  // --- optional application-preparation inputs (NON-gating; feed checklists) ---
   team: z.enum(["solo", "cofounder", "technical_cofounder"]).optional(),
   has_pitch_deck: z.boolean().optional(),
   has_financials: z.boolean().optional(),
@@ -122,6 +128,9 @@ export const RuleField = z.enum([
   "relocation_willing",
   "business_age",
   "employee_count",
+  "gender",
+  "farm_tenure",
+  "social_impact",
 ]);
 export type RuleField = z.infer<typeof RuleField>;
 
@@ -166,8 +175,15 @@ export const ProgramSchema = z.object({
   amount: z.object({
     min_aed: z.number().nullable(),
     max_aed: z.number().nullable(),
+    /** Conservative per-applicant amount used by the headline metric. */
+    countable_max_aed: z.number().nullable().optional(),
+    value_kind: z
+      .enum(["finance", "cash", "cash_and_in_kind", "in_kind", "prize_pool", "service", "cost", "variable"])
+      .optional(),
     notes: z.string().optional(),
   }),
+  /** Alternative products in the same group contribute only the largest ceiling. */
+  funding_group: z.string().optional(),
   sector_tags: z.array(Sector),
   eligibility: z.array(RuleSchema), // ALL rules are hard gates (AND)
   required_documents: z.array(
@@ -183,9 +199,21 @@ export const ProgramSchema = z.object({
   concurrent_compatible_with: z.array(z.string()), // program ids stackable with this one
   processing_time: z.string().optional(),
   description: Localized,
+  availability: z.object({
+    status: z.enum(["rolling", "open", "closed", "unknown"]),
+    checked_date: z.string(),
+    opens: z.string().optional(),
+    closes: z.string().optional(),
+    next_cycle: z.string().optional(),
+    note: Localized.optional(),
+  }),
   source: z.object({
     url: z.string().url(),
     verified_date: z.string(), // ISO date, e.g. "2026-06-20"
+    source_date: z.string().optional(),
+    confidence: z.enum(["confirmed", "reported", "estimated"]),
+    method: z.string(),
+    additional_urls: z.array(z.string().url()).optional(),
   }),
 });
 export type Program = z.infer<typeof ProgramSchema>;
@@ -194,6 +222,7 @@ export type Program = z.infer<typeof ProgramSchema>;
 export const ProgramFileSchema = z.object({
   schema_version: z.string(),
   generated: z.string(),
+  note: z.string().optional(),
   programs: z.array(ProgramSchema),
 });
 export type ProgramFile = z.infer<typeof ProgramFileSchema>;

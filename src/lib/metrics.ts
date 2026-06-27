@@ -14,7 +14,7 @@ import { deriveRoadmap } from "@/lib/roadmap";
 import type { DoneStep } from "@/lib/store";
 
 export interface ProgressStats {
-  /** Σ upper funding bound of ELIGIBLE funding programs (honest — see amountReachable). */
+  /** Conservative, de-duplicated per-applicant AED across open matched programs. */
   aedReachableNow: number;
   /** Σ upper funding bound of eligible ∪ almost funding programs (what the roadmap unlocks). */
   aedReachableAfterSteps: number;
@@ -42,17 +42,38 @@ const FUNDING_INSTRUMENTS: ReadonlySet<string> = new Set([
   "accelerator",
 ]);
 
+/** Static, source-checked availability keeps the offline result deterministic. */
+export function isCurrentlyAvailable(program: Program): boolean {
+  return program.availability.status === "open" || program.availability.status === "rolling";
+}
+
 /**
- * AED RULE (honest, no inflation): a program contributes its STRUCTURED `max_aed`
- * upper bound only. When that is null (award not publicly fixed, e.g. Ma'an / ADDED
- * grants), it contributes 0 and flips `hasOpenEndedAmounts` so the UI can show
- * "+ programs whose amounts vary". We deliberately do NOT scrape a figure from the
- * prose `notes` — that risks mixing in durations/counts ("4-month", "1,000 activities")
- * and inventing an un-cited number. Every counted dirham is a real, cited max_aed.
+ * AED RULE (honest, no inflation): count only open/rolling funding opportunities
+ * and their explicit `countable_max_aed`. Collective prize pools, licence costs,
+ * support services, in-kind-only value and unknown/closed windows contribute zero.
+ * Alternative products sharing `funding_group` contribute only their largest
+ * conservative ceiling. We never parse figures out of prose.
  */
 function amountReachable(amount: Program["amount"]): { aed: number; open: boolean } {
-  if (typeof amount.max_aed === "number") return { aed: amount.max_aed, open: false };
+  if (typeof amount.countable_max_aed === "number") {
+    return { aed: amount.countable_max_aed, open: false };
+  }
   return { aed: 0, open: true };
+}
+
+function sumReachable(evaluated: EvaluatedProgram[]): { aed: number; open: boolean } {
+  const grouped = new Map<string, { aed: number; open: boolean }>();
+  for (const e of evaluated) {
+    const amount = amountReachable(e.program.amount);
+    const key = e.program.funding_group ?? `program:${e.program.id}`;
+    const previous = grouped.get(key);
+    if (!previous || amount.aed > previous.aed) grouped.set(key, amount);
+    else if (amount.open) previous.open = true;
+  }
+  return [...grouped.values()].reduce(
+    (total, value) => ({ aed: total.aed + value.aed, open: total.open || value.open }),
+    { aed: 0, open: false },
+  );
 }
 
 /**
@@ -70,25 +91,14 @@ export function progressStats(
 ): ProgressStats {
   void profile; // see doc comment — derived from `evaluated`, kept for contract symmetry
 
-  const funding = evaluated.filter((e) => FUNDING_INSTRUMENTS.has(e.program.instrument));
+  const funding = evaluated.filter(
+    (e) => FUNDING_INSTRUMENTS.has(e.program.instrument) && isCurrentlyAvailable(e.program),
+  );
   const eligible = funding.filter((e) => e.status === "eligible");
   const almost = funding.filter((e) => e.status === "almost");
 
-  let aedReachableNow = 0;
-  let aedReachableAfterSteps = 0;
-  let hasOpenEndedAmounts = false;
-
-  for (const e of eligible) {
-    const { aed, open } = amountReachable(e.program.amount);
-    aedReachableNow += aed;
-    aedReachableAfterSteps += aed;
-    if (open) hasOpenEndedAmounts = true;
-  }
-  for (const e of almost) {
-    const { aed, open } = amountReachable(e.program.amount);
-    aedReachableAfterSteps += aed;
-    if (open) hasOpenEndedAmounts = true;
-  }
+  const now = sumReachable(eligible);
+  const after = sumReachable([...eligible, ...almost]);
 
   const stepsDone = doneSteps.length;
   // Total = already completed + still remaining on the current roadmap, so a
@@ -96,13 +106,13 @@ export function progressStats(
   const stepsTotal = stepsDone + deriveRoadmap(evaluated).length;
 
   return {
-    aedReachableNow,
-    aedReachableAfterSteps,
+    aedReachableNow: now.aed,
+    aedReachableAfterSteps: after.aed,
     programsEligible: eligible.length,
     programsAlmost: almost.length,
     programsTotal: funding.length,
     stepsDone,
     stepsTotal,
-    hasOpenEndedAmounts,
+    hasOpenEndedAmounts: now.open || after.open,
   };
 }

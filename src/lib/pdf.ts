@@ -24,6 +24,7 @@ import { formatAmountRange, localizeDate } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
 import { appUrl, qrSvgPath } from "@/lib/share";
 import type { ProgressStats } from "@/lib/metrics";
+import { isCurrentlyAvailable } from "@/lib/metrics";
 import type { EvaluatedProgram, Profile } from "@/lib/schema";
 import type { RoadmapStep } from "@/lib/roadmap";
 
@@ -186,11 +187,16 @@ function sectionHeader(eb: string, title: string, color: string, count: number |
   </div>`;
 }
 
-/** "✓ verified · source · date" — the evidence thesis as a stamp (always LTR + mono). */
+/** Access date + source confidence, without overstating approval or freshness. */
 function verifiedStamp(ev: EvaluatedProgram, locale: Locale, t: Record<string, string>): string {
-  return `<span dir="ltr" style="display:inline-block;border:1px solid ${C.clay};background:${C.clayBg};border-radius:6px;padding:2px 8px;font-family:${MONO};font-size:9.5px;color:${C.clay};line-height:1.3">✓ ${esc(
-    t.verified
-  )} · ${esc(host(ev.program.source.url))} · ${localizeDate(ev.program.source.verified_date, locale)}</span>`;
+  const sourceDate = ev.program.source.source_date
+    ? ` · source ${localizeDate(ev.program.source.source_date, locale)}`
+    : "";
+  return `<span dir="ltr" style="display:inline-block;border:1px solid ${C.clay};background:${C.clayBg};border-radius:6px;padding:2px 8px;font-family:${MONO};font-size:9.5px;color:${C.clay};line-height:1.3">✓ checked · ${esc(
+    host(ev.program.source.url)
+  )} · ${localizeDate(ev.program.source.verified_date, locale)}${sourceDate} · ${esc(
+    t[`confidence_${ev.program.source.confidence}`]
+  )}</span>`;
 }
 
 /* --------------------------------------------------------------------------
@@ -257,7 +263,7 @@ function cover(profile: Profile, stats: ProgressStats, locale: Locale, t: Record
       )}</div>
       <div style="font-size:12.5px;color:#d6e4dd;margin-top:8px">${toLocaleDigits(stats.programsEligible, locale)} ${
         ar ? "من" : "of"
-      } ${toLocaleDigits(stats.programsTotal, locale)} ${ar ? "برنامج تمويل مؤهَّل اليوم" : "funding programs eligible today"}</div>
+      } ${toLocaleDigits(stats.programsTotal, locale)} ${ar ? "مطابقة تمويل مفتوحة تستوفي الشروط المنشورة" : "open funding matches meeting published criteria"}</div>
       ${deltaLine}
     </div>
     <div style="flex:0 0 auto;margin:0 6px">${seal(60, true)}</div>
@@ -439,8 +445,8 @@ export function buildPlanHtml(opts: {
   const t = ui(locale);
   const dir = locale === "ar" ? "rtl" : "ltr";
   const ar = locale === "ar";
-  const eligible = evaluated.filter((e) => e.status === "eligible");
-  const almost = evaluated.filter((e) => e.status === "almost");
+  const eligible = evaluated.filter((e) => e.status === "eligible" && isCurrentlyAvailable(e.program));
+  const almost = evaluated.filter((e) => e.status === "almost" && isCurrentlyAvailable(e.program));
   const gatherFrom = [...eligible, ...almost];
   const url = appUrl();
   const today = localizeDate(new Date().toISOString().slice(0, 10), locale);

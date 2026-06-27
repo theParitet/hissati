@@ -7,7 +7,7 @@
  * in the UAE (astro-tourism is one of the matched sectors). So the dashboard's
  * one bold move is a real night sky where each matched FUNDING program is a star.
  * A star's HEIGHT encodes reachability and its BRIGHTNESS encodes status:
- *   · eligible → risen high, bright white-gold (within reach today)
+ *   · eligible → published gates met for an open/rolling opportunity
  *   · almost   → mid-sky, glowing amber (one cited step away)
  *   · not-fit  → faint, low near the horizon (not on this path yet)
  * As the founder marks roadmap steps, almost-stars rise and brighten — the live
@@ -106,7 +106,7 @@ export function FundingSky({
     "top 650ms var(--ease-out), opacity 650ms var(--ease-out), transform 650ms var(--ease-out), filter 650ms var(--ease-out)";
 
   const legend: { label: string; dot: string; color: string }[] = [
-    { label: locale === "ar" ? "مؤهّل" : "Eligible", dot: "●", color: "#fbf8f1" },
+    { label: locale === "ar" ? "مطابقة مفتوحة" : "Open match", dot: "●", color: "#fbf8f1" },
     { label: locale === "ar" ? "قريب" : "Almost", dot: "●", color: "#f7e6c8" },
     { label: locale === "ar" ? "ليس بعد" : "Not yet", dot: "○", color: "rgba(246,241,231,0.55)" },
   ];
@@ -222,7 +222,7 @@ export function FundingSky({
           <li key={s.id}>
             {pick(s.name, locale)} —{" "}
             {s.status === "eligible"
-              ? locale === "ar" ? "مؤهّل" : "eligible"
+              ? locale === "ar" ? "مطابقة مفتوحة" : "open match"
               : s.status === "almost"
                 ? locale === "ar" ? "قريب من التأهّل" : "almost eligible"
                 : locale === "ar" ? "غير مناسب الآن" : "not a fit yet"}

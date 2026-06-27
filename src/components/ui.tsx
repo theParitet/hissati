@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { ui, type Locale } from "@/lib/i18n";
 import { localizeDate } from "@/lib/format";
+import type { Program } from "@/lib/schema";
 
 type ButtonVariant = "primary" | "accent" | "outline" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
@@ -218,15 +219,19 @@ export function Stat({
   );
 }
 
-/** "verified · source · date" stamp — the evidence thesis made visible. Always LTR + mono. */
+/** Access date + confidence stamp. Always LTR + mono. */
 export function VerifiedStamp({
   sourceUrl,
   verifiedDate,
+  sourceDate,
+  confidence,
   locale,
   className,
 }: {
   sourceUrl: string;
   verifiedDate: string;
+  sourceDate?: string;
+  confidence?: Program["source"]["confidence"];
   locale: Locale;
   className?: string;
 }) {
@@ -244,7 +249,31 @@ export function VerifiedStamp({
         className
       )}
     >
-      <Check className="h-3 w-3" aria-hidden /> verified · {host} · {localizeDate(verifiedDate, locale)}
+      <Check className="h-3 w-3" aria-hidden /> checked · {host} · {localizeDate(verifiedDate, locale)}
+      {sourceDate ? ` · source ${localizeDate(sourceDate, locale)}` : ""}
+      {confidence ? ` · ${ui(locale)[`confidence_${confidence}`]}` : ""}
+    </span>
+  );
+}
+
+export function AvailabilityPill({
+  availability,
+  locale,
+  className,
+}: {
+  availability: Program["availability"];
+  locale: Locale;
+  className?: string;
+}) {
+  const tone = {
+    open: "bg-palm-100 text-palm",
+    rolling: "bg-palm-100 text-palm",
+    closed: "bg-clay-100 text-clay",
+    unknown: "bg-sand-200 text-ink-faint",
+  }[availability.status];
+  return (
+    <span className={cn("inline-flex rounded-pill px-2 py-1 text-[11px] font-semibold", tone, className)}>
+      {ui(locale)[`availability_${availability.status}`]}
     </span>
   );
 }

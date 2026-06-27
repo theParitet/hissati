@@ -3,7 +3,7 @@
  *
  * A roadmap step is a *distinct remedial action* drawn from the failed-but-
  * remediable rules of the "almost" programs. Many programs share the same gate
- * (e.g. "register a trade licence" blocks Khalifa + Ma'an + ADDED), so steps are
+ * (e.g. "register a trade licence" blocks Khalifa + Ma'an + Tanami), so steps are
  * DEDUPED by effect; completing one advances the profile field and re-flows the
  * whole engine (the FR-D3 climb). Quickest, foundational steps come first.
  */

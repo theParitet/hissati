@@ -26,6 +26,8 @@ export function useScrollProgress<T extends HTMLElement>() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
+      // Reduced-motion preference is an external browser setting.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProgress(1);
       return;
     }

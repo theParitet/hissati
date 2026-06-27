@@ -1,20 +1,23 @@
 {
-  "schema_version": "1.0",
-  "generated": "2026-06-26",
+  "schema_version": "3.0",
+  "generated": "2026-06-27",
+  "note": "Primary-source reliability pass. Availability is frozen as checked on 2026-06-27; countable_max_aed is a conservative per-applicant figure for the AED-within-reach metric.",
   "programs": [
     {
       "id": "khalifa-fund-sme",
       "name": {
-        "en": "Khalifa Fund — SME Funding Scheme",
-        "ar": "صندوق خليفة — برنامج تمويل المشاريع الصغيرة والمتوسطة"
+        "en": "Khalifa Fund — SME Funding (Microfinance & Loans)",
+        "ar": "صندوق خليفة — تمويل المشاريع الصغيرة والمتوسطة (تمويل أصغر وقروض)"
       },
       "operator": "Khalifa Fund for Enterprise Development",
       "tier": 1,
       "instrument": "loan",
       "amount": {
-        "min_aed": 50000,
+        "min_aed": null,
         "max_aed": 2000000,
-        "notes": "Interest-free / Sharia-compliant financing for Emirati-owned SMEs; ceiling of AED 2M for small enterprises."
+        "notes": "Interest-free. Microfinance offers up to AED 500,000; Small Loans offer up to AED 2M for manufacturing and AED 1M for other sectors; Expansion Loans reach AED 3M for manufacturing and AED 2M for other sectors. The metric conservatively uses AED 2M. Applicants must be Emirati, aged 21–60, with an operational Abu Dhabi business; final approval remains subject to Khalifa Fund review.",
+        "value_kind": "finance",
+        "countable_max_aed": 2000000
       },
       "sector_tags": [
         "camel",
@@ -32,8 +35,8 @@
             "emirati_majority"
           ],
           "blocking_message": {
-            "en": "Khalifa Fund SME financing is for businesses with majority (≥51%) Emirati ownership.",
-            "ar": "تمويل صندوق خليفة للمشاريع الصغيرة والمتوسطة مخصص للمشاريع المملوكة بأغلبية إماراتية (51% أو أكثر)."
+            "en": "Khalifa Fund financing is for Emirati-owned businesses (majority Emirati ownership).",
+            "ar": "تمويل صندوق خليفة مخصص للمشاريع المملوكة بأغلبية إماراتية."
           }
         },
         {
@@ -44,7 +47,7 @@
             "abu_dhabi_other"
           ],
           "blocking_message": {
-            "en": "The business must operate in the Emirate of Abu Dhabi (including Al Ain and Al Dhafra).",
+            "en": "The business must operate in the Emirate of Abu Dhabi (incl. Al Ain and Al Dhafra/Western Region).",
             "ar": "يجب أن يكون المشروع قائماً في إمارة أبوظبي (بما في ذلك العين والظفرة)."
           }
         },
@@ -53,7 +56,7 @@
           "op": "gte",
           "value": "lt_1yr",
           "blocking_message": {
-            "en": "You need a registered, licensed business to apply for a Khalifa Fund loan.",
+            "en": "You need a registered, licensed business to apply for Khalifa Fund financing.",
             "ar": "تحتاج إلى مشروع مسجّل ومرخّص للتقدّم بطلب تمويل من صندوق خليفة."
           },
           "remedy": {
@@ -71,8 +74,8 @@
           "op": "gte",
           "value": "mvp",
           "blocking_message": {
-            "en": "A loan needs a viable, operating business — at least a launched product or service.",
-            "ar": "يتطلب التمويل مشروعاً قائماً وقابلاً للتشغيل — على الأقل منتج أو خدمة تم إطلاقها."
+            "en": "Khalifa Fund lends to operational businesses — you need at least a launched, running product or service.",
+            "ar": "يموّل صندوق خليفة المشاريع العاملة — تحتاج على الأقل إلى منتج أو خدمة تم إطلاقها وتشغيلها."
           },
           "remedy": {
             "action": {
@@ -111,23 +114,170 @@
       "concurrent_compatible_with": [
         "maan-social-grants",
         "added-sme-support",
-        "dct-tourism-licence"
+        "dct-tourism-licence",
+        "khalifa-agri-financing"
       ],
-      "processing_time": "Several weeks (eligibility tool + review)",
+      "processing_time": "Several weeks (TAMM application + review)",
       "description": {
-        "en": "Interest-free government financing of up to AED 2M for Emirati-owned SMEs in Abu Dhabi across agriculture, tourism, ICT, manufacturing and more.",
-        "ar": "تمويل حكومي بدون فوائد يصل إلى مليوني درهم للمشاريع الصغيرة والمتوسطة المملوكة لإماراتيين في أبوظبي ضمن قطاعات الزراعة والسياحة وتقنية المعلومات والتصنيع وغيرها."
+        "en": "Interest-free government financing for Emirati-owned SMEs in Abu Dhabi. A Microfinance Loan offers up to AED 500,000 for new entrepreneurs; larger Small/Expansion loans reach AED 2M+. Sectors include agriculture, tourism, ICT, manufacturing and more.",
+        "ar": "تمويل حكومي بدون فوائد للمشاريع الصغيرة والمتوسطة المملوكة لإماراتيين في أبوظبي. يوفّر التمويل الأصغر حتى 500 ألف درهم لروّاد الأعمال الجدد، وتصل القروض الأكبر إلى مليوني درهم وأكثر، ضمن قطاعات الزراعة والسياحة وتقنية المعلومات والتصنيع وغيرها."
       },
       "source": {
         "url": "https://www.khalifafund.ae/services/funding-scheme/",
-        "verified_date": "2026-06-26"
-      }
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "primary-source fetch",
+        "source_date": "2025-09-01"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
+      },
+      "funding_group": "khalifa-fund-financing"
+    },
+    {
+      "id": "khalifa-agri-financing",
+      "name": {
+        "en": "Khalifa Fund — Agricultural Financing (Agri Funds & Agri-Tech)",
+        "ar": "صندوق خليفة — التمويل الزراعي (صناديق الزراعة والتقنية الزراعية)"
+      },
+      "operator": "Khalifa Fund for Enterprise Development",
+      "tier": 1,
+      "instrument": "loan",
+      "amount": {
+        "min_aed": null,
+        "max_aed": 2000000,
+        "notes": "Alternative Khalifa Fund agricultural products: Water Management up to AED 150K; Pack House up to AED 250K; Net House up to AED 400K; Agri-Tech Financing up to AED 2M. These are ceilings, not a AED 150K minimum, and are grouped with other Khalifa financing to prevent double-counting.",
+        "value_kind": "finance",
+        "countable_max_aed": 2000000
+      },
+      "sector_tags": [
+        "camel",
+        "dates",
+        "food_processing",
+        "other"
+      ],
+      "eligibility": [
+        {
+          "field": "nationality_ownership",
+          "op": "in",
+          "value": [
+            "emirati_majority"
+          ],
+          "blocking_message": {
+            "en": "Khalifa Fund agri financing is for Emirati-owned agricultural businesses.",
+            "ar": "التمويل الزراعي من صندوق خليفة مخصص للمشاريع الزراعية المملوكة لإماراتيين."
+          }
+        },
+        {
+          "field": "location",
+          "op": "in",
+          "value": [
+            "al_quaa_al_ain",
+            "abu_dhabi_other"
+          ],
+          "blocking_message": {
+            "en": "The farm/agri business must operate in the Emirate of Abu Dhabi.",
+            "ar": "يجب أن يكون المشروع الزراعي قائماً في إمارة أبوظبي."
+          }
+        },
+        {
+          "field": "sector",
+          "op": "in",
+          "value": [
+            "camel",
+            "dates",
+            "food_processing",
+            "other"
+          ],
+          "blocking_message": {
+            "en": "These funds target agriculture: crops, livestock, post-harvest and agri-tech.",
+            "ar": "تستهدف هذه الصناديق القطاع الزراعي: المحاصيل والثروة الحيوانية وما بعد الحصاد والتقنية الزراعية."
+          }
+        },
+        {
+          "field": "registration",
+          "op": "gte",
+          "value": "lt_1yr",
+          "blocking_message": {
+            "en": "You need a registered farm/agri licence to apply.",
+            "ar": "تحتاج إلى رخصة زراعية/مشروع مسجّل للتقدّم."
+          },
+          "remedy": {
+            "action": {
+              "en": "Get a Farm Licence first (if you own or lease a farm) — or a Tajer licence to start trading.",
+              "ar": "احصل على رخصة مزرعة أولاً (إذا كنت تملك أو تستأجر مزرعة) — أو رخصة تاجر للبدء بالتجارة."
+            },
+            "links_program_id": "farm-licence",
+            "est_cost_aed": 790,
+            "est_time": "1–5 days"
+          }
+        },
+        {
+          "field": "stage",
+          "op": "gte",
+          "value": "mvp",
+          "blocking_message": {
+            "en": "Khalifa Fund lends to operational agri businesses — you need a running farm/production.",
+            "ar": "يموّل صندوق خليفة المشاريع الزراعية العاملة — تحتاج إلى مزرعة/إنتاج قائم."
+          },
+          "remedy": {
+            "action": {
+              "en": "Start operating your farm/agri production before applying.",
+              "ar": "ابدأ تشغيل مزرعتك/إنتاجك الزراعي قبل التقديم."
+            },
+            "est_time": "3–6 months"
+          }
+        }
+      ],
+      "required_documents": [
+        {
+          "en": "Farm / trade licence",
+          "ar": "رخصة المزرعة / الرخصة التجارية",
+          "format": "PDF / TAMM"
+        },
+        {
+          "en": "Emirates ID (owner)",
+          "ar": "الهوية الإماراتية (المالك)",
+          "format": "PDF"
+        },
+        {
+          "en": "Project plan & quotations (e.g. greenhouse, irrigation, pack house)",
+          "ar": "خطة المشروع وعروض الأسعار (بيت محمي، ري، صالة فرز)",
+          "format": "PDF/DOC"
+        }
+      ],
+      "intro_method": "tamm",
+      "application_url": "https://www.khalifafund.ae/services/funding-scheme/",
+      "equity": false,
+      "concurrent_compatible_with": [
+        "khalifa-fund-sme",
+        "added-sme-support",
+        "farm-licence"
+      ],
+      "processing_time": "Several weeks (TAMM application + review)",
+      "description": {
+        "en": "Dedicated interest-free agricultural financing from Khalifa Fund: water-efficiency, greenhouse/net-house, post-harvest pack-house and agri-tech loans (AED 150K–2M, up to 90% of cost) for Emirati farmers in Abu Dhabi — directly relevant to date and livestock farms.",
+        "ar": "تمويل زراعي حكومي بدون فوائد من صندوق خليفة: قروض لكفاءة المياه والبيوت المحمية وصالات الفرز والتقنية الزراعية (150 ألف–2 مليون درهم، حتى 90% من التكلفة) للمزارعين الإماراتيين في أبوظبي — وثيق الصلة بمزارع التمور والثروة الحيوانية."
+      },
+      "source": {
+        "url": "https://www.khalifafund.ae/services/funding-scheme/",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "primary-source fetch",
+        "source_date": "2025-09-01"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
+      },
+      "funding_group": "khalifa-fund-financing"
     },
     {
       "id": "maan-social-grants",
       "name": {
-        "en": "Ma'an — Social Investment Fund Grants",
-        "ar": "معاً — منح صندوق الاستثمار الاجتماعي"
+        "en": "Ma’an — Funding Requests",
+        "ar": "معاً — طلبات التمويل"
       },
       "operator": "Ma'an (Authority of Social Contribution — Abu Dhabi)",
       "tier": 1,
@@ -135,7 +285,9 @@
       "amount": {
         "min_aed": null,
         "max_aed": null,
-        "notes": "Non-dilutive social-impact grants; award sizes vary by funding round and are not publicly fixed."
+        "notes": "Current Funding Requests are assessed case by case; Ma’an publishes no fixed award ceiling on the live programme page. The AED 200K figure belongs to earlier, cohort-specific Social Incubator grants and is not used here.",
+        "value_kind": "variable",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "handicrafts",
@@ -153,8 +305,8 @@
             "abu_dhabi_other"
           ],
           "blocking_message": {
-            "en": "Ma'an grants support social-impact projects based in the Emirate of Abu Dhabi.",
-            "ar": "تدعم منح معاً المشاريع ذات الأثر الاجتماعي القائمة في إمارة أبوظبي."
+            "en": "Ma'an supports social-impact ventures based in the Emirate of Abu Dhabi.",
+            "ar": "تدعم معاً المشاريع ذات الأثر الاجتماعي القائمة في إمارة أبوظبي."
           }
         },
         {
@@ -162,8 +314,8 @@
           "op": "gte",
           "value": "lt_1yr",
           "blocking_message": {
-            "en": "Ma'an grants are disbursed to a registered entity (social enterprise / licensed business).",
-            "ar": "تُصرف منح معاً لجهة مسجّلة (مؤسسة اجتماعية / عمل مرخّص)."
+            "en": "Ma'an funds a registered entity (social enterprise / licensed business / not-for-profit).",
+            "ar": "تموّل معاً جهة مسجّلة (مؤسسة اجتماعية / عمل مرخّص / مؤسسة غير ربحية)."
           },
           "remedy": {
             "action": {
@@ -176,25 +328,26 @@
           }
         },
         {
-          "field": "sector",
-          "op": "in",
-          "value": [
-            "handicrafts",
-            "dates",
-            "food_processing",
-            "retail_services",
-            "other"
-          ],
+          "field": "social_impact",
+          "op": "eq",
+          "value": true,
           "blocking_message": {
-            "en": "Ma'an prioritises projects with a clear social or community impact.",
-            "ar": "تعطي معاً الأولوية للمشاريع ذات الأثر الاجتماعي أو المجتمعي الواضح."
+            "en": "Ma’an funds initiatives that address a documented Abu Dhabi social priority.",
+            "ar": "تموّل معاً المبادرات التي تعالج أولوية اجتماعية موثّقة في أبوظبي."
+          },
+          "remedy": {
+            "action": {
+              "en": "Define the social outcome, beneficiaries and evidence for your initiative before requesting funding.",
+              "ar": "حدّد الأثر الاجتماعي والمستفيدين والأدلة لمبادرتك قبل طلب التمويل."
+            },
+            "est_time": "2–4 weeks"
           }
         }
       ],
       "required_documents": [
         {
-          "en": "Project / impact proposal",
-          "ar": "مقترح المشروع / الأثر",
+          "en": "Project / social-impact proposal",
+          "ar": "مقترح المشروع / الأثر الاجتماعي",
           "format": "PDF/DOC"
         },
         {
@@ -208,37 +361,45 @@
           "format": "PDF"
         }
       ],
-      "intro_method": "open_form",
-      "application_url": "https://www.maan.gov.ae/en/social-investment-fund/",
+      "intro_method": "email",
+      "application_url": "https://programs.maan.gov.ae/en-US/programs/program-details/?id=f1b4900b-e139-ed11-9db0-0022480dadc2",
       "equity": false,
       "concurrent_compatible_with": [
         "khalifa-fund-sme",
         "added-sme-support",
         "dct-tourism-licence"
       ],
-      "processing_time": "Round-based review",
+      "processing_time": "Round-based / milestone-based review",
       "description": {
-        "en": "Abu Dhabi's Social Investment Fund offers non-dilutive grants to projects delivering measurable social and community impact.",
-        "ar": "يقدّم صندوق الاستثمار الاجتماعي في أبوظبي منحاً غير مخفِّفة للملكية للمشاريع التي تحقق أثراً اجتماعياً ومجتمعياً قابلاً للقياس."
+        "en": "Ma’an accepts funding requests from registered organisations for social initiatives and programmes in Abu Dhabi. Requests are reviewed case by case by the Social Allocation Committee; no fixed award is published.",
+        "ar": "تستقبل معاً طلبات تمويل من جهات مسجّلة لمبادرات وبرامج اجتماعية في أبوظبي. تُراجع الطلبات كل حالة على حدة من لجنة المخصصات الاجتماعية، ولا توجد قيمة ثابتة منشورة."
       },
       "source": {
-        "url": "https://www.maan.gov.ae/en/social-investment-fund/",
-        "verified_date": "2026-06-26"
+        "url": "https://programs.maan.gov.ae/en-US/programs/program-details/?id=f1b4900b-e139-ed11-9db0-0022480dadc2",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "Ma’an live Funding Requests programme page"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
       }
     },
     {
       "id": "tajer-abu-dhabi",
       "name": {
-        "en": "Tajer Abu Dhabi — Home / Trade Licence",
-        "ar": "تاجر أبوظبي — رخصة منزلية / تجارية"
+        "en": "Tajer Abu Dhabi — Trader / Home Licence",
+        "ar": "تاجر أبوظبي — رخصة التاجر / العمل من المنزل"
       },
-      "operator": "Abu Dhabi Department of Economic Development (ADDED) via TAMM",
+      "operator": "Abu Dhabi Registration Authority (ADRA) / ADDED, via TAMM",
       "tier": 1,
       "instrument": "license",
       "amount": {
         "min_aed": 790,
-        "max_aed": 790,
-        "notes": "Approx. AED 790 licence fee; allows trading across ~1,000+ economic activities without a physical office. Fee may vary by activity."
+        "max_aed": 5500,
+        "notes": "Basic licence AED 790 includes 6 investor-selected activities; total ranges AED 790–5,500 by activity/legal form; each extra activity +AED 100. No office required for the first 3 years. Source: ADRA.",
+        "value_kind": "cost",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "handicrafts",
@@ -257,8 +418,8 @@
             "gcc"
           ],
           "blocking_message": {
-            "en": "Tajer Abu Dhabi licences are issued to UAE/GCC nationals.",
-            "ar": "تُصدر رخص تاجر أبوظبي لمواطني الدولة ودول مجلس التعاون الخليجي."
+            "en": "Tajer (sole/establishment) is for UAE & GCC nationals; residents may join only via an LLC in partnership with an Emirati.",
+            "ar": "رخصة تاجر (مؤسسة فردية) لمواطني الدولة ودول مجلس التعاون؛ يمكن للمقيمين الانضمام عبر شركة ذات مسؤولية محدودة بالشراكة مع مواطن إماراتي فقط."
           }
         },
         {
@@ -287,7 +448,7 @@
         }
       ],
       "intro_method": "tamm",
-      "application_url": "https://www.tamm.abudhabi/en/aspects-of-life/businessandLicensing/Business/start-business/tajer-abudhabi",
+      "application_url": "https://www.adra.gov.ae/en/establishing/tajer-abu-dhabi-licence",
       "equity": false,
       "concurrent_compatible_with": [
         "khalifa-fund-sme",
@@ -297,27 +458,35 @@
       ],
       "processing_time": "1–3 days",
       "description": {
-        "en": "A low-cost Abu Dhabi licence (~AED 790) that lets UAE nationals trade from home across hundreds of activities using only an Emirates ID — the first rung to becoming fundable.",
-        "ar": "رخصة منخفضة التكلفة في أبوظبي (حوالي 790 درهم) تتيح للمواطنين ممارسة التجارة من المنزل في مئات الأنشطة باستخدام الهوية الإماراتية فقط — أول خطوة نحو التأهل للتمويل."
+        "en": "A low-cost Abu Dhabi licence (from AED 790) letting UAE/GCC nationals trade from home across 1,000+ activities using only an Emirates ID, with no office required for 3 years — the first rung to becoming fundable.",
+        "ar": "رخصة منخفضة التكلفة في أبوظبي (تبدأ من 790 درهم) تتيح لمواطني الدولة والخليج التجارة من المنزل في أكثر من 1000 نشاط بالهوية الإماراتية فقط، دون مكتب لمدة 3 سنوات — أول خطوة نحو التأهل للتمويل."
       },
       "source": {
-        "url": "https://www.tamm.abudhabi/en/aspects-of-life/businessandLicensing/Business/start-business/tajer-abudhabi",
-        "verified_date": "2026-06-26"
+        "url": "https://www.adra.gov.ae/en/establishing/tajer-abu-dhabi-licence",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "primary fetch (ADRA, server-rendered .gov.ae)"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
       }
     },
     {
       "id": "mobdea-home-licence",
       "name": {
-        "en": "Mobdea — Home-Business Licence",
-        "ar": "مبدعة — رخصة العمل من المنزل"
+        "en": "Mobdea — Home-Business Licence (Emirati women)",
+        "ar": "مبدعة — رخصة العمل من المنزل (للمواطنات)"
       },
-      "operator": "Abu Dhabi Department of Economic Development (ADDED) via TAMM",
+      "operator": "Abu Dhabi Registration Authority (ADRA) / ADDED, via TAMM",
       "tier": 1,
       "instrument": "license",
       "amount": {
-        "min_aed": 0,
+        "min_aed": 860,
         "max_aed": 1000,
-        "notes": "Mobdea targets home-based and creative micro-businesses; fees are low and can be near-zero for some categories. Exact fee unconfirmed — set conservatively."
+        "notes": "Basic licence AED 860 includes 2 (similar) investor-selected activities; each extra activity +AED 100. Establishment legal form only; no employees permitted. Source: ADRA.",
+        "value_kind": "cost",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "handicrafts",
@@ -328,16 +497,24 @@
       ],
       "eligibility": [
         {
+          "field": "gender",
+          "op": "eq",
+          "value": "female",
+          "blocking_message": {
+            "en": "The Mobdea licence is available only to Emirati women. (Emirati men can use the Tajer licence instead.)",
+            "ar": "رخصة مبدعة متاحة للمواطنات فقط. (يمكن للمواطنين استخدام رخصة تاجر بدلاً منها.)"
+          }
+        },
+        {
           "field": "nationality_ownership",
           "op": "in",
           "value": [
             "emirati_majority",
-            "emirati_minority",
-            "gcc"
+            "emirati_minority"
           ],
           "blocking_message": {
-            "en": "Mobdea home licences are for UAE/GCC nationals running a business from home.",
-            "ar": "رخص مبدعة المنزلية مخصصة لمواطني الدولة ودول مجلس التعاون الذين يديرون أعمالاً من المنزل."
+            "en": "Mobdea is for female UAE nationals.",
+            "ar": "رخصة مبدعة لمواطنات دولة الإمارات."
           }
         },
         {
@@ -348,8 +525,8 @@
             "abu_dhabi_other"
           ],
           "blocking_message": {
-            "en": "The Mobdea licence is issued in the Emirate of Abu Dhabi.",
-            "ar": "تُصدر رخصة مبدعة في إمارة أبوظبي."
+            "en": "Mobdea is for Emirati women residing in the Emirate of Abu Dhabi.",
+            "ar": "رخصة مبدعة للمواطنات المقيمات في إمارة أبوظبي."
           }
         }
       ],
@@ -360,13 +537,13 @@
           "format": "PDF / TAMM"
         },
         {
-          "en": "Home-based activity selection",
-          "ar": "اختيار النشاط المنزلي",
+          "en": "Home-based activity selection (up to 2 similar activities)",
+          "ar": "اختيار النشاط المنزلي (حتى نشاطين متشابهين)",
           "format": "TAMM selection"
         }
       ],
       "intro_method": "tamm",
-      "application_url": "https://www.tamm.abudhabi/en/aspects-of-life/businessandLicensing/Business",
+      "application_url": "https://www.adra.gov.ae/en/establishing/mobdea-licence",
       "equity": false,
       "concurrent_compatible_with": [
         "khalifa-fund-sme",
@@ -375,27 +552,135 @@
       ],
       "processing_time": "1–5 days",
       "description": {
-        "en": "An Abu Dhabi home-business licence aimed at creative and home-based micro-entrepreneurs — an alternative first registration rung for makers working from home.",
-        "ar": "رخصة العمل من المنزل في أبوظبي موجّهة لأصحاب المشاريع الصغيرة المنزلية والإبداعية — خيار أول للتسجيل لأصحاب الحرف العاملين من المنزل."
+        "en": "An Abu Dhabi home-business licence for Emirati women turning creative and home crafts into a business (from AED 860, ~50 activities, run from home, no office). Ideal first registration rung for an Emirati woman making date products at home.",
+        "ar": "رخصة العمل من المنزل في أبوظبي للمواطنات لتحويل الحرف والإبداع المنزلي إلى عمل تجاري (من 860 درهم، نحو 50 نشاطاً، من المنزل دون مكتب). الخيار الأمثل لأول تسجيل لمواطنة تصنع منتجات التمور في المنزل."
       },
       "source": {
-        "url": "https://www.tamm.abudhabi/en/aspects-of-life/businessandLicensing/Business",
-        "verified_date": "2026-06-26"
+        "url": "https://www.adra.gov.ae/en/establishing/mobdea-licence",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "primary fetch (ADRA, server-rendered .gov.ae)"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
+      }
+    },
+    {
+      "id": "farm-licence",
+      "name": {
+        "en": "Farm Licence (Farms & Small Producers)",
+        "ar": "الرخصة الزراعية (المزارع وصغار المنتجين)"
+      },
+      "operator": "Abu Dhabi Registration Authority (ADRA) / ADDED, via TAMM",
+      "tier": 1,
+      "instrument": "license",
+      "amount": {
+        "min_aed": 790,
+        "max_aed": 5500,
+        "notes": "Basic licence AED 790 includes 6 investor-selected activities; AED 790–5,500 by activity; each extra activity +AED 100. Requires proof of farm ownership (deed) or a DMT estate lease. Source: ADRA.",
+        "value_kind": "cost",
+        "countable_max_aed": null
+      },
+      "sector_tags": [
+        "camel",
+        "dates",
+        "food_processing",
+        "other"
+      ],
+      "eligibility": [
+        {
+          "field": "nationality_ownership",
+          "op": "in",
+          "value": [
+            "emirati_majority",
+            "emirati_minority"
+          ],
+          "blocking_message": {
+            "en": "The Farm Licence is issued to UAE citizens who own or lease a farm.",
+            "ar": "تُصدر الرخصة الزراعية لمواطني الدولة الذين يملكون أو يستأجرون مزرعة."
+          }
+        },
+        {
+          "field": "location",
+          "op": "in",
+          "value": [
+            "al_quaa_al_ain",
+            "abu_dhabi_other"
+          ],
+          "blocking_message": {
+            "en": "The Farm Licence covers agricultural activity in the Emirate of Abu Dhabi.",
+            "ar": "تغطّي الرخصة الزراعية النشاط الزراعي في إمارة أبوظبي."
+          }
+        },
+        {
+          "field": "farm_tenure",
+          "op": "is_true",
+          "value": true,
+          "blocking_message": {
+            "en": "You must own a private farm or hold a Department of Municipalities & Transport (DMT) estate lease.",
+            "ar": "يجب أن تملك مزرعة خاصة أو أن يكون لديك عقد إيجار حيازة من دائرة البلديات والنقل."
+          },
+          "remedy": {
+            "action": {
+              "en": "Obtain a farm or a DMT estate lease contract to register agricultural activities.",
+              "ar": "احصل على مزرعة أو عقد إيجار حيازة من دائرة البلديات والنقل لتسجيل الأنشطة الزراعية."
+            },
+            "est_time": "Varies"
+          }
+        }
+      ],
+      "required_documents": [
+        {
+          "en": "Deed to farm or DMT estate lease (proof of tenure)",
+          "ar": "سند ملكية المزرعة أو عقد إيجار الحيازة (إثبات الحيازة)",
+          "format": "PDF"
+        },
+        {
+          "en": "Emirates ID",
+          "ar": "الهوية الإماراتية",
+          "format": "PDF / TAMM"
+        }
+      ],
+      "intro_method": "tamm",
+      "application_url": "https://www.adra.gov.ae/en/establishing/small-producers-licence",
+      "equity": false,
+      "concurrent_compatible_with": [
+        "khalifa-agri-financing",
+        "khalifa-fund-sme",
+        "added-sme-support"
+      ],
+      "processing_time": "1–5 days",
+      "description": {
+        "en": "An Abu Dhabi licence for citizens who own or lease a farm to formally practise 70+ agricultural activities — raising animals, selling produce to merchants, veterinary consultancy, farmer training (from AED 790). The registration rung for Al Qua'a camel and date farmers.",
+        "ar": "رخصة في أبوظبي للمواطنين الذين يملكون أو يستأجرون مزرعة لممارسة أكثر من 70 نشاطاً زراعياً رسمياً — تربية الحيوانات وبيع المنتجات للتجار والاستشارات البيطرية وتدريب المزارعين (من 790 درهم). خطوة التسجيل لمزارعي الإبل والتمور في القوع."
+      },
+      "source": {
+        "url": "https://www.adra.gov.ae/en/establishing/small-producers-licence",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "primary fetch (ADRA, server-rendered .gov.ae)"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
       }
     },
     {
       "id": "dct-tourism-licence",
       "name": {
-        "en": "DCT Abu Dhabi — Tourism Activity Licence (Astro-Camp)",
-        "ar": "دائرة الثقافة والسياحة أبوظبي — ترخيص نشاط سياحي (مخيم فلكي)"
+        "en": "DCT Abu Dhabi — Tourism Business Licence (desert / astro camp)",
+        "ar": "دائرة الثقافة والسياحة أبوظبي — رخصة نشاط سياحي (مخيم صحراوي / فلكي)"
       },
-      "operator": "Department of Culture and Tourism — Abu Dhabi (DCT)",
+      "operator": "Department of Culture and Tourism — Abu Dhabi (DCT Abu Dhabi)",
       "tier": 1,
       "instrument": "license",
       "amount": {
         "min_aed": null,
         "max_aed": 1000,
-        "notes": "Tourism/desert-camp activity permit; fee in the order of ~AED 1,000. Exact figure unconfirmed — flagged in manifest."
+        "notes": "Annual tourism business licence fee capped at AED 1,000 (fixed blanket fee covering ADDED, DMT, Abu Dhabi Chamber and Certificate of Conformity). Confirmed on DCT Abu Dhabi news (published 11 Jan 2022; cap still in effect).",
+        "value_kind": "cost",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "astro_tourism",
@@ -424,7 +709,7 @@
             "other"
           ],
           "blocking_message": {
-            "en": "This permit is for tourism / desert-experience activities such as astro-camps.",
+            "en": "This licence is for tourism / desert-experience activities such as astro-camps.",
             "ar": "هذا الترخيص مخصص للأنشطة السياحية / تجارب الصحراء مثل المخيمات الفلكية."
           }
         }
@@ -447,7 +732,7 @@
         }
       ],
       "intro_method": "tamm",
-      "application_url": "https://tamm.abudhabi/en/aspects-of-life/Tourism",
+      "application_url": "https://dct.gov.ae/en/what.we.do/tourism/licensing.classifications.aspx",
       "equity": false,
       "concurrent_compatible_with": [
         "khalifa-fund-sme",
@@ -456,27 +741,36 @@
       ],
       "processing_time": "1–3 weeks",
       "description": {
-        "en": "A DCT Abu Dhabi tourism permit needed to legally run desert-experience and astro-tourism camps — the licence rung for an Al Qua'a stargazing camp.",
-        "ar": "ترخيص سياحي من دائرة الثقافة والسياحة بأبوظبي مطلوب لتشغيل مخيمات تجارب الصحراء والسياحة الفلكية بشكل قانوني — خطوة الترخيص لمخيم رصد النجوم في القوع."
+        "en": "The DCT Abu Dhabi tourism business licence (annual fee capped at AED 1,000) needed to legally run desert-experience and astro-tourism camps — the licence rung for an Al Qua'a stargazing camp.",
+        "ar": "رخصة النشاط السياحي من دائرة الثقافة والسياحة بأبوظبي (برسوم سنوية لا تتجاوز 1000 درهم) المطلوبة لتشغيل مخيمات تجارب الصحراء والسياحة الفلكية بشكل قانوني — خطوة الترخيص لمخيم رصد النجوم في القوع."
       },
       "source": {
-        "url": "https://tamm.abudhabi/en/aspects-of-life/Tourism",
-        "verified_date": "2026-06-26"
+        "url": "https://dct.gov.ae/en/media.centre/news/abu.dhabi.introduces.aed.1000.new.cap.for.annual.tourism.business.licenses.aspx",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "primary-source fetch",
+        "source_date": "2022-01-11"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
       }
     },
     {
       "id": "added-sme-support",
       "name": {
-        "en": "ADDED — SME Support & Khalifa Economic Programs",
-        "ar": "دائرة التنمية الاقتصادية — دعم المشاريع الصغيرة والمتوسطة"
+        "en": "Tanami — Abu Dhabi mSME Growth Framework",
+        "ar": "تنامي — منظومة نمو المنشآت في أبوظبي"
       },
       "operator": "Abu Dhabi Department of Economic Development (ADDED)",
       "tier": 1,
-      "instrument": "grant",
+      "instrument": "support",
       "amount": {
         "min_aed": null,
         "max_aed": null,
-        "notes": "Bundle of SME enablement programs (fee waivers, advisory, market access); monetary value varies by service and is not a fixed award."
+        "notes": "Integrated non-cash support across finance access, procurement, exports, skills, innovation and sustainability. Tanami is not itself a grant and contributes AED 0 to the headline metric.",
+        "value_kind": "service",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "camel",
@@ -496,7 +790,7 @@
           ],
           "blocking_message": {
             "en": "ADDED SME support is for businesses licensed in Abu Dhabi.",
-            "ar": "دعم دائرة التنمية الاقتصادية للمشاريع مخصص للمشاريع المرخّصة في أبوظبي."
+            "ar": "دعم دائرة التنمية الاقتصادية للمشاريع المرخّصة في أبوظبي."
           }
         },
         {
@@ -505,7 +799,7 @@
           "value": "lt_1yr",
           "blocking_message": {
             "en": "You need a registered Abu Dhabi business to access ADDED SME services.",
-            "ar": "تحتاج إلى مشروع مسجّل في أبوظبي للاستفادة من خدمات دعم المشاريع."
+            "ar": "تحتاج إلى مشروع مسجّل في أبوظبي للاستفادة من خدمات الدعم."
           },
           "remedy": {
             "action": {
@@ -531,7 +825,7 @@
         }
       ],
       "intro_method": "tamm",
-      "application_url": "https://added.gov.ae/",
+      "application_url": "https://www.added.gov.ae/en/grow/Tanami",
       "equity": false,
       "concurrent_compatible_with": [
         "khalifa-fund-sme",
@@ -541,27 +835,147 @@
       ],
       "processing_time": "Varies by service",
       "description": {
-        "en": "Abu Dhabi's economic department provides SME enablement — advisory, fee reductions and market-access programs — for licensed local businesses.",
-        "ar": "تقدّم دائرة التنمية الاقتصادية بأبوظبي خدمات تمكين للمشاريع الصغيرة والمتوسطة من استشارات وتخفيضات رسوم وبرامج وصول للأسواق للمشاريع المرخّصة محلياً."
+        "en": "ADDED’s Tanami framework connects Abu Dhabi startups and mSMEs to finance access, procurement, exports, skills, innovation and sustainability support. It is an enablement pathway, not a cash grant.",
+        "ar": "تربط منظومة تنامي التابعة لاقتصادية أبوظبي الشركات الناشئة والمنشآت بخدمات الوصول إلى التمويل والمشتريات والتصدير والمهارات والابتكار والاستدامة. وهي مسار تمكين وليست منحة نقدية."
       },
       "source": {
-        "url": "https://added.gov.ae/",
-        "verified_date": "2026-06-26"
+        "url": "https://www.added.gov.ae/en/grow/Tanami",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "ADDED Tanami primary programme page"
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
+      }
+    },
+    {
+      "id": "sheikh-mansour-agri-award",
+      "name": {
+        "en": "Sheikh Mansour bin Zayed Agricultural Excellence Award",
+        "ar": "جائزة منصور بن زايد للتميّز الزراعي"
+      },
+      "operator": "Abu Dhabi Agriculture and Food Safety Authority (ADAFSA)",
+      "tier": 1,
+      "instrument": "grant",
+      "amount": {
+        "min_aed": null,
+        "max_aed": null,
+        "notes": "Annual award with a total prize pool of AED 10 million across 4 main categories and 13 subcategories (incl. Best Farm, Best Livestock Holding, Youth Projects, Agricultural Technologies, Commercial Farms, and Outstanding Female Farmer/Breeder). Individual prizes vary by category and edition.",
+        "value_kind": "prize_pool",
+        "countable_max_aed": null
+      },
+      "sector_tags": [
+        "camel",
+        "dates",
+        "food_processing",
+        "other"
+      ],
+      "eligibility": [
+        {
+          "field": "location",
+          "op": "in",
+          "value": [
+            "al_quaa_al_ain",
+            "abu_dhabi_other"
+          ],
+          "blocking_message": {
+            "en": "The award honours farmers and livestock breeders in the Emirate of Abu Dhabi.",
+            "ar": "تكرّم الجائزة المزارعين ومربّي الثروة الحيوانية في إمارة أبوظبي."
+          }
+        },
+        {
+          "field": "sector",
+          "op": "in",
+          "value": [
+            "camel",
+            "dates",
+            "food_processing",
+            "other"
+          ],
+          "blocking_message": {
+            "en": "The award is for agricultural producers — farms, livestock and agri innovation.",
+            "ar": "الجائزة مخصصة للمنتجين الزراعيين — المزارع والثروة الحيوانية والابتكار الزراعي."
+          }
+        },
+        {
+          "field": "farm_tenure",
+          "op": "is_true",
+          "value": true,
+          "blocking_message": {
+            "en": "Entrants are active farm owners / livestock breeders.",
+            "ar": "المتقدمون من أصحاب المزارع العاملة / مربّي الثروة الحيوانية."
+          },
+          "remedy": {
+            "action": {
+              "en": "Establish or lease a farm and begin production to enter in a future edition.",
+              "ar": "أنشئ أو استأجر مزرعة وابدأ الإنتاج للمشاركة في دورة لاحقة."
+            },
+            "est_time": "Seasonal / annual"
+          }
+        }
+      ],
+      "required_documents": [
+        {
+          "en": "Farm licence / proof of farming activity",
+          "ar": "رخصة المزرعة / إثبات النشاط الزراعي",
+          "format": "PDF"
+        },
+        {
+          "en": "Emirates ID",
+          "ar": "الهوية الإماراتية",
+          "format": "PDF"
+        },
+        {
+          "en": "Application via ADAFSA (category-specific)",
+          "ar": "التقديم عبر جهاز أبوظبي للزراعة (حسب الفئة)",
+          "format": "Form"
+        }
+      ],
+      "intro_method": "competition",
+      "application_url": "https://www.adafsa.gov.ae/en/Pages/default.aspx",
+      "equity": false,
+      "concurrent_compatible_with": [
+        "khalifa-agri-financing",
+        "farm-licence",
+        "added-sme-support"
+      ],
+      "processing_time": "Annual cycle (edition-based)",
+      "description": {
+        "en": "ADAFSA's annual award (AED 10M prize pool) recognising outstanding farmers and livestock breeders in Abu Dhabi, with dedicated categories for youth projects and outstanding female farmers — a direct recognition-and-cash route for Al Qua'a's camel and date farmers.",
+        "ar": "جائزة سنوية من جهاز أبوظبي للزراعة والسلامة الغذائية (جوائز بقيمة 10 ملايين درهم) تكرّم المزارعين ومربّي الثروة الحيوانية المتميّزين في أبوظبي، مع فئات مخصصة لمشاريع الشباب والمزارِعات المتميّزات — طريق مباشر للتكريم والجوائز لمزارعي الإبل والتمور في القوع."
+      },
+      "source": {
+        "url": "https://www.mediaoffice.abudhabi/en/environment/abu-dhabi-agriculture-and-food-safety-authority-launches-4th-edition-of-sheikh-mansour-bin-zayed-agricultural-excellence-award/",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "Abu Dhabi Government Media Office (gov) coverage of ADAFSA award"
+      },
+      "availability": {
+        "status": "closed",
+        "checked_date": "2026-06-27",
+        "next_cycle": "Annual",
+        "note": {
+          "en": "The fourth cycle concluded in April 2026; track the next edition.",
+          "ar": "اختُتمت الدورة الرابعة في أبريل 2026؛ تابع الدورة التالية."
+        }
       }
     },
     {
       "id": "hub71-access",
       "name": {
-        "en": "Hub71 Access",
-        "ar": "هب71 أكسس"
+        "en": "Hub71 Access Programme",
+        "ar": "برنامج هب71 أكسس"
       },
       "operator": "Hub71 (Abu Dhabi Global Market ecosystem)",
       "tier": 2,
       "instrument": "accelerator",
       "amount": {
         "min_aed": null,
-        "max_aed": 500000,
-        "notes": "Incentive package up to AED 500K (housing, office, services); not a cash grant. Non-dilutive program benefits."
+        "max_aed": 750000,
+        "notes": "Per selected startup: AED 250K in-kind incentives plus AED 250K cash in exchange for equity through a SAFE. A further AED 250K cash top-up requires high performance and additional equity. The metric counts only the initial AED 250K cash component.",
+        "value_kind": "cash_and_in_kind",
+        "countable_max_aed": 250000
       },
       "sector_tags": [
         "tech",
@@ -573,8 +987,8 @@
           "op": "gte",
           "value": "mvp",
           "blocking_message": {
-            "en": "Hub71 expects at least a working product (pre-seed to Series A).",
-            "ar": "يتطلب هب71 على الأقل منتجاً قابلاً للعمل (من المرحلة التأسيسية إلى السلسلة A)."
+            "en": "Hub71 targets pre-seed to Series A startups with at least a working product.",
+            "ar": "يستهدف هب71 الشركات من المرحلة التأسيسية إلى السلسلة A مع منتج قابل للعمل على الأقل."
           },
           "remedy": {
             "action": {
@@ -601,12 +1015,12 @@
           "op": "is_true",
           "value": true,
           "blocking_message": {
-            "en": "Hub71 requires at least one founder to relocate to Abu Dhabi.",
-            "ar": "يشترط هب71 انتقال أحد المؤسسين على الأقل إلى أبوظبي."
+            "en": "Hub71 expects at least one founder to relocate to Abu Dhabi.",
+            "ar": "يتوقّع هب71 انتقال أحد المؤسسين على الأقل إلى أبوظبي."
           },
           "remedy": {
             "action": {
-              "en": "Commit a founder to relocate to Abu Dhabi for the program.",
+              "en": "Commit a founder to relocate to Abu Dhabi for the programme.",
               "ar": "التزم بانتقال أحد المؤسسين إلى أبوظبي للالتحاق بالبرنامج."
             },
             "est_time": "Before cohort start"
@@ -631,26 +1045,37 @@
         }
       ],
       "intro_method": "open_form",
-      "application_url": "https://hub71.com/programmes/",
-      "equity": false,
+      "application_url": "https://www.hub71.com/program/access-programme",
+      "equity": true,
       "concurrent_compatible_with": [
-        "khalifa-entrepreneurship-award"
+        "khalifa-entrepreneurship-competition"
       ],
-      "processing_time": "Cohort deadlines (e.g., Aug deadline for Feb start)",
+      "processing_time": "Cohort-based (Cohort 20 deadline 2 Aug 2026)",
       "description": {
-        "en": "Abu Dhabi's flagship tech-startup program offering an incentive package up to AED 500K, contingent on a founder relocating to Abu Dhabi.",
-        "ar": "البرنامج الرائد للشركات الناشئة التقنية في أبوظبي، يقدّم حزمة حوافز تصل إلى 500 ألف درهم، مشروطة بانتقال أحد المؤسسين إلى أبوظبي."
+        "en": "Abu Dhabi's flagship tech-startup programme offering an incentive package up to AED 750K (in-kind plus cash-for-equity), contingent on a founder relocating to Abu Dhabi.",
+        "ar": "البرنامج الرائد للشركات الناشئة التقنية في أبوظبي، يقدّم حزمة حوافز تصل إلى 750 ألف درهم (دعم عيني ونقدي مقابل حصص)، مشروطة بانتقال أحد المؤسسين إلى أبوظبي."
       },
       "source": {
-        "url": "https://hub71.com/programmes/",
-        "verified_date": "2026-06-26"
+        "url": "https://www.hub71.com/program/access-programme",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "Hub71 site + Hub71 press release on revamped incentive"
+      },
+      "availability": {
+        "status": "open",
+        "checked_date": "2026-06-27",
+        "closes": "2026-08-02",
+        "note": {
+          "en": "Cohort 20 applications close 2 August 2026; later applications roll to the next cohort.",
+          "ar": "تغلق طلبات الدفعة 20 في 2 أغسطس 2026؛ وتُرحّل الطلبات اللاحقة إلى الدفعة التالية."
+        }
       }
     },
     {
       "id": "sheraa-s3",
       "name": {
-        "en": "Sheraa — Startup Studio (S3)",
-        "ar": "شراع — استوديو الشركات الناشئة (S3)"
+        "en": "Sheraa — Sharjah Startup Studio (S3)",
+        "ar": "شراع — استوديو الشارقة للشركات الناشئة (S3)"
       },
       "operator": "Sheraa (Sharjah Entrepreneurship Center)",
       "tier": 2,
@@ -658,7 +1083,9 @@
       "amount": {
         "min_aed": null,
         "max_aed": null,
-        "notes": "Equity-free, fee-free 4-month program; includes a free Sharjah startup licence for 1 year (no direct cash award)."
+        "notes": "Equity-free, fee-free programme; includes a free 1-year Sharjah (SRTIP) startup licence and co-working space. No direct cash award. Selects ~20 startups per cohort.",
+        "value_kind": "variable",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "tech",
@@ -672,13 +1099,13 @@
           "op": "gte",
           "value": "mvp",
           "blocking_message": {
-            "en": "S3 is for early-stage startups with a prototype or MVP.",
-            "ar": "برنامج S3 مخصص للشركات الناشئة المبكرة التي لديها نموذج أولي أو منتج أولي."
+            "en": "S3 is for early-stage startups with a prototype/MVP and early traction.",
+            "ar": "برنامج S3 للشركات الناشئة المبكرة التي لديها نموذج أولي وجذب مبكر."
           },
           "remedy": {
             "action": {
-              "en": "Develop a prototype or MVP before applying.",
-              "ar": "طوّر نموذجاً أولياً أو منتجاً أولياً قبل التقديم."
+              "en": "Develop a prototype or MVP (with early traction) before applying.",
+              "ar": "طوّر نموذجاً أولياً (مع جذب مبكر) قبل التقديم."
             },
             "est_time": "3–6 months"
           }
@@ -695,8 +1122,8 @@
             "outside_uae"
           ],
           "blocking_message": {
-            "en": "Founders must commit to be present in Sharjah for the program.",
-            "ar": "يجب على المؤسسين الالتزام بالتواجد في الشارقة خلال البرنامج."
+            "en": "Founders must commit to operate in Sharjah / across the UAE for the programme.",
+            "ar": "يجب على المؤسسين الالتزام بالعمل في الشارقة / داخل الدولة خلال البرنامج."
           }
         }
       ],
@@ -713,19 +1140,29 @@
         }
       ],
       "intro_method": "open_form",
-      "application_url": "https://startups.sheraa.ae/",
+      "application_url": "https://www.asc.sheraa.ae/s3-program",
       "equity": false,
       "concurrent_compatible_with": [
         "access-sharjah-challenge"
       ],
-      "processing_time": "4-month program; rolling/set intakes",
+      "processing_time": "Cohort-based (set intakes)",
       "description": {
-        "en": "Sheraa's equity-free, fee-free 4-month studio for early-stage startups, bundling a free Sharjah licence for one year.",
-        "ar": "استوديو شراع لمدة أربعة أشهر بدون حصص ملكية أو رسوم للشركات الناشئة المبكرة، ويشمل رخصة مجانية في الشارقة لمدة عام."
+        "en": "Sheraa's equity-free, fee-free studio for early-stage startups, bundling a free 1-year Sharjah licence and co-working space; priority sectors include creative industries, EdTech, manufacturing and sustainability.",
+        "ar": "استوديو شراع بدون حصص ملكية أو رسوم للشركات الناشئة المبكرة، ويشمل رخصة مجانية في الشارقة لمدة عام ومساحة عمل مشتركة؛ القطاعات ذات الأولوية تشمل الصناعات الإبداعية والتعليم التقني والتصنيع والاستدامة."
       },
       "source": {
-        "url": "https://startups.sheraa.ae/",
-        "verified_date": "2026-06-26"
+        "url": "https://www.asc.sheraa.ae/s3-program",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "Sheraa S3 programme page + Sheraa site"
+      },
+      "availability": {
+        "status": "open",
+        "checked_date": "2026-06-27",
+        "note": {
+          "en": "Sheraa currently links to an active S3 application form.",
+          "ar": "يوفّر شراع حالياً رابط تقديم نشط لبرنامج S3."
+        }
       }
     },
     {
@@ -739,12 +1176,13 @@
       "instrument": "grant",
       "amount": {
         "min_aed": null,
-        "max_aed": null,
-        "notes": "Thematic challenge with proof-of-concept funding and a paid pilot with a Sharjah entity; award varies by edition."
+        "max_aed": 250000,
+        "notes": "The latest published 2025 EdTech edition offered a AED 250,000 proof-of-concept contract. That application window is closed; the next theme and amount are not yet announced.",
+        "value_kind": "cash",
+        "countable_max_aed": 250000
       },
       "sector_tags": [
-        "tech",
-        "other"
+        "tech"
       ],
       "eligibility": [
         {
@@ -752,8 +1190,8 @@
           "op": "gte",
           "value": "early_traction",
           "blocking_message": {
-            "en": "ASC targets growth-stage or scaling startups that can run a pilot.",
-            "ar": "يستهدف التحدي الشركات الناشئة في مرحلة النمو أو التوسّع القادرة على تنفيذ مشروع تجريبي."
+            "en": "ASC targets growth-stage / scaling startups that can run a pilot.",
+            "ar": "يستهدف التحدي الشركات في مرحلة النمو/التوسّع القادرة على تنفيذ مشروع تجريبي."
           },
           "remedy": {
             "action": {
@@ -761,6 +1199,17 @@
               "ar": "حقّق جذباً مبكراً وحلاً جاهزاً للتجربة قبل التقديم."
             },
             "est_time": "6–12 months"
+          }
+        },
+        {
+          "field": "sector",
+          "op": "in",
+          "value": [
+            "tech"
+          ],
+          "blocking_message": {
+            "en": "The latest published ASC edition targeted market-ready education technology solutions.",
+            "ar": "استهدفت أحدث دورة منشورة حلول تقنيات التعليم الجاهزة للسوق."
           }
         }
       ],
@@ -777,26 +1226,37 @@
         }
       ],
       "intro_method": "competition",
-      "application_url": "https://asc.sheraa.ae/",
+      "application_url": "https://www.startups.sheraa.ae/asc2025",
       "equity": false,
       "concurrent_compatible_with": [
         "sheraa-s3"
       ],
-      "processing_time": "Annual; applications open summer",
+      "processing_time": "Annual (applications typically open mid-year)",
       "description": {
-        "en": "An annual Sharjah challenge where scaling startups solve a themed problem to win proof-of-concept funding and a paid pilot.",
-        "ar": "تحدٍّ سنوي في الشارقة تتنافس فيه الشركات الناشئة المتوسّعة لحل مشكلة موضوعية للفوز بتمويل إثبات المفهوم ومشروع تجريبي مدفوع."
+        "en": "An annual Sharjah challenge where scaling startups solve a themed problem to win proof-of-concept funding and a paid pilot with a Sharjah entity.",
+        "ar": "تحدٍّ سنوي في الشارقة تتنافس فيه الشركات المتوسّعة لحل مشكلة موضوعية للفوز بتمويل إثبات المفهوم ومشروع تجريبي مدفوع مع جهة في الشارقة."
       },
       "source": {
-        "url": "https://asc.sheraa.ae/",
-        "verified_date": "2026-06-26"
+        "url": "https://www.startups.sheraa.ae/asc2025",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "Sheraa 2025 edition page; next edition not announced"
+      },
+      "availability": {
+        "status": "closed",
+        "checked_date": "2026-06-27",
+        "next_cycle": "Annual — next theme/date not announced",
+        "note": {
+          "en": "The latest published 2025 EdTech edition closed 17 August 2025.",
+          "ar": "أُغلق أحدث إصدار منشور لعام 2025 في 17 أغسطس 2025."
+        }
       }
     },
     {
-      "id": "khalifa-entrepreneurship-award",
+      "id": "khalifa-entrepreneurship-competition",
       "name": {
-        "en": "Khalifa Entrepreneurship Award",
-        "ar": "جائزة خليفة لريادة الأعمال"
+        "en": "Khalifa Fund Entrepreneurship Competition",
+        "ar": "مسابقة صندوق خليفة لريادة الأعمال"
       },
       "operator": "Khalifa Fund for Enterprise Development",
       "tier": 2,
@@ -804,7 +1264,9 @@
       "amount": {
         "min_aed": null,
         "max_aed": null,
-        "notes": "Recognition + prize for Emirati-founded early-stage ventures; cash prize varies by edition."
+        "notes": "AED 1M+ is the collective pool of prizes and in-kind support across five sector winners, innovation award recipients and finalists—not a per-founder ceiling. It is therefore not counted in AED within reach.",
+        "value_kind": "prize_pool",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "tech",
@@ -819,8 +1281,8 @@
             "emirati_minority"
           ],
           "blocking_message": {
-            "en": "The Award requires at least one Emirati founder (≥50% Emirati ownership).",
-            "ar": "تشترط الجائزة وجود مؤسس إماراتي واحد على الأقل (ملكية إماراتية 50% أو أكثر)."
+            "en": "The competition requires at least one Emirati founder (Emirati-owned or co-owned).",
+            "ar": "تشترط المسابقة وجود مؤسس إماراتي واحد على الأقل (ملكية إماراتية كاملة أو مشتركة)."
           }
         },
         {
@@ -831,8 +1293,8 @@
             "abu_dhabi_other"
           ],
           "blocking_message": {
-            "en": "Applicants should be based in the Abu Dhabi region (Abu Dhabi, Al Ain, Al Dhafra).",
-            "ar": "يجب أن يكون المتقدمون مقيمين في منطقة أبوظبي (أبوظبي، العين، الظفرة)."
+            "en": "Applicants are residents of the Abu Dhabi region (Abu Dhabi, Al Ain, Al Dhafra).",
+            "ar": "المتقدمون من المقيمين في منطقة أبوظبي (أبوظبي، العين، الظفرة)."
           }
         },
         {
@@ -840,8 +1302,8 @@
           "op": "gte",
           "value": "mvp",
           "blocking_message": {
-            "en": "The Award requires an MVP / prototype addressing Abu Dhabi's priority sectors.",
-            "ar": "تتطلب الجائزة منتجاً أولياً / نموذجاً أولياً يخدم القطاعات ذات الأولوية في أبوظبي."
+            "en": "The competition requires a working prototype / MVP in a Falcon Economy sector.",
+            "ar": "تتطلب المسابقة نموذجاً أولياً قابلاً للعمل ضمن قطاعات اقتصاد الصقر."
           },
           "remedy": {
             "action": {
@@ -871,14 +1333,163 @@
         "hub71-access",
         "khalifa-fund-sme"
       ],
-      "processing_time": "Applications Apr–Jun; finalists pitch in July",
+      "processing_time": "Annual; bootcamp + finalist pitch (latest edition applications closed Jun 2026)",
       "description": {
-        "en": "An Emirati-focused competition for early-stage ventures (MVP-ready) addressing Abu Dhabi's 'Falcon Economy' priority sectors.",
-        "ar": "مسابقة موجّهة للإماراتيين للمشاريع المبكرة (الجاهزة بمنتج أولي) التي تخدم القطاعات ذات الأولوية ضمن 'اقتصاد الصقر' في أبوظبي."
+        "en": "An Emirati-focused competition for early-stage ventures (MVP-ready) in Abu Dhabi's 'Falcon Economy' sectors, awarding over AED 1M in prizes and in-kind support plus MZN Hub membership for finalists.",
+        "ar": "مسابقة موجّهة للإماراتيين للمشاريع المبكرة (الجاهزة بمنتج أولي) ضمن قطاعات 'اقتصاد الصقر' في أبوظبي، تمنح أكثر من مليون درهم جوائز ودعماً عينياً وعضوية مركز MZN للمتأهلين."
       },
       "source": {
         "url": "https://www.khalifafund.ae/program-initiatives/khalifa-entrepreneurship-award/",
-        "verified_date": "2026-06-26"
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "Khalifa Fund programme page + Abu Dhabi Media Office launch coverage"
+      },
+      "availability": {
+        "status": "closed",
+        "checked_date": "2026-06-27",
+        "next_cycle": "Annual",
+        "note": {
+          "en": "The 2026 application phase has closed; track the next edition.",
+          "ar": "أُغلق باب التقديم لدورة 2026؛ تابع الدورة التالية."
+        }
+      }
+    },
+    {
+      "id": "edb-agritech-loans",
+      "name": {
+        "en": "Emirates Development Bank — AgriTech Loans",
+        "ar": "مصرف الإمارات للتنمية — قروض التكنولوجيا الزراعية"
+      },
+      "operator": "Emirates Development Bank (EDB)",
+      "tier": 1,
+      "instrument": "loan",
+      "amount": {
+        "min_aed": null,
+        "max_aed": 5000000,
+        "notes": "EDB allocated AED 100M to the programme. Its official annual report states facilities of up to AED 5M; the live programme page confirms up to 90% LTV, a 10-year tenor and a 2.5-year grace period.",
+        "value_kind": "finance",
+        "countable_max_aed": 5000000
+      },
+      "sector_tags": [
+        "camel",
+        "dates",
+        "food_processing",
+        "tech"
+      ],
+      "eligibility": [
+        {
+          "field": "location",
+          "op": "in",
+          "value": [
+            "al_quaa_al_ain",
+            "abu_dhabi_other",
+            "sharjah",
+            "dubai",
+            "other_uae"
+          ],
+          "blocking_message": {
+            "en": "The business must be located and operating in the UAE.",
+            "ar": "يجب أن يكون المشروع قائماً ويعمل داخل دولة الإمارات."
+          }
+        },
+        {
+          "field": "sector",
+          "op": "in",
+          "value": [
+            "camel",
+            "dates",
+            "food_processing",
+            "tech"
+          ],
+          "blocking_message": {
+            "en": "This programme finances farms, local food producers, agricultural technology and equipment suppliers.",
+            "ar": "يموّل البرنامج المزارع ومنتجي الغذاء المحليين والتكنولوجيا الزراعية وموردي المعدات."
+          }
+        },
+        {
+          "field": "registration",
+          "op": "gte",
+          "value": "reg_2yr_plus",
+          "blocking_message": {
+            "en": "EDB requires at least two years of business operations.",
+            "ar": "يشترط مصرف الإمارات للتنمية سجلاً تشغيلياً لا يقل عن سنتين."
+          },
+          "remedy": {
+            "action": {
+              "en": "Build a two-year operating record with account, VAT and audited financial statements.",
+              "ar": "كوّن سجلاً تشغيلياً لسنتين مع كشوف الحساب وضريبة القيمة المضافة والبيانات المالية المدققة."
+            },
+            "est_time": "24 months"
+          }
+        },
+        {
+          "field": "stage",
+          "op": "gte",
+          "value": "established",
+          "blocking_message": {
+            "en": "The programme assesses an operating business with demonstrated viability.",
+            "ar": "يقيّم البرنامج مشروعاً عاملاً ذا جدوى مثبتة."
+          },
+          "remedy": {
+            "action": {
+              "en": "Operate and document sales, costs and the technical feasibility of the proposed investment.",
+              "ar": "شغّل المشروع ووثّق المبيعات والتكاليف والجدوى الفنية للاستثمار المقترح."
+            },
+            "est_time": "12–24 months"
+          }
+        }
+      ],
+      "required_documents": [
+        {
+          "en": "UAE trade licence",
+          "ar": "رخصة تجارية إماراتية",
+          "format": "PDF"
+        },
+        {
+          "en": "Al Etihad Credit Bureau report",
+          "ar": "تقرير شركة الاتحاد للمعلومات الائتمانية",
+          "format": "PDF"
+        },
+        {
+          "en": "12 months of account and VAT statements",
+          "ar": "كشوف الحساب وضريبة القيمة المضافة لاثني عشر شهراً",
+          "format": "PDF"
+        },
+        {
+          "en": "Audited financial statements for the last two years, where applicable",
+          "ar": "بيانات مالية مدققة لآخر سنتين، حيثما ينطبق",
+          "format": "PDF"
+        },
+        {
+          "en": "Technical or feasibility study",
+          "ar": "دراسة فنية أو دراسة جدوى",
+          "format": "PDF"
+        }
+      ],
+      "intro_method": "open_form",
+      "application_url": "https://edb.gov.ae/solutions/agritech-loans",
+      "equity": false,
+      "concurrent_compatible_with": [
+        "farm-licence",
+        "added-sme-support"
+      ],
+      "processing_time": "Case-by-case credit and development-impact assessment",
+      "description": {
+        "en": "A UAE-wide agricultural financing programme for farms, local growers, food suppliers and agricultural technology providers. Owners of all nationalities may apply once the business has at least two years of operations.",
+        "ar": "برنامج تمويل زراعي على مستوى الدولة للمزارع والمنتجين المحليين وموردي الأغذية ومزودي التكنولوجيا الزراعية. يمكن للمالكين من جميع الجنسيات التقديم بعد إكمال المشروع سنتين من التشغيل."
+      },
+      "availability": {
+        "status": "rolling",
+        "checked_date": "2026-06-27"
+      },
+      "source": {
+        "url": "https://edb.gov.ae/solutions/agritech-loans",
+        "verified_date": "2026-06-27",
+        "confidence": "confirmed",
+        "method": "EDB programme page for eligibility and terms; EDB 2024 Annual Report for the AED 5M facility ceiling",
+        "additional_urls": [
+          "https://edb.gov.ae/financial-reports/annual_report_2024/reports/ENGLISH/EDB%20AR24%20ENG%2031AUG%20%28FULL%20ARTWORK%20INCL.%20FINS%29%20LO-RES.pdf"
+        ]
       }
     },
     {
@@ -893,7 +1504,9 @@
       "amount": {
         "min_aed": null,
         "max_aed": null,
-        "notes": "Venture investment; ticket sizes vary and are negotiated per deal."
+        "notes": "Venture investment; ticket sizes negotiated per deal. Active 2026: primarily Seed (avg ~USD 4M) and Series A in UAE/MENA tech.",
+        "value_kind": "variable",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "tech",
@@ -942,17 +1555,27 @@
         }
       ],
       "intro_method": "open_form",
-      "application_url": "https://shorooq.com/",
+      "application_url": "https://www.shorooq.com/",
       "equity": true,
       "concurrent_compatible_with": [],
       "processing_time": "Rolling",
       "description": {
         "en": "A leading MENA/Pakistan venture-capital firm investing equity in early-stage tech startups (reference / stretch tier).",
-        "ar": "شركة رائدة في رأس المال الجريء في منطقة الشرق الأوسط وباكستان تستثمر حصص ملكية في الشركات الناشئة التقنية المبكرة (مرجعية / طبقة طموحة)."
+        "ar": "شركة رائدة في رأس المال الجريء في الشرق الأوسط وباكستان تستثمر حصص ملكية في الشركات الناشئة التقنية المبكرة (طبقة مرجعية / طموحة)."
       },
       "source": {
-        "url": "https://shorooq.com/",
-        "verified_date": "2026-06-26"
+        "url": "https://www.shorooq.com/",
+        "verified_date": "2026-06-27",
+        "confidence": "reported",
+        "method": "firm site + 2026 investor trackers"
+      },
+      "availability": {
+        "status": "unknown",
+        "checked_date": "2026-06-27",
+        "note": {
+          "en": "Investment is deal-based; no public application window or guaranteed ticket.",
+          "ar": "الاستثمار حسب الصفقة؛ لا توجد نافذة تقديم عامة أو قيمة مضمونة."
+        }
       }
     },
     {
@@ -967,7 +1590,9 @@
       "amount": {
         "min_aed": null,
         "max_aed": null,
-        "notes": "Venture investment from inception to growth stage; ticket sizes vary per deal."
+        "notes": "Venture investment from seed to growth; ticket sizes per deal. Active early-stage MENA tech VC; a Hub71 partner VC.",
+        "value_kind": "variable",
+        "countable_max_aed": null
       },
       "sector_tags": [
         "tech",
@@ -1026,12 +1651,22 @@
       "concurrent_compatible_with": [],
       "processing_time": "Rolling (warm intro)",
       "description": {
-        "en": "A sector-agnostic Gulf/MENA technology VC investing from inception to growth, typically reached via warm intro (reference / stretch tier).",
-        "ar": "شركة رأس مال جريء تقنية في الخليج والشرق الأوسط تستثمر من التأسيس إلى النمو، يتم الوصول إليها عادة عبر مقدّمة دافئة (مرجعية / طبقة طموحة)."
+        "en": "A Gulf/MENA technology VC investing from inception to growth, typically reached via warm intro (reference / stretch tier).",
+        "ar": "شركة رأس مال جريء تقنية في الخليج والشرق الأوسط تستثمر من التأسيس إلى النمو، يتم الوصول إليها عادة عبر مقدّمة دافئة (طبقة مرجعية / طموحة)."
       },
       "source": {
         "url": "https://www.becocapital.com/contact/",
-        "verified_date": "2026-06-26"
+        "verified_date": "2026-06-27",
+        "confidence": "reported",
+        "method": "firm site + 2026 trackers"
+      },
+      "availability": {
+        "status": "unknown",
+        "checked_date": "2026-06-27",
+        "note": {
+          "en": "Investment is deal-based; no public application window or guaranteed ticket.",
+          "ar": "الاستثمار حسب الصفقة؛ لا توجد نافذة تقديم عامة أو قيمة مضمونة."
+        }
       }
     }
   ]

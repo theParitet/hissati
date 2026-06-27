@@ -86,6 +86,10 @@ export const ENUM_LABELS: Record<string, Record<string, L>> = {
     cofounder: { en: "With a co-founder", ar: "مع شريك مؤسس" },
     technical_cofounder: { en: "With a technical co-founder", ar: "مع شريك تقني" },
   },
+  gender: {
+    female: { en: "Woman", ar: "امرأة" },
+    male: { en: "Man", ar: "رجل" },
+  },
 };
 
 export function enumLabel(group: string, value: string, locale: Locale): string {
@@ -129,6 +133,30 @@ export const QUESTION_TEXT: Record<QuestionId, { prompt: L; help?: L }> = {
   },
   funding: {
     prompt: { en: "What funding are you looking for?", ar: "ما نوع التمويل الذي تبحث عنه؟" },
+  },
+  gender: {
+    prompt: { en: "Are you applying as a woman?", ar: "هل تتقدمين بصفتك امرأة؟" },
+    help: {
+      en: "Asked only to check women-only programmes such as the Mobdea home licence.",
+      ar: "يُطرح فقط للتحقق من البرامج المخصصة للنساء مثل رخصة مبدعة المنزلية.",
+    },
+  },
+  farm_tenure: {
+    prompt: { en: "Do you own or lease a farm?", ar: "هل تملك أو تستأجر مزرعة؟" },
+    help: {
+      en: "This checks the Farm Licence and agriculture-specific pathways.",
+      ar: "تتحقق هذه الإجابة من رخصة المزرعة والمسارات الزراعية المتخصصة.",
+    },
+  },
+  social_impact: {
+    prompt: {
+      en: "Does the project address a defined social priority?",
+      ar: "هل يعالج المشروع أولوية اجتماعية محددة؟",
+    },
+    help: {
+      en: "Ma’an funding requests require a documented social initiative and beneficiaries.",
+      ar: "تتطلب طلبات تمويل معاً مبادرة اجتماعية موثقة ومستفيدين محددين.",
+    },
   },
   relocation_willing: {
     prompt: {
@@ -184,7 +212,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     optionalNote: "اختياري — يحسّن مطابقاتك",
 
     // results
-    eligibleNow: "مؤهّل الآن",
+    eligibleNow: "يستوفي الشروط المنشورة",
     almostEligible: "قريب من التأهّل",
     notAFit: "غير مناسب الآن",
     match: "تطابق",
@@ -212,6 +240,14 @@ export const UI: Record<Locale, Record<string, string>> = {
     instrument_equity: "حصة ملكية",
     instrument_accelerator: "مسرّعة",
     instrument_license: "رخصة",
+    instrument_support: "دعم",
+    availability_open: "مفتوح الآن",
+    availability_rolling: "متاح بشكل مستمر",
+    availability_closed: "مغلق — تابع الدورة القادمة",
+    availability_unknown: "التوفر غير معلن",
+    confidence_confirmed: "مؤكد من المصدر",
+    confidence_reported: "مذكور رسمياً",
+    confidence_estimated: "تقديري",
     roadmapTitle: "خارطة الطريق إلى التمويل",
     roadmapLead: "خطوات مرتّبة وموثّقة لتفتح البرامج القريبة منك.",
     stackable: "يمكن الجمع بينه وبين برامج أخرى",
@@ -249,7 +285,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     withinReach: "ضمن متناولك",
     withinReachHint: "تمويل حقيقي يمكنك الوصول إليه الآن — يرتفع كلما أنجزت خطوة.",
     potentialReach: "ضمن متناولك بعد إكمال الخطوات",
-    programsEligibleLabel: "برامج مؤهَّلة",
+    programsEligibleLabel: "مطابقات مفتوحة",
     stepsLabel: "خطوات منجزة",
     amountVaries: "المبلغ يختلف",
     sharePlan: "شارك خطتي",
@@ -268,6 +304,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     intro_tamm: "عبر تَم (TAMM)",
     intro_warm_intro: "تعريف مباشر",
     intro_competition: "مسابقة",
+    intro_email: "عبر البريد الإلكتروني",
     readyToApply: "جاهز للتقديم",
     downloadPdf: "تنزيل الخطة (PDF)",
     shareWhatsapp: "مشاركة عبر واتساب",
@@ -303,7 +340,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     fundingAmount: "Amount you need",
     optionalNote: "Optional — sharpens your matches",
 
-    eligibleNow: "Eligible now",
+    eligibleNow: "Published criteria met",
     almostEligible: "Almost eligible",
     notAFit: "Not a fit yet",
     match: "match",
@@ -331,6 +368,14 @@ export const UI: Record<Locale, Record<string, string>> = {
     instrument_equity: "Equity",
     instrument_accelerator: "Accelerator",
     instrument_license: "Licence",
+    instrument_support: "Support",
+    availability_open: "Open now",
+    availability_rolling: "Rolling",
+    availability_closed: "Closed — track next cycle",
+    availability_unknown: "Availability not published",
+    confidence_confirmed: "Primary-source confirmed",
+    confidence_reported: "Officially reported",
+    confidence_estimated: "Estimated",
     roadmapTitle: "Your roadmap to funding",
     roadmapLead: "Ordered, cited steps that unlock the programs closest to you.",
     stackable: "Can be combined with other programs",
@@ -368,7 +413,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     withinReach: "Within reach",
     withinReachHint: "Real funding you can access now — it climbs as you complete steps.",
     potentialReach: "Reachable with your roadmap",
-    programsEligibleLabel: "Programs eligible",
+    programsEligibleLabel: "Open matches",
     stepsLabel: "Steps done",
     amountVaries: "amount varies",
     sharePlan: "Share my plan",
@@ -386,6 +431,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     intro_tamm: "Via TAMM",
     intro_warm_intro: "Warm intro",
     intro_competition: "Competition",
+    intro_email: "By email",
     readyToApply: "Ready to apply",
     downloadPdf: "Download plan (PDF)",
     shareWhatsapp: "Share on WhatsApp",

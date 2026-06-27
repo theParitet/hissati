@@ -30,9 +30,12 @@ describe("question ↔ rule completeness (FR-A5)", () => {
     }
   });
 
-  it("the conditional relocation question exists iff a program uses relocation_willing", () => {
-    const usesReloc = usedFields.has("relocation_willing");
-    const hasRelocQ = GATING_QUESTIONS.some((q) => q.id === "relocation_willing");
-    expect(hasRelocQ).toBe(usesReloc);
+  it("every narrow rule field is represented by an adaptive conditional question", () => {
+    for (const field of ["gender", "farm_tenure", "social_impact", "relocation_willing"] as const) {
+      const question = GATING_QUESTIONS.find((q) => q.id === field);
+      expect(question, `missing conditional question for ${field}`).toBeDefined();
+      expect(question?.conditional).toBe(true);
+      expect(usedFields.has(field)).toBe(true);
+    }
   });
 });

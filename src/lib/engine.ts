@@ -47,6 +47,12 @@ function profileValueFor(
       return profile.business_age_years; // may be undefined
     case "employee_count":
       return profile.employee_count; // may be undefined
+    case "gender":
+      return profile.gender;
+    case "farm_tenure":
+      return profile.farm_tenure;
+    case "social_impact":
+      return profile.social_impact;
   }
 }
 

@@ -8,7 +8,7 @@
  * Two live interactions, both tied to the same beat the dashboard owns:
  *  · tick the Khalifa Fund documents → the checklist bar fills, "ready to apply" lights;
  *  · flip "Launched my MVP" → Khalifa flips almost→eligible and "within reach" jumps
- *    to the cited AED 2,000,000, live.
+ *    to the cited, de-duplicated AED 2,000,000, live.
  */
 import { useMemo, useState } from "react";
 import {
@@ -170,6 +170,8 @@ export function LivePreview({ locale }: { locale: Locale }) {
                 <VerifiedStamp
                   sourceUrl={program.source.url}
                   verifiedDate={program.source.verified_date}
+                  sourceDate={program.source.source_date}
+                  confidence={program.source.confidence}
                   locale={locale}
                 />
               </div>

@@ -2,6 +2,8 @@
 
 > **Date:** 2026-06-27 · **Status:** approved for planning
 > Single source of truth for the multi-agent design/website overhaul. The deterministic core (engine, matching, program data, store) is **not** redesigned — only the metric layer, views, identity, docs, and supporting features.
+>
+> **Superseded data note:** the schema-3 reliability pass replaces this document’s raw `max_aed` rule with availability-aware `countable_max_aed` and grouped alternatives. See `docs/verification-report.md`.
 
 ---
 

@@ -26,6 +26,16 @@ describe("programs knowledge base (FR-B)", () => {
     for (const p of PROGRAMS) {
       expect(p.source.url).toMatch(/^https?:\/\//);
       expect(p.source.verified_date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(["confirmed", "reported", "estimated"]).toContain(p.source.confidence);
+      expect(p.availability.checked_date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    }
+  });
+
+  it("collective pools and non-cash support never masquerade as per-founder AED", () => {
+    for (const p of PROGRAMS) {
+      if (["prize_pool", "in_kind", "service", "cost"].includes(p.amount.value_kind ?? "")) {
+        expect(p.amount.countable_max_aed ?? null).toBeNull();
+      }
     }
   });
 
@@ -36,6 +46,15 @@ describe("programs knowledge base (FR-B)", () => {
         if (rule.remedy?.links_program_id) {
           expect(ids.has(rule.remedy.links_program_id)).toBe(true);
         }
+      }
+    }
+  });
+
+  it("concurrent compatibility references never dangle", () => {
+    const ids = new Set(PROGRAMS.map((p) => p.id));
+    for (const p of PROGRAMS) {
+      for (const id of p.concurrent_compatible_with) {
+        expect(ids.has(id), `${p.id} references missing concurrent programme ${id}`).toBe(true);
       }
     }
   });
