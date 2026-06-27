@@ -59,6 +59,13 @@ function collectProgramIds(name: string, result: unknown): string[] {
   return [];
 }
 
+/** Program ids the model asked to compare — rendered inline as a CompareView. */
+function collectCompareIds(result: unknown): string[] {
+  if (!result || typeof result !== "object") return [];
+  const r = result as Record<string, unknown>;
+  return Array.isArray(r.ids) ? r.ids.filter((v): v is string => typeof v === "string") : [];
+}
+
 export function GET() {
   return NextResponse.json({ enabled: Boolean(process.env.ANTHROPIC_API_KEY) });
 }
@@ -112,6 +119,7 @@ export async function POST(req: Request) {
     const work: Anthropic.MessageParam[] = convo.map((m) => ({ role: m.role, content: m.content }));
     const grounding: Array<{ name: string; labelEn: string; labelAr: string }> = [];
     const programIds = new Set<string>();
+    const compareIds = new Set<string>();
     let reply = "";
 
     for (let turn = 0; turn < 5; turn++) {
@@ -135,6 +143,7 @@ export async function POST(req: Request) {
           grounding.push({ name: tu.name, ...toolLabel(tu.name, tu.input) });
           const result = executeTool(tu.name, tu.input);
           for (const id of collectProgramIds(tu.name, result)) programIds.add(id);
+          if (tu.name === "compare_programs") for (const id of collectCompareIds(result)) compareIds.add(id);
           return {
             type: "tool_result",
             tool_use_id: tu.id,
@@ -149,7 +158,13 @@ export async function POST(req: Request) {
       break;
     }
 
-    return NextResponse.json({ enabled: true, reply, grounding, programIds: Array.from(programIds).slice(0, 6) });
+    return NextResponse.json({
+      enabled: true,
+      reply,
+      grounding,
+      programIds: Array.from(programIds).slice(0, 6),
+      compareIds: Array.from(compareIds).slice(0, 3),
+    });
   } catch {
     // Never break the app — the deterministic flow is the product (NFR-8).
     return NextResponse.json(

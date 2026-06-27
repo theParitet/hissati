@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers } from "lucide-react";
+import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers, GitCompare } from "lucide-react";
 import { Card, Badge, Button } from "@/components/ui";
 import { ui, enumLabel, pick, type Locale } from "@/lib/i18n";
 import { formatAmountRange, localizeDate } from "@/lib/format";
@@ -16,12 +16,16 @@ export function ProgramCard({
   matchPct,
   locale,
   onOpenChecklist,
+  selected,
+  onToggleSelect,
 }: {
   ev: EvaluatedProgram;
   profile: Profile;
   matchPct: number;
   locale: Locale;
   onOpenChecklist: (id: string) => void;
+  selected?: boolean;
+  onToggleSelect?: (id: string) => void;
 }) {
   const t = ui(locale);
   const { program, status } = ev;
@@ -32,7 +36,9 @@ export function ProgramCard({
   const failedHard = ev.rules.filter((r) => !r.passed && !r.remediable);
 
   return (
-    <Card className="relative overflow-hidden p-5 ps-6 print-block">
+    <Card
+      className={`relative overflow-hidden p-5 ps-6 print-block ${selected ? "ring-2 ring-oasis" : ""}`}
+    >
       <span className={`absolute inset-y-0 start-0 w-1.5 ${STRIPE[status]}`} aria-hidden />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
@@ -119,6 +125,20 @@ export function ProgramCard({
           {t.source} · {t.verified} {localizeDate(program.source.verified_date, locale)}
         </a>
         <div className="flex items-center gap-2 no-print">
+          {onToggleSelect && (
+            <button
+              onClick={() => onToggleSelect(program.id)}
+              aria-pressed={selected}
+              className={[
+                "inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1.5 text-xs font-medium transition-colors",
+                selected
+                  ? "border-oasis bg-oasis-100 text-oasis"
+                  : "border-sand-line bg-sand-100 text-ink-soft hover:bg-sand-200",
+              ].join(" ")}
+            >
+              <GitCompare className="h-3.5 w-3.5" aria-hidden /> {t.compare}
+            </button>
+          )}
           <Button size="sm" variant="outline" onClick={() => onOpenChecklist(program.id)}>
             <ListChecks className="h-4 w-4" aria-hidden /> {t.viewChecklist}
           </Button>

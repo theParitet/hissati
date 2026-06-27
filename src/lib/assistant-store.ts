@@ -20,6 +20,7 @@ export interface AssistantMsg {
   content: string;
   grounding?: Grounding[];
   programIds?: string[];
+  compareIds?: string[];
 }
 
 const errText = (locale: Locale) =>
@@ -69,7 +70,13 @@ export const useAssistant = create<AssistantState>((set, get) => ({
           ...next,
           data.error
             ? { role: "assistant", content: errText(locale) }
-            : { role: "assistant", content: data.reply || "…", grounding: data.grounding, programIds: data.programIds },
+            : {
+                role: "assistant",
+                content: data.reply || "…",
+                grounding: data.grounding,
+                programIds: data.programIds,
+                compareIds: data.compareIds,
+              },
         ],
       });
     } catch {

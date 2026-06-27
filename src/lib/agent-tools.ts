@@ -15,9 +15,10 @@ import {
   FundingType,
   AmountBand,
   type Profile,
+  type Program,
 } from "@/lib/schema";
 import { PROGRAMS, getProgramById } from "@/lib/programs";
-import { evaluateAllFull } from "@/lib/engine";
+import { evaluateAllFull, evaluateProgramFull } from "@/lib/engine";
 import { matchScore, readinessScore, estimateTimeToEligibility } from "@/lib/scoring";
 import { deriveRoadmap } from "@/lib/roadmap";
 
@@ -96,6 +97,25 @@ export const TOOLS = [
       required: ["program_id"],
     },
   },
+  {
+    name: "compare_programs",
+    description:
+      "Compare 2–3 specific programs side by side for a founder — match %, amount, instrument, requirements met, time-to-qualify, and blocking rules. Use when the founder asks to weigh options against each other. Valid ids: " +
+      PROGRAMS.map((p) => p.id).join(", "),
+    input_schema: {
+      type: "object",
+      properties: {
+        profile: PROFILE_SCHEMA,
+        program_ids: {
+          type: "array",
+          items: { type: "string", enum: PROGRAMS.map((p) => p.id) },
+          minItems: 2,
+          maxItems: 3,
+        },
+      },
+      required: ["profile", "program_ids"],
+    },
+  },
 ];
 
 export function executeTool(name: string, input: unknown): unknown {
@@ -138,6 +158,31 @@ export function executeTool(name: string, input: unknown): unknown {
         })),
       };
     }
+    case "compare_programs": {
+      const profile = buildProfile(args.profile);
+      const ids = Array.isArray(args.program_ids)
+        ? args.program_ids.filter((x): x is string => typeof x === "string").slice(0, 3)
+        : [];
+      const evs = ids
+        .map((id) => getProgramById(id))
+        .filter((p): p is Program => Boolean(p))
+        .map((p) => evaluateProgramFull(profile, p));
+      return {
+        ids: evs.map((e) => e.program.id),
+        comparison: evs.map((e) => ({
+          id: e.program.id,
+          name: e.program.name,
+          status: e.status,
+          match: matchScore(profile, e.program, e.status, e.rules),
+          amount: e.program.amount,
+          instrument: e.program.instrument,
+          requirements_met: e.rules.filter((r) => r.passed).length,
+          requirements_total: e.rules.length,
+          eta: estimateTimeToEligibility(profile, e.program, e.rules),
+          blocking: e.rules.filter((r) => !r.passed).map((r) => r.blocking_message),
+        })),
+      };
+    }
     case "program_details": {
       const p = getProgramById(String(args.program_id));
       if (!p) return { error: "No program with that id." };
@@ -168,6 +213,8 @@ export function toolLabel(name: string, input: unknown): { labelEn: string; labe
       return { labelEn: "Built your roadmap to qualify", labelAr: "أنشأ خارطة طريقك للتأهّل" };
     case "program_details":
       return { labelEn: `Looked up ${id ?? "a program"}`, labelAr: `بحث في ${id ?? "برنامج"}` };
+    case "compare_programs":
+      return { labelEn: "Compared the programs side by side", labelAr: "قارن بين البرامج جنباً إلى جنب" };
     default:
       return { labelEn: name, labelAr: name };
   }

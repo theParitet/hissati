@@ -6,11 +6,13 @@ import { Card } from "@/components/ui";
 import { Markdown } from "@/components/Markdown";
 import { ProgramCard } from "@/components/ProgramCard";
 import { ChecklistDialog } from "@/components/ChecklistDialog";
+import { CompareView } from "@/components/CompareView";
 import { useHissati, useLocale, effectiveProfile, isProfileComplete } from "@/lib/store";
 import { useAssistant } from "@/lib/assistant-store";
 import { getProgramById } from "@/lib/programs";
 import { evaluateProgramFull } from "@/lib/engine";
 import { matchScore } from "@/lib/scoring";
+import { buildComparison } from "@/lib/compare";
 import type { Profile } from "@/lib/schema";
 
 const T = {
@@ -170,6 +172,23 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
                       />
                     );
                   })}
+                </div>
+              )}
+
+              {/* Inline compare table (item 2) — same CompareView as /results */}
+              {m.role === "assistant" && m.compareIds && m.compareIds.length >= 2 && complete && (
+                <div className="mt-3 rounded-card border border-sand-line bg-sand-100 p-3">
+                  <CompareView
+                    rows={buildComparison(
+                      profile,
+                      m.compareIds
+                        .map((id) => getProgramById(id))
+                        .filter((p): p is NonNullable<typeof p> => Boolean(p))
+                        .map((p) => evaluateProgramFull(profile, p))
+                    )}
+                    locale={locale}
+                    onOpenChecklist={setChecklistId}
+                  />
                 </div>
               )}
             </div>

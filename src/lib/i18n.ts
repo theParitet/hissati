@@ -227,6 +227,12 @@ export const UI: Record<Locale, Record<string, string>> = {
     assistantLead: "اسأل عن التمويل والتراخيص — كل إجابة موثّقة من البرامج، لا اختراع.",
     askLandingLabel: "أو اسأل المساعد مباشرة",
     askLandingPlaceholder: "اسأل عن التمويل… مثال: أصنع التمور في المنزل",
+    compare: "قارن",
+    compareTitle: "مقارنة البرامج",
+    compareHint: "اختر برنامجين أو ثلاثة للمقارنة جنباً إلى جنب.",
+    compareCount: "قارن",
+    requirements: "المتطلبات المستوفاة",
+    stackableShort: "قابل للجمع",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -316,6 +322,12 @@ export const UI: Record<Locale, Record<string, string>> = {
     assistantLead: "Ask about funding and licensing — every answer cited from the programs, nothing invented.",
     askLandingLabel: "Or ask the assistant directly",
     askLandingPlaceholder: "Ask about funding… e.g. I make dates at home",
+    compare: "Compare",
+    compareTitle: "Compare programs",
+    compareHint: "Pick 2–3 programs to compare side by side.",
+    compareCount: "Compare",
+    requirements: "Requirements met",
+    stackableShort: "Stackable",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",
