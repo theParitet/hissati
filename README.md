@@ -5,7 +5,7 @@
 Hissati (حصتي, *"my share"*) matches a UAE founder to real funding programs and — for the ones they don't yet qualify for — names the **exact blocking rule** and generates the **shortest cited path** to becoming eligible. Every existing tool dead-ends at *"you don't qualify."* Hissati turns that "no" into a sequenced, sourced next step.
 
 🔗 **Live demo:** https://hissati.org  ·  💻 **Repo:** https://github.com/theParitet/TatweerHackathon404Team
-🎬 **Demo video:** [`/docs/demo.mp4`](./docs)  ·  🏷️ **Tatweer Hackathon — Challenge 1: Taking the first entrepreneurial step**
+🏷️ **Tatweer Hackathon — Challenge 1: Taking the first entrepreneurial step**
 
 ---
 
