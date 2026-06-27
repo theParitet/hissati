@@ -43,7 +43,7 @@ Say: *"Zero — honestly. Some licences are already 'eligible', but a licence is
 
 Say: *"That's the whole product in one move — from zero to a two-million-dirham path, every dirham cited."* (Point at the **checked · source · date · confidence** stamp.)
 
-**1:05 — Checklist + take-away.** Switch to the **Checklist** tab: the exact documents she carries to TAMM or a bank. Tap **Download** → the **Arabic PDF plan** (founder context + cited sources + the document checklist). Then **Share** → **WhatsApp** message + **QR** to the live URL.
+**1:05 — Checklist + take-away.** Switch to the **Checklist** tab: the exact documents she carries to TAMM or a bank. Tap **Download** → the **Arabic PDF plan** (founder context + cited sources + the document checklist).
 
 **1:15 — Close.** *"Offline, in Arabic, with receipts — built for Al Qua'a. 55 tests pin every number you just saw."*
 

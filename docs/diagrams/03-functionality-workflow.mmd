@@ -19,7 +19,7 @@ flowchart TD
   COMPLETE -->|yes| EVAL
 
   subgraph ENGINE["Deterministic results pipeline · pure · offline"]
-    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 12 programs)"] --> BUCKETS{"classify each program"}
+    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 16 opportunities)"] --> BUCKETS{"classify each program"}
     BUCKETS -->|0 rules failed| ELIG["ELIGIBLE now"]
     BUCKETS -->|1–2 remediable| ALMOST["ALMOST · blocking rule + cited fix"]
     BUCKETS -->|hard gate| NOTFIT["NOT A FIT · explained, never empty"]
@@ -36,7 +36,6 @@ flowchart TD
     DASH["Overview · Programs · Checklist"] --> ACTIONS{"founder acts"}
     ACTIONS -->|mark step done| MARK["markStep → effectiveProfile re-folds"]
     ACTIONS -->|export| PDFOUT["Bilingual PDF readiness plan · jsPDF"]
-    ACTIONS -->|share| SHAREOUT["QR + WhatsApp deep-link"]
     ACTIONS -->|compare / checklist| DETAIL["compare rows · document ticks"]
   end
 

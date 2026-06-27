@@ -24,7 +24,7 @@ Built first for the **Al Qua'a first-time founder** — e.g. an Emirati woman ma
 | **New founder** (idea-stage, unregistered) | Rejected by almost every program | The fastest cited path to a first licence, then to first funding — never a zero-results screen |
 | **Operating founder** (e.g. 1–2yr camel-dairy) | Seeking expansion funding | Programs they're eligible for now, ranked, with document checklists |
 | **Early tech founder** (MVP/traction) | Reaching for the "stretch tier" | Accelerator/competition matches (Hub71, Sheraa, Khalifa Award) with the exact gap to close |
-| **Judge / skeptic** | Must verify claims fast | Every figure cited to a primary source with a verified date, checkable from this repo |
+| **Judge / skeptic** | Must verify claims fast | Every program record carries source provenance, a verified date, and a confidence level, checkable from this repo |
 
 ## 3. The situation and the problem — in numbers
 
@@ -44,12 +44,12 @@ A short, **Arabic-first (RTL)** questionnaire of ~6 questions feeds a **determin
 - **Almost eligible** — 1–2 *remediable* rules block you; the card shows "You could qualify if…" with the exact missing condition and the next action.
 - **Not a fit** — a non-remediable gate, shown in the "why not" explainer rather than padded into results.
 
-From the "almost" set, Hissati builds a **Funding Readiness Roadmap** (ordered, cited steps). The headline metric is a single honest, cited figure — **AED within reach** — that **climbs monotonically** as steps are marked done, while "almost" programs visibly flip to "eligible" in real time. (Every dirham shown is a real, cited `max_aed`, never an estimated weighting.) The output exports as a **downloadable bilingual PDF plan** with per-program document checklists.
+From the "almost" set, Hissati builds a **Funding Readiness Roadmap** (ordered, cited steps). The headline metric is a single honest, cited figure — **AED within reach** — that **climbs monotonically** as steps are marked done, while "almost" programs visibly flip to "eligible" in real time. (Every dirham shown comes from a conservative, cited `countable_max_aed`, never an estimated weighting.) The output exports as a **downloadable bilingual PDF plan** with per-program document checklists.
 
 **Key characteristics**
 - 🛰️ **Offline-first PWA** — the entire wizard → results → roadmap → PDF flow runs in airplane mode. Built for Al Qua'a's connectivity, not a city's.
 - 🌐 **Bilingual, Arabic-first** — full RTL with an English toggle; self-hosted Tajawal / Fraunces / IBM Plex Mono fonts (no runtime CDN).
-- 📑 **Cited or it doesn't ship** — every AED figure and eligibility rule traces to a primary source with a "verified June 2026" date. Nothing is invented.
+- 📑 **Cited or it doesn't ship** — every program amount and eligibility rule carries source provenance, a verification date, and an explicit confidence level. Nothing is invented.
 - 🤖 **Optional grounded agent** — a Claude-powered chat that turns vague/dialect questions into structured lookups. It calls the *same* engine over the *same* cited data and never emits UI/HTML; the app is fully usable with it switched off.
 
 ## 5. How it works
@@ -75,7 +75,7 @@ flowchart TD
   COMPLETE -->|yes| EVAL
 
   subgraph ENGINE["Deterministic results pipeline · pure · offline"]
-    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 12 programs)"] --> BUCKETS{"classify each program"}
+    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 16 opportunities)"] --> BUCKETS{"classify each program"}
     BUCKETS -->|0 rules failed| ELIG["ELIGIBLE now"]
     BUCKETS -->|1–2 remediable| ALMOST["ALMOST · blocking rule + cited fix"]
     BUCKETS -->|hard gate| NOTFIT["NOT A FIT · explained, never empty"]
@@ -92,7 +92,6 @@ flowchart TD
     DASH["Overview · Programs · Checklist"] --> ACTIONS{"founder acts"}
     ACTIONS -->|mark step done| MARK["markStep → effectiveProfile re-folds"]
     ACTIONS -->|export| PDFOUT["Bilingual PDF readiness plan · jsPDF"]
-    ACTIONS -->|share| SHAREOUT["QR + WhatsApp deep-link"]
     ACTIONS -->|compare / checklist| DETAIL["compare rows · document ticks"]
   end
 
@@ -121,7 +120,7 @@ The engine (`evaluateProgram`, `matchScore`, `progressStats`, `estimateTimeToEli
 
 ## 6. Architecture
 
-Layered, offline-first PWA. The deterministic core and the 12-program knowledge base are bundled into the client, so match → score → roadmap → PDF all run with zero network. A hand-written service worker precaches the app shell and static chunks; the optional `/api/agent` route is the lone server surface (it keeps the Anthropic API key off the client) and is bypassed by the cache.
+Layered, offline-first PWA. The deterministic core and the 16-opportunity knowledge base are bundled into the client, so match → score → roadmap → PDF all run with zero network. A hand-written service worker precaches the app shell and static chunks; the optional `/api/agent` route is the lone server surface (it keeps the Anthropic API key off the client) and is bypassed by the cache.
 
 ```mermaid
 flowchart TB
@@ -147,12 +146,11 @@ flowchart TB
       ROAD["roadmap · deriveRoadmap"]
       WIZ["wizard · wizardSteps · stillMatching"]
       SCH["schema · Zod data contract"]
-      KB[("programs.json<br/>12 programs · validated at load")]
+      KB[("programs.json<br/>16 opportunities · validated at load")]
     end
 
     subgraph OUT["Client-side outputs"]
       PDF["pdf · jsPDF + html2canvas<br/>bilingual readiness plan"]
-      SHARE["share · qrcode-generator + WhatsApp link"]
     end
 
     SW["Service Worker · sw.js<br/>precache shell · cache-first static · network-first nav"]
@@ -195,8 +193,9 @@ There is no SQL database. The data layer is a **bundled JSON knowledge base** (v
 
 ```mermaid
 erDiagram
-  PROGRAM_FILE ||--o{ PROGRAM : "contains (12)"
+  PROGRAM_FILE ||--o{ PROGRAM : "contains (16)"
   PROGRAM ||--|| AMOUNT : has
+  PROGRAM ||--|| AVAILABILITY : "status checked"
   PROGRAM ||--|| SOURCE : "cited by"
   PROGRAM ||--|{ RULE : "eligibility · AND-gates"
   PROGRAM ||--o{ REQUIRED_DOCUMENT : requires
@@ -226,25 +225,37 @@ erDiagram
     Localized name "en + ar"
     string operator
     int    tier "1 | 2 | 3"
-    enum   instrument "grant|loan|equity|accelerator|license"
-    enum   intro_method "open_form|tamm|warm_intro|competition"
+    enum   instrument "grant|loan|equity|accelerator|license|support"
+    enum   intro_method "open_form|tamm|warm_intro|competition|email"
     array  sector_tags
     string application_url
     boolean equity "dilutive?"
+    string funding_group "optional · prevents double-counting"
     string processing_time
     Localized description
   }
   AMOUNT {
     number min_aed "nullable"
     number max_aed "nullable · null = amount varies"
+    number countable_max_aed "nullable · headline metric"
+    enum   value_kind "finance|cash|cash_and_in_kind|in_kind|prize_pool|service|cost|variable"
     string notes
+  }
+  AVAILABILITY {
+    enum   status "rolling|open|closed|unknown"
+    string checked_date "ISO date"
+    string opens "optional"
+    string closes "optional"
+    string next_cycle "optional"
   }
   SOURCE {
     string url
     string verified_date "ISO date"
+    enum   confidence "confirmed|reported|estimated"
+    string method
   }
   RULE {
-    enum   field "nationality|location|stage|registration|sector|relocation|business_age|employee_count"
+    enum   field "nationality_ownership|location|stage|registration|sector|relocation_willing|business_age|employee_count|gender|farm_tenure|social_impact"
     enum   op "in|gte|lte|eq|is_true"
     union  value "string[] | string | number | boolean"
     Localized blocking_message "shown when failed"
@@ -269,8 +280,14 @@ erDiagram
     enum   funding_type "grant|loan|equity|unsure"
     enum   amount_band "lt_50k|50_200k|200_500k|500k_2m|2m_plus"
     boolean relocation_willing "optional · conditional gate"
+    enum   gender "female|male · optional"
+    boolean farm_tenure "optional"
+    boolean social_impact "optional"
     number business_age_years "optional"
     number employee_count "optional"
+    enum   team "solo|cofounder|technical_cofounder · optional"
+    boolean has_pitch_deck "optional"
+    boolean has_financials "optional"
   }
   EVALUATED_PROGRAM {
     string status "eligible | almost | not_fit"
@@ -312,22 +329,22 @@ Each claim is falsifiable and checkable in minutes — that's criterion 6.
 
 | Claim | How to verify |
 |---|---|
-| **12 currently-open programs** across 3 tiers (6 / 4 / 2), each linked to a primary source with a verified date | Open [`src/data/programs.json`](./src/data/programs.json); `npm test` → `tests/programs.test.ts` (also Zod-validated at module load) |
-| **100% of "not eligible today" profiles return ≥1 actionable, cited step** (the no-dead-ends guarantee) | `npm test` → `tests/engine.test.ts` → *"no-dead-end invariant (FR-C3)"* |
-| **AED within reach climbs monotonically `0 → 0 → 2,000,000 → 2,000,000`** for the seeded date-product founder as steps complete | `npm test` → `tests/metrics.test.ts` → *"exact cited values"* |
-| **Eligible-program count climbs `0 → 2 → 5 → 6`** along that same path | `npm test` → `tests/metrics.test.ts` |
+| **16 tracked opportunities** across 3 tiers (10 / 4 / 2), each carrying availability metadata and a source verification date | Open [`src/data/programs.json`](./src/data/programs.json); `npm test` → `tests/programs.test.ts` (also Zod-validated at module load) |
+| **Every "almost" match for the seeded date-product founder has 1–2 blocking rules, all with actionable remedies** | `npm test` → `tests/engine.test.ts` → *"no-dead-end invariant (FR-C3)"* |
+| **AED within reach climbs monotonically `0 → 0 → 2,000,000 → 7,000,000`** for the seeded date-product founder as steps complete | `npm test` → `tests/metrics.test.ts` → *"exact cited values"* |
+| **Open-match count climbs `0 → 1 → 4 → 5`** along that same path | `npm test` → `tests/metrics.test.ts` |
 | **Khalifa Fund loan flips `almost → eligible` exactly at step 2** | `npm test` → `tests/scoring.test.ts` → *"Headline demo beat"* |
 | **A new founder reaches a concrete first action in ≤ 3 clicks** | "I only have an idea" → wizard → results with roadmap visible |
 | **The full flow runs offline** | DevTools → Network → *Offline* → reload → complete wizard → PDF (see [`docs/07-offline.png`](./docs/07-offline.png)) |
 | **Matched result in < 1s on throttled 3G** | DevTools → Network: *Slow 3G* → run the wizard (engine is O(programs × rules), sub-millisecond) |
 
-> **Honesty note (also criterion 6):** Of the 12 programs, the directly-quantified funding figures are Khalifa Fund SME (up to **AED 2M**, loan) and Hub71 Access (up to **AED 500K**, *in-kind* package), plus the licence-rung costs (Tajer ~AED 790; permits in the AED 0–1,000 band). Grant and VC amounts that are **not publicly fixed** (Ma'an, ADDED, Access Sharjah, Khalifa Award, the VCs) contribute `0` to "AED within reach" and flip an "amounts vary" flag rather than being invented, and the Arabic copy is marked **draft pending native review**. We'd rather under-claim and be verifiable than inflate a headline.
+> **Honesty note (also criterion 6):** Of the 16 tracked opportunities, the headline metric uses only conservative, per-applicant figures that are both countable and currently available: Khalifa Fund financing up to **AED 2M** (its SME and agricultural alternatives are grouped to prevent double-counting), EDB AgriTech financing up to **AED 5M**, and the initial **AED 250K cash** component of Hub71 Access. Closed opportunities, collective prize pools, in-kind support, services, licence costs, and programs without a published ceiling contribute `0` rather than being presented as reachable cash. The Arabic copy is marked **draft pending native review**.
 
 ## 8. Feasibility study and evidence
 
 Hissati is deliberately scoped to be deployable **today**, in this rural context, at near-zero running cost — judging criteria 3 (feasibility), 4 (readiness) and 5 (scalability).
 
-**Technical & deployment feasibility.** Hissati is software-only: a Next.js PWA that deploys on **free-tier Vercel** with no servers to operate. The deterministic core (matching, scoring, roadmap) and the 12-program knowledge base are bundled into the client, so the headline flow needs **no backend at all**; the single optional server route (`/api/agent`) only keeps the Anthropic key off the client and can be switched off entirely. This fits how the UAE actually goes online: **99% internet penetration**, **21.9 million mobile connections** (195% of the population), and mobile phones as the dominant access device [[14]](#references) — about **64% of UAE web traffic is mobile** [[15]](#references), and mobile-internet penetration is roughly **96%** [[16]](#references). A mobile-first, installable PWA meets that reality. The offline-first service worker adds resilience for the **11.9% of the population in rural areas** [[14]](#references) and for the weak-signal moments that matter most — finishing the wizard on the drive to a TAMM service centre, or pulling up a document checklist where coverage drops. The Arabic-first (RTL) interface is not cosmetic: it serves the Emirati rural founder in the national language rather than the English most funding portals default to.
+**Technical & deployment feasibility.** Hissati is software-only: a Next.js PWA that deploys on **free-tier Vercel** with no servers to operate. The deterministic core (matching, scoring, roadmap) and the 16-opportunity knowledge base are bundled into the client, so the headline flow needs **no backend at all**; the single optional server route (`/api/agent`) only keeps the Anthropic key off the client and can be switched off entirely. This fits how the UAE actually goes online: **99% internet penetration**, **21.9 million mobile connections** (195% of the population), and mobile phones as the dominant access device [[14]](#references) — about **64% of UAE web traffic is mobile** [[15]](#references), and mobile-internet penetration is roughly **96%** [[16]](#references). A mobile-first, installable PWA meets that reality. The offline-first service worker adds resilience for the **11.9% of the population in rural areas** [[14]](#references) and for the weak-signal moments that matter most — finishing the wizard on the drive to a TAMM service centre, or pulling up a document checklist where coverage drops. The Arabic-first (RTL) interface is not cosmetic: it serves the Emirati rural founder in the national language rather than the English most funding portals default to.
 
 **Operational & maintenance feasibility.** Eligibility is **data, not code**: every rule lives in [`src/data/programs.json`](./src/data/programs.json), validated against a Zod schema at build time, so adding a programme or a new emirate is a schema-checked data edit rather than an engine change. Each record carries a `source.url` and `verified_date`, making staleness **auditable** rather than silent. The app collects **no personal data server-side** (answers live only in the founder's `localStorage`), so there is no database to secure, no PII to govern, and no two-sided marketplace to seed — the maintenance surface is a JSON file and a static deploy.
 
@@ -335,13 +352,13 @@ Hissati is deliberately scoped to be deployable **today**, in this rural context
 
 **Scalability evidence.** The need is large and growing: about **557,000 SMEs today, targeted to reach one million by 2030** [[1]](#references), against a financing-navigation problem that is **national, not local** [[6]](#references). Because the engine is data-driven, the same build **replicates to any community or emirate by editing the knowledge base** — Tiers 2–3 of the current dataset already reach beyond Abu Dhabi. More programmes, more emirates, and more languages are additive data, not re-engineering.
 
-**Evidence & validation.** Every quantitative claim in §7 is reproducible from the repo (the Vitest suite doubles as evidence), every funding figure in the dataset is cited to a primary source with a verified date, and the offline claim is demonstrable in DevTools. The contextual claims in §3 and this section are referenced in [§References](#references).
+**Evidence & validation.** Every quantitative claim in §7 is reproducible from the repo (the Vitest suite doubles as evidence), every funding figure in the dataset carries source provenance, a verified date, and a confidence level, and the offline claim is demonstrable in DevTools. The contextual claims in §3 and this section are referenced in [§References](#references).
 
 ## 9. Tech stack
 
 **Next.js 16 (App Router) · React 19 · TypeScript 5 · Tailwind CSS 4 · Zustand 5 (+persist) · Zod 3 · Vitest 2 · Vercel · Anthropic Claude (optional agent).**
 
-Supporting libraries: **jsPDF + html2canvas** (client-side bilingual PDF), **qrcode-generator** (offline QR), **react-markdown + remark-gfm** (assistant rendering), **lucide-react** (icons), and self-hosted **Tajawal / Fraunces / IBM Plex Mono** via `next/font`.
+Supporting libraries: **jsPDF + html2canvas** (client-side bilingual PDF), **react-markdown + remark-gfm** (assistant rendering), **lucide-react** (icons), and self-hosted **Tajawal / Fraunces / IBM Plex Mono** via `next/font`.
 
 The deterministic core is plain TypeScript with no heavy dependencies, and the knowledge base ships in the bundle so matching needs zero network. Offline is a **hand-written service worker** (`public/sw.js`) — Next 16's Turbopack doesn't run the webpack hook that `next-pwa`/Serwist rely on — and the UI is built on **bespoke primitives** (`components/ui.tsx`), not a component library. The only server-side surface is an optional `/api/agent` route that keeps the API key off the client and returns structured results only (never HTML). Full layering, data flows, and the service-worker strategy are in [`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md).
 
@@ -367,7 +384,7 @@ The agent is **optional**. Without `ANTHROPIC_API_KEY` the `/api/agent` route re
 
 ## 11. Data & citations
 
-The knowledge base is **hand-verified**, not scraped. Each of the 12 records in [`src/data/programs.json`](./src/data/programs.json) carries bilingual names, operator, tier, instrument, a structured amount, eligibility rules (each with a bilingual blocking message and an optional cited remedy), required documents, an application URL, and a **`source.url` + `verified_date`** (all `2026-06-26`). The dataset is validated against [`src/lib/schema.ts`](./src/lib/schema.ts) at module load and in `tests/programs.test.ts`, so a malformed record fails the build instead of shipping. Amounts that could not be live-confirmed against JavaScript-rendered government portals are left unfixed (they contribute `0` to "AED within reach" rather than an invented figure), and Arabic strings are drafted and flagged for native review before any public launch.
+The knowledge base is **hand-verified**, not scraped. Each of the 16 records in [`src/data/programs.json`](./src/data/programs.json) carries bilingual names, operator, tier, instrument, structured amount semantics, availability status, eligibility rules (each with a bilingual blocking message and an optional cited remedy), required documents, an application URL, and source provenance. All records have a **`verified_date` and `availability.checked_date` of `2026-06-27`**. The dataset is validated against [`src/lib/schema.ts`](./src/lib/schema.ts) at module load and in `tests/programs.test.ts`, so a malformed record fails the build instead of shipping. Closed opportunities, non-cash value, costs, and amounts without a defensible per-applicant ceiling are excluded from "AED within reach", and Arabic strings are drafted and flagged for native review before any public launch.
 
 ## 12. Documentation
 
@@ -383,7 +400,7 @@ The knowledge base is **hand-verified**, not scraped. Each of the 12 records in 
 2. **Three buckets only** — `eligible` (0 failed rules) · `almost` (≤2 failed, all remediable) · `not_fit` (FR-C1).
 3. **No dead ends** — every `almost` carries 1–2 cited steps; idea-stage founders always see a pre-registration path (FR-C3 / FR-G).
 4. **Offline-first** — the whole core flow runs in airplane mode; the only egress is the optional `/api/agent` route (NFR-1).
-5. **Cited or it doesn't ship** — every figure and rule traces to a primary source with a verified date (FR-B2).
+5. **Cited or it doesn't ship** — every program amount and rule carries source provenance, a verified date, and a confidence level (FR-B2).
 6. **Frozen vocabulary** — enum values and field names are referenced verbatim across dataset, scoring, and engine; additive changes only.
 
 ## References
@@ -411,8 +428,8 @@ Context and feasibility figures in §3 and §8 are drawn from the following prim
 
 ---
 
-## Team & license
+## Project, license & disclaimer
 
-Built for the **Tatweer Hackathon** (26–28 June 2026, Al Qua'a · in collaboration with Abu Dhabi University). Open-sourced per the hackathon's rural-infrastructure track so other communities can adapt the data and the engine.
+Built for the **Tatweer Hackathon** (26–28 June 2026, Al Qua'a · in collaboration with Abu Dhabi University). Released under the [`MIT License`](./LICENSE).
 
 *Hissati is an information tool, not a licensed financial or legal advisor. It surfaces public funding programs and their stated rules; it does not file applications on anyone's behalf.*

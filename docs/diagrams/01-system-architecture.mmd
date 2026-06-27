@@ -23,12 +23,11 @@ flowchart TB
       ROAD["roadmap · deriveRoadmap"]
       WIZ["wizard · wizardSteps · stillMatching"]
       SCH["schema · Zod data contract"]
-      KB[("programs.json<br/>12 programs · validated at load")]
+      KB[("programs.json<br/>16 opportunities · validated at load")]
     end
 
     subgraph OUT["Client-side outputs"]
       PDF["pdf · jsPDF + html2canvas<br/>bilingual readiness plan"]
-      SHARE["share · qrcode-generator + WhatsApp link"]
     end
 
     SW["Service Worker · sw.js<br/>precache shell · cache-first static · network-first nav"]

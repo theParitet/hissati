@@ -294,9 +294,6 @@ export const UI: Record<Locale, Record<string, string>> = {
     programsEligibleLabel: "مطابقات مفتوحة",
     stepsLabel: "خطوات منجزة",
     amountVaries: "المبلغ يختلف",
-    sharePlan: "شارك خطتي",
-    copyLink: "نسخ",
-    copied: "تم النسخ",
     seeMatchesCta: "اعرض مطابقاتي",
     stillInRunning: "لا تزال مطابِقة",
 
@@ -313,7 +310,6 @@ export const UI: Record<Locale, Record<string, string>> = {
     intro_email: "عبر البريد الإلكتروني",
     readyToApply: "جاهز للتقديم",
     downloadPdf: "تنزيل الخطة (PDF)",
-    shareWhatsapp: "مشاركة عبر واتساب",
     close: "إغلاق",
 
     // est-time bands echoed from scoring labels are program-driven; generic fallback
@@ -428,9 +424,6 @@ export const UI: Record<Locale, Record<string, string>> = {
     programsEligibleLabel: "Open matches",
     stepsLabel: "Steps done",
     amountVaries: "amount varies",
-    sharePlan: "Share my plan",
-    copyLink: "Copy",
-    copied: "Copied",
     seeMatchesCta: "See my matches",
     stillInRunning: "Still matching",
 
@@ -446,7 +439,6 @@ export const UI: Record<Locale, Record<string, string>> = {
     intro_email: "By email",
     readyToApply: "Ready to apply",
     downloadPdf: "Download plan (PDF)",
-    shareWhatsapp: "Share on WhatsApp",
     close: "Close",
 
     estNow: "now",

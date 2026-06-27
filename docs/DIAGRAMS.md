@@ -18,7 +18,7 @@ data, so the assistant can never contradict the offline core or invent a program
 
 ## 1. System Architecture
 
-Layered, offline-first PWA. The deterministic core and the 12-program knowledge base are
+Layered, offline-first PWA. The deterministic core and the 16-opportunity knowledge base are
 bundled into the client, so match → score → roadmap → PDF all run with zero network. The
 service worker precaches the shell and static chunks; the optional `/api/agent` route is
 the lone server surface (keeps the API key off the client) and is bypassed by the cache.
@@ -47,12 +47,11 @@ flowchart TB
       ROAD["roadmap · deriveRoadmap"]
       WIZ["wizard · wizardSteps · stillMatching"]
       SCH["schema · Zod data contract"]
-      KB[("programs.json<br/>12 programs · validated at load")]
+      KB[("programs.json<br/>16 opportunities · validated at load")]
     end
 
     subgraph OUT["Client-side outputs"]
       PDF["pdf · jsPDF + html2canvas<br/>bilingual readiness plan"]
-      SHARE["share · qrcode-generator + WhatsApp link"]
     end
 
     SW["Service Worker · sw.js<br/>precache shell · cache-first static · network-first nav"]
@@ -103,8 +102,9 @@ KB entities, the entities the engine *derives* at runtime, and the persisted cli
 
 ```mermaid
 erDiagram
-  PROGRAM_FILE ||--o{ PROGRAM : "contains (12)"
+  PROGRAM_FILE ||--o{ PROGRAM : "contains (16)"
   PROGRAM ||--|| AMOUNT : has
+  PROGRAM ||--|| AVAILABILITY : "status checked"
   PROGRAM ||--|| SOURCE : "cited by"
   PROGRAM ||--|{ RULE : "eligibility · AND-gates"
   PROGRAM ||--o{ REQUIRED_DOCUMENT : requires
@@ -134,25 +134,37 @@ erDiagram
     Localized name "en + ar"
     string operator
     int    tier "1 | 2 | 3"
-    enum   instrument "grant|loan|equity|accelerator|license"
-    enum   intro_method "open_form|tamm|warm_intro|competition"
+    enum   instrument "grant|loan|equity|accelerator|license|support"
+    enum   intro_method "open_form|tamm|warm_intro|competition|email"
     array  sector_tags
     string application_url
     boolean equity "dilutive?"
+    string funding_group "optional · prevents double-counting"
     string processing_time
     Localized description
   }
   AMOUNT {
     number min_aed "nullable"
     number max_aed "nullable · null = amount varies"
+    number countable_max_aed "nullable · headline metric"
+    enum   value_kind "finance|cash|cash_and_in_kind|in_kind|prize_pool|service|cost|variable"
     string notes
+  }
+  AVAILABILITY {
+    enum   status "rolling|open|closed|unknown"
+    string checked_date "ISO date"
+    string opens "optional"
+    string closes "optional"
+    string next_cycle "optional"
   }
   SOURCE {
     string url
     string verified_date "ISO date"
+    enum   confidence "confirmed|reported|estimated"
+    string method
   }
   RULE {
-    enum   field "nationality|location|stage|registration|sector|relocation|business_age|employee_count"
+    enum   field "nationality_ownership|location|stage|registration|sector|relocation_willing|business_age|employee_count|gender|farm_tenure|social_impact"
     enum   op "in|gte|lte|eq|is_true"
     union  value "string[] | string | number | boolean"
     Localized blocking_message "shown when failed"
@@ -177,8 +189,14 @@ erDiagram
     enum   funding_type "grant|loan|equity|unsure"
     enum   amount_band "lt_50k|50_200k|200_500k|500k_2m|2m_plus"
     boolean relocation_willing "optional · conditional gate"
+    enum   gender "female|male · optional"
+    boolean farm_tenure "optional"
+    boolean social_impact "optional"
     number business_age_years "optional"
     number employee_count "optional"
+    enum   team "solo|cofounder|technical_cofounder · optional"
+    boolean has_pitch_deck "optional"
+    boolean has_financials "optional"
   }
   EVALUATED_PROGRAM {
     string status "eligible | almost | not_fit"
@@ -248,7 +266,7 @@ flowchart TD
   COMPLETE -->|yes| EVAL
 
   subgraph ENGINE["Deterministic results pipeline · pure · offline"]
-    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 12 programs)"] --> BUCKETS{"classify each program"}
+    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 16 opportunities)"] --> BUCKETS{"classify each program"}
     BUCKETS -->|0 rules failed| ELIG["ELIGIBLE now"]
     BUCKETS -->|1–2 remediable| ALMOST["ALMOST · blocking rule + cited fix"]
     BUCKETS -->|hard gate| NOTFIT["NOT A FIT · explained, never empty"]
@@ -265,7 +283,6 @@ flowchart TD
     DASH["Overview · Programs · Checklist"] --> ACTIONS{"founder acts"}
     ACTIONS -->|mark step done| MARK["markStep → effectiveProfile re-folds"]
     ACTIONS -->|export| PDFOUT["Bilingual PDF readiness plan · jsPDF"]
-    ACTIONS -->|share| SHAREOUT["QR + WhatsApp deep-link"]
     ACTIONS -->|compare / checklist| DETAIL["compare rows · document ticks"]
   end
 

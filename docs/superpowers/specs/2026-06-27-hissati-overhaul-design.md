@@ -62,10 +62,10 @@ The side rail contains navigation only. Profile editing remains available throug
 - Model never emits HTML; app renders all UI from structured tool results (unchanged architecture).
 - Fully functional with the agent OFF.
 
-### 3.5 PDF + WhatsApp (task 7 — brainstorm + implement)
-- Reframe from "share a number" to "share a **next action with receipts**."
+### 3.5 PDF export (task 7 — brainstorm + implement)
+- Reframe from "show a number" to "export a **next action with receipts**."
 - **PDF** → a real **Funding Readiness Plan**: founder context, cited sources + verified dates, explicit receive/pay direction, paid-instrument purpose/dependencies, and the document checklist they can carry to TAMM / a bank. A judged artifact (Readiness + Evidence). It uses the app’s Latin/Arabic font stack, optically centered stamps/pills, one shared download-button treatment, and no QR code. Must survive html2canvas and render Arabic RTL.
-- **WhatsApp** → shares the top eligible program + AED + apply link (+ a QR to the live URL, since deploy is handled). Per-program share from the checklist; plan-level share from the dashboard.
+- The final interface omits the share sheet and QR/WhatsApp controls; the downloadable plan is the single portable output.
 
 ### 3.6 Search and link sharing
 - `https://hissati.org` is the canonical production origin, overrideable with `NEXT_PUBLIC_SITE_URL`.
@@ -94,7 +94,7 @@ export function progressStats(
   doneSteps: DoneStep[],
 ): ProgressStats;
 ```
-- **AED rule (must be honest & cited, no inflation):** `aedReachableNow` = sum over *eligible* programs of each program's upper funding bound (`amount.max_aed`). Programs with a null/open `max_aed` contribute a documented representative figure derived from `amount.notes` (and are visibly flagged as "up to / varies", never silently rounded up). The exact rule is implemented once in `lib/metrics.ts` and documented there.
+- **AED rule (must be honest & cited, no inflation):** `aedReachableNow` sums `amount.countable_max_aed` only for *eligible*, open/rolling funding opportunities. Closed cycles, costs, services, collective pools, in-kind-only value, and unknown ceilings contribute zero. Alternatives sharing a `funding_group` contribute only their largest conservative ceiling. The exact rule is implemented once in `lib/metrics.ts` and documented there.
 - `aedReachableNow` and `programsEligible` MUST be **monotonic non-decreasing** as roadmap steps complete (replaces the readiness "climb" invariant).
 - Keep the headline beat: **Khalifa flips almost → eligible at step 2** of the date-founder path.
 
@@ -111,7 +111,7 @@ Builds the shared layer + a **frozen interface contract** (§6) everything else 
 - Swappable `<Logo>` + **extracted atomic transparent SVG** (§6.4).
 - Metric layer (§4): remove readiness, add `lib/metrics.ts`, rewrite climb test, update agent tool field, i18n keys.
 - i18n + naming consolidation (§3.3).
-- Frozen-prop baselines for cross-leaf components (`ProgramCard`, `CompareView`, `AskBar`) and **compile-able stubs** for `ShareSheet` + `lib/share.ts` + `pdf.ts` signature so leaves compile in parallel.
+- Frozen-prop baselines for cross-leaf components (`ProgramCard`, `CompareView`, `AskBar`) and a **compile-able stub** for the `pdf.ts` signature so leaves compile in parallel.
 
 ### Wave 1 — Parallel leaves (worktree-isolated, disjoint file ownership)
 Each leaf invokes the `frontend-design` skill, builds against the frozen contract, keeps `npm run build` + `npm test` green in its worktree, and merges back only when green.
@@ -148,24 +148,22 @@ Each leaf invokes the `frontend-design` skill, builds against the frozen contrac
 - `CompareView` — owned by **L1**, consumed read-only by **L3**. Frozen: `{ programIds | evaluated[] , locale }`.
 - `AskBar` — owned by **Assistant (L3)**, consumed by **Landing (L2)** + **Dashboard (L1)**. Frozen: `{ seed?, variant?, className? }`.
 
-### 6.6 Stubs (Wave 0 creates compile-able stubs; L5 implements)
-- `lib/share.ts` → `buildSharePayload(...)`, `waHref(payload)`, QR helper.
-- `components/ShareSheet.tsx` → `<ShareSheet payload />`.
+### 6.6 Stub (Wave 0 creates a compile-able stub; L5 implements)
 - `lib/pdf.ts` → `exportPlanPdf({ profile, evaluated, steps, stats, locale })` (signature frozen; L5 rewrites body).
 
 ## 7. File-ownership map (no write–write overlap)
 
 | Stream | Owns (edits) | Imports only (must not edit) |
 |---|---|---|
-| **Wave 0 Foundation** | `globals.css`, `ui.tsx`, `lib/metrics.ts` (new), `scoring.ts`, `i18n.ts`, `store.ts` (if needed), `components/Logo.tsx` + `public/` logo SVGs, delete `ReadinessGauge.tsx`, `tests/scoring.test.ts`, baseline `ProgramCard`/`CompareView`/`AskBar` + stubs (`ShareSheet`, `lib/share.ts`, `pdf.ts` sig) | — |
-| **L1 Dashboard** | `app/results/page.tsx`, `components/dashboard/*` (new, incl. funding-sky + money counter), `ProgramCard.tsx`, `CompareView.tsx`, `ChecklistDialog.tsx`, `RoadmapStepCard.tsx`, `MatchesPanel.tsx` | `ui.tsx`, `metrics.ts`, `ShareSheet`, `Logo`, `AskBar` |
+| **Wave 0 Foundation** | `globals.css`, `ui.tsx`, `lib/metrics.ts` (new), `scoring.ts`, `i18n.ts`, `store.ts` (if needed), `components/Logo.tsx` + `public/` logo SVGs, delete `ReadinessGauge.tsx`, `tests/scoring.test.ts`, baseline `ProgramCard`/`CompareView`/`AskBar` + `pdf.ts` stub | — |
+| **L1 Dashboard** | `app/results/page.tsx`, `components/dashboard/*` (new, incl. funding-sky + money counter), `ProgramCard.tsx`, `CompareView.tsx`, `ChecklistDialog.tsx`, `RoadmapStepCard.tsx`, `MatchesPanel.tsx` | `ui.tsx`, `metrics.ts`, `Logo`, `AskBar` |
 | **L2 Landing** | `app/page.tsx`, `components/landing/*` (new, incl. `<DeviceMockup>`), `public/screenshots/*` (placeholders) | `ui.tsx`, `Logo`, `AskBar`, `metrics.ts` |
 | **L3 Assistant** | `app/assistant/page.tsx`, `Assistant.tsx`, `AskBar.tsx`, `Markdown.tsx`, `lib/assistant-store.ts`, `lib/agent-tools.ts`, `app/api/agent/route.ts` | `ui.tsx`, `ProgramCard`, `CompareView`, `metrics.ts` |
 | **L4 Header** | `AppHeader.tsx`, `DirectionManager.tsx` (if needed) | `Logo`, `ui.tsx`, `i18n.ts` |
-| **L5 PDF + Share** | `lib/pdf.ts`, `lib/share.ts`, `components/ShareSheet.tsx` | `metrics.ts`, `Logo`, `ui.tsx` |
+| **L5 PDF** | `lib/pdf.ts` | `metrics.ts`, `Logo`, `ui.tsx` |
 | **Wave 2 Docs** | `README.md`, `.local-docs/design.md`, `CLAUDE.md`, `AGENTS.md`, `docs/*` | — |
 
-**Merge order:** Foundation → (L4 Header, L5 PDF/Share early as they're small) → L1 Dashboard → L3 Assistant (consumes L1's ProgramCard) → L2 Landing → Wave 2 (screenshots + docs). Worktrees branch from post-foundation main; frozen props keep parallel work compiling regardless of merge timing.
+**Merge order:** Foundation → (L4 Header, L5 PDF early as they're small) → L1 Dashboard → L3 Assistant (consumes L1's ProgramCard) → L2 Landing → Wave 2 (screenshots + docs). Worktrees branch from post-foundation main; frozen props keep parallel work compiling regardless of merge timing.
 
 ## 8. Per-stream Definition of Done
 Every stream: `npm run build` (Turbopack typecheck) + `npm test` green; bilingual AR/EN + RTL verified; offline-safe (no runtime CDN); `prefers-reduced-motion` respected; no readiness terminology; uses contract primitives, no duplicated styles.

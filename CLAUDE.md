@@ -1,6 +1,6 @@
 # Hissati — Implementation Guide (CLAUDE.md)
 
-**Hissati** (حصتي) is a funding **readiness navigator** for first-time founders in Al Qua'a, Al Ain (Tatweer Hackathon). Flow: short questionnaire → match the founder to real UAE funding programs (eligible / almost / not-a-fit, with the blocking rule named) → a 3-tab dashboard (Overview · Programs · Checklist) led by the cited **"AED within reach"** metric → roadmap → application checklist → Arabic PDF + WhatsApp/QR share. Offline-first, Arabic-first.
+**Hissati** (حصتي) is a funding **readiness navigator** for first-time founders in Al Qua'a, Al Ain (Tatweer Hackathon). Flow: short questionnaire → match the founder to real UAE funding programs (eligible / almost / not-a-fit, with the blocking rule named) → a 3-tab dashboard (Overview · Programs · Checklist) led by the cited **"AED within reach"** metric → roadmap → application checklist → bilingual PDF export. Offline-first, Arabic-first.
 
 ## Read first — context lives in `.local-docs/` (git-ignored; informs the build, never shipped)
 Core (always):
@@ -60,13 +60,13 @@ Note that this can be challenged if doesn't serve the final goal - winning hacka
 - ✅ 4 Per-program match score + metric layer (`lib/metrics.ts`).
 - ✅ 5 Wizard (6 core + adaptive narrow-gate questions, localStorage, offline).
 - ✅ 6 Dashboard — 3 tabs (Overview/funding-sky · Programs · Checklist) + roadmap.
-- ✅ 7 Checklist + Arabic/English PDF export (`lib/pdf.ts`) + WhatsApp/QR share (`lib/share.ts`).
+- ✅ 7 Checklist + Arabic/English PDF export (`lib/pdf.ts`).
 - ✅ 8 RTL/theme tokens (Al Qua'a look) + README mapped to criteria 1–7 + hand-written SW.
 - ✅ 9 Optional tool-calling agent route (`app/api/agent/route.ts`); app fully works with it OFF.
 
 ### Design/website overhaul (merged — branch `overhaul`)
-Multi-agent overhaul: a foundation trunk + 5 parallel worktree leaves (Header, PDF/Share, Dashboard, Assistant, Landing), merged green. What changed:
+Multi-agent overhaul: a foundation trunk + 5 parallel worktree leaves (Header, PDF, Dashboard, Assistant, Landing), merged green. What changed:
 - **Readiness Score → "AED within reach"** (`lib/metrics.ts`): sums conservative per-applicant values for open/rolling matches, excludes pools/costs/services/closed windows, and groups alternative products. Climb: AED **0 → 0 → 2,000,000 → 7,000,000**; open matches **0 → 1 → 4 → 5**. `tests/metrics.test.ts` pins the result. **55 tests green.**
 - **3-tab dashboard** (`src/components/dashboard/`): Overview (compact stat strip + the dark **"funding sky"** signature) · Programs · Checklist. Nav labels: **My plan** (`/results`) · **Assistant** · **My details** (`/questionnaire`).
 - **Tailwind-v4 token system** reconciled in `globals.css` (`oasis/amber/clay/sand/ink/night/palm/almost`); Al Sadu restrained to one signature band (hero + PDF seal). Fonts: Tajawal + Fraunces + IBM Plex Mono.
-- New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), **PDF plan** + **share sheet**. Real app screenshots in `docs/screenshots/`. Docs (README, `.local-docs/design.md`, this file, demo script) reconciled to shipped reality.
+- New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), and **PDF plan**. Real app screenshots in `docs/screenshots/`. Docs (README, `.local-docs/design.md`, this file, demo script) reconciled to shipped reality.
