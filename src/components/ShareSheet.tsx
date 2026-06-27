@@ -52,6 +52,11 @@ export function ShareSheet({
 
   return (
     <div className={cn("flex flex-col gap-2.5", className)}>
+      {/* A preview of exactly what gets sent — so it reads as proud-to-forward. */}
+      <p className="whitespace-pre-line rounded-card border border-sand-line bg-sand-100 p-3 text-[13px] leading-relaxed text-ink-soft">
+        {payload.body}
+      </p>
+
       <div className="flex flex-wrap items-center gap-2">
         <a href={waHref(payload)} target="_blank" rel="noreferrer">
           <Button variant="outline" size="sm">
