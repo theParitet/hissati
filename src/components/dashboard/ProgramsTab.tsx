@@ -92,11 +92,17 @@ export function ProgramsTab({
   return (
     <div className="overflow-hidden rounded-card border border-sand-line bg-sand-100 shadow-card">
       <div className={cn("grid", comparing ? "grid-cols-1" : "lg:grid-cols-[18rem_minmax(0,1fr)]")}>
-        {/* MASTER — the list (hidden while comparing so the table gets full width) */}
+        {/* MASTER — the list (hidden while comparing so the table gets full width).
+            Keep lg:flex OUT of the always-on base: with it there, `hidden lg:flex`
+            would un-hide the list on desktop and the compare view would never show. */}
         <div
           className={cn(
-            "min-w-0 lg:flex lg:flex-col lg:border-e lg:border-sand-line",
-            comparing ? "hidden" : mobilePane === "detail" ? "hidden lg:block" : "block"
+            "min-w-0 lg:border-e lg:border-sand-line",
+            comparing
+              ? "hidden"
+              : mobilePane === "detail"
+                ? "hidden lg:flex lg:flex-col"
+                : "block lg:flex lg:flex-col"
           )}
         >
           {/* Contextual compare bar */}
