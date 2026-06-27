@@ -12,7 +12,7 @@
  */
 import qrcode from "qrcode-generator";
 import type { Locale } from "@/lib/i18n";
-import { pick } from "@/lib/i18n";
+import { pick, ui } from "@/lib/i18n";
 import type { Program } from "@/lib/schema";
 import type { ProgressStats } from "@/lib/metrics";
 import { formatAmountRange } from "@/lib/format";
@@ -24,6 +24,13 @@ export interface SharePayload {
   url?: string;
 }
 
+/**
+ * The message a founder is PROUD to forward to family or a mentor: one punchy line
+ * leading with the exciting, specific outcome (the cited AED within reach), the top
+ * 1–3 eligible programs, and a cited tag — short, warm, tasteful emoji, bilingual.
+ * When nothing is eligible yet it leads on momentum ("N one step away") so it never
+ * reads as a dead end. The per-program variant is the founder claiming one match.
+ */
 export function buildSharePayload(args: {
   kind: "plan" | "program";
   locale: Locale;
@@ -39,34 +46,45 @@ export function buildSharePayload(args: {
   if (kind === "program" && program) {
     const name = pick(program.name, locale);
     const range = formatAmountRange(program.amount, locale);
+    const how = ui(locale)[`intro_${program.intro_method}`] ?? "";
     return {
       title: "Hissati",
       body: isAr
-        ? `حِصّتي — برنامج «${name}». التمويل: ${range}. هذا ما أستهدفه، والمصدر موثّق 👇`
-        : `Hissati — "${name}". Funding: ${range}. This is what I'm aiming for, source-checked 👇`,
+        ? `🎯 وجدت تمويلي: «${name}» — ${range}${how ? `، عبر ${how}` : ""}.\nكل التفاصيل بمصدرها 👇`
+        : `🎯 Found my funding match: ${name} — ${range}${how ? `, via ${how}` : ""}.\nAll details source-checked 👇`,
       // Per-program: the apply link is the useful destination for the recipient.
       url: url ?? program.application_url,
     };
   }
 
-  // plan-level — lead with the honest "within reach" number, then name the wins.
+  // plan-level — lead with the exciting, cited number, then name the wins.
   const reach = stats
     ? `${formatAED(stats.aedReachableNow, locale)}${stats.hasOpenEndedAmounts ? "+" : ""}`
     : "—";
   const count = stats?.programsEligible ?? 0;
+  const almost = stats?.programsAlmost ?? 0;
   const names = (eligibleNames ?? []).filter(Boolean).slice(0, 3);
   const namesStr = names.join(isAr ? "، " : ", ");
-  const eligibleLine = names.length
+
+  // No money in hand yet → lead on momentum so the message still feels like a win.
+  if (count === 0 || stats?.aedReachableNow === 0) {
+    const body = isAr
+      ? `🌱 رسمت طريقي نحو التمويل الإماراتي${almost ? ` — ${almost} برنامج على بُعد خطوة واحدة` : ""}.\nهذه خطتي بخطواتها الموثّقة 👇`
+      : `🌱 I mapped my path to UAE funding${almost ? ` — ${almost} programs are one step away` : ""}.\nHere's my cited plan and exact next steps 👇`;
+    return { title: "Hissati", body, url };
+  }
+
+  const winLine = names.length
     ? isAr
-      ? ` مؤهَّل الآن: ${namesStr}.`
-      : ` Eligible now: ${namesStr}.`
+      ? `\n✅ مؤهَّل الآن: ${namesStr}.`
+      : `\n✅ Eligible now: ${namesStr}.`
     : "";
 
   return {
     title: "Hissati",
     body: isAr
-      ? `حِصّتي · ضمن متناولي الآن: ${reach} درهم عبر ${count} برنامج تمويل إماراتي.${eligibleLine} كل رقم بمصدره.`
-      : `Hissati · Within reach now: AED ${reach} across ${count} UAE funding programs.${eligibleLine} Every figure cited.`,
+      ? `🌱 وجدت ${reach} درهم تمويلاً إماراتياً يمكنني التقديم عليه فعلاً!${winLine}\nكل رقم بمصدره 👇`
+      : `🌱 I found AED ${reach} in UAE funding I can actually apply for!${winLine}\nEvery figure is source-checked 👇`,
     url,
   };
 }
