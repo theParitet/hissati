@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Tajawal, Fraunces } from "next/font/google";
+import { Tajawal, Fraunces, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { DirectionManager } from "@/components/DirectionManager";
 import { AppHeader } from "@/components/AppHeader";
@@ -17,6 +17,13 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   weight: ["400", "500", "600", "900"],
   variable: "--font-fraunces",
+  display: "swap",
+});
+// Ledger voice for money / data / stamps — "with receipts". Self-hosted, offline.
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-plex-mono",
   display: "swap",
 });
 
@@ -38,7 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="ar"
       dir="rtl"
       suppressHydrationWarning
-      className={`${tajawal.variable} ${fraunces.variable}`}
+      className={`${tajawal.variable} ${fraunces.variable} ${plexMono.variable}`}
     >
       <body className="flex min-h-dvh flex-col antialiased">
         <DirectionManager />

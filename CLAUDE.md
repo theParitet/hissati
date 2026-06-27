@@ -1,13 +1,13 @@
 # Hissati — Implementation Guide (CLAUDE.md)
 
-**Hissati** (حصتي) is a funding **readiness navigator** for first-time founders in Al Qua'a, Al Ain (Tatweer Hackathon). Flow: short questionnaire → match the founder to real UAE funding programs (eligible / almost / not-a-fit, with the blocking rule named) → readiness roadmap + score → application checklist → Arabic PDF. Offline-first, Arabic-first.
+**Hissati** (حصتي) is a funding **readiness navigator** for first-time founders in Al Qua'a, Al Ain (Tatweer Hackathon). Flow: short questionnaire → match the founder to real UAE funding programs (eligible / almost / not-a-fit, with the blocking rule named) → a 3-tab dashboard (Overview · Programs · Checklist) led by the cited **"AED within reach"** metric → roadmap → application checklist → Arabic PDF + WhatsApp/QR share. Offline-first, Arabic-first.
 
 ## Read first — context lives in `.local-docs/` (git-ignored; informs the build, never shipped)
 Core (always):
 - `requirements.md` — the contract: features FR-A…FR-I, NFRs, stack, evidence reqs, Definition of Done (§10).
 - `data-model.md` — Zod schema, enums, the `evaluateProgram` algorithm, question→rule map. **Single source of truth for types.**
 - `programs.json` — the program dataset the matcher runs on.
-- `scoring.md` — match-score + readiness-score formulas.
+- `scoring.md` — match-score formula. (The readiness-score it also describes was **removed** in the overhaul; the live headline metric is "AED within reach" in `src/lib/metrics.ts`.)
 - `project-context.md` — the why / personas / scope.
 
 Reference (as needed): `programs-sources.md` (citations + which figures are unconfirmed), `hackathon-info.md` (judging criteria + required README sections).
@@ -37,9 +37,9 @@ Next.js (App Router) + TypeScript · Tailwind + shadcn/ui · Zustand+persist (lo
 1. Scaffold (Next.js+TS+Tailwind+shadcn); deploy empty to Vercel; confirm live URL + offline PWA shell.
 2. Types + Zod schema; load & validate `programs.json` (per data-model.md).
 3. `evaluateProgram`/`evaluateAll` + Vitest tests (classification, orphan-rule/question, no-dead-ends).
-4. Scoring (match + readiness) + tests asserting the climb: dates founder **14 → 51 → 59 (±3)**, Khalifa flips **almost → eligible at step 2**.
+4. Scoring (per-program match score) + the metric layer (`lib/metrics.ts`, **"AED within reach"** — replaced the readiness score) + tests asserting the climb: dates founder AED **0 → 0 → 2,000,000**, eligible programs **0 → 2 → 5 → 6**, Khalifa flips **almost → eligible at the MVP step**.
 5. Questionnaire wizard (FR-A: 6 + 1 conditional, adaptive, localStorage, offline).
-6. Results dashboard + almost/roadmap + readiness gauge.
+6. Results = 3-tab dashboard (Overview/funding-sky · Programs · Checklist) + almost/roadmap.
 7. Checklist + Arabic PDF export.
 8. Arabic/RTL polish, theme tokens (Al Qua'a look), README ("how we score against criteria 1–7" + ER-1 testable claims).
 9. (If time) the optional tool-calling agent route.
@@ -54,8 +54,19 @@ Note that this can be challenged if doesn't serve the final goal - winning hacka
 - **Distributed work via worktree agents.** For independent, parallelizable work (e.g. leaf features, README/manifest, the optional agent route), dispatch subagents with **`isolation: "worktree"`** so each works on an isolated copy and they don't clobber each other's files; merge back when green. Keep the *foundation* (types, store, i18n, theme, shared UI) on one trunk first — parallelizing before that exists creates merge churn. Do not parallelize edits to the same files.
 
 ## Build status (living)
-- ✅ 1 Scaffold (Next 16/TS/Tailwind v4) — builds; **Vercel deploy pending user auth**.
-- ✅ 2 Types + Zod schema; `programs.json` loads & validates.
+- ✅ 1 Scaffold (Next 16/TS/Tailwind v4) — builds; **Vercel deploy handled by user**.
+- ✅ 2 Types + Zod schema; `programs.json` (12 programs, 3 tiers) loads & validates.
 - ✅ 3 Engine (`evaluateProgram`/`evaluateAll`) + completeness tests.
-- ✅ 4 Scoring (match + readiness) — climb **14 → 51 → 59 → 75**, Khalifa flips at step 2. **34 tests green.**
-- ⬜ 5 Wizard · ⬜ 6 Results/roadmap/gauge · ⬜ 7 Checklist + Arabic PDF · ⬜ 8 RTL/theme/README/SW · ⬜ 9 (opt) agent.
+- ✅ 4 Per-program match score + metric layer (`lib/metrics.ts`).
+- ✅ 5 Wizard (adaptive, 6 + 1 conditional, localStorage, offline).
+- ✅ 6 Dashboard — 3 tabs (Overview/funding-sky · Programs · Checklist) + roadmap.
+- ✅ 7 Checklist + Arabic/English PDF export (`lib/pdf.ts`) + WhatsApp/QR share (`lib/share.ts`).
+- ✅ 8 RTL/theme tokens (Al Qua'a look) + README mapped to criteria 1–7 + hand-written SW.
+- ✅ 9 Optional tool-calling agent route (`app/api/agent/route.ts`); app fully works with it OFF.
+
+### Design/website overhaul (merged — branch `overhaul`)
+Multi-agent overhaul: a foundation trunk + 5 parallel worktree leaves (Header, PDF/Share, Dashboard, Assistant, Landing), merged green. What changed:
+- **Readiness Score → "AED within reach"** (`lib/metrics.ts`): an honest, cited number = Σ `max_aed` of *eligible funding* programs (licences excluded). Climb is now AED **0 → 0 → 2,000,000**, eligible programs **0 → 2 → 5 → 6**, Khalifa flips at the MVP step. `ReadinessGauge` and `readinessScore`/`readinessBreakdown` deleted; `tests/metrics.test.ts` pins the new climb. **49 tests green; `npm run build` clean.**
+- **3-tab dashboard** (`src/components/dashboard/`): Overview (compact stat strip + the dark **"funding sky"** signature) · Programs · Checklist. Nav labels: **My plan** (`/results`) · **Assistant** · **My details** (`/questionnaire`).
+- **Tailwind-v4 token system** reconciled in `globals.css` (`oasis/amber/clay/sand/ink/night/palm/almost`); Al Sadu restrained to one signature band (hero + PDF seal). Fonts: Tajawal + Fraunces + IBM Plex Mono.
+- New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), **PDF plan** + **share sheet**. Real app screenshots in `docs/screenshots/`. Docs (README, `.local-docs/design.md`, this file, demo script) reconciled to shipped reality.

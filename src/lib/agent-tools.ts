@@ -19,7 +19,8 @@ import {
 } from "@/lib/schema";
 import { PROGRAMS, getProgramById } from "@/lib/programs";
 import { evaluateAllFull, evaluateProgramFull } from "@/lib/engine";
-import { matchScore, readinessScore, estimateTimeToEligibility } from "@/lib/scoring";
+import { matchScore, estimateTimeToEligibility } from "@/lib/scoring";
+import { progressStats } from "@/lib/metrics";
 import { deriveRoadmap } from "@/lib/roadmap";
 
 /** Conservative defaults so scoring never NaNs on a partial, model-supplied profile. */
@@ -185,8 +186,11 @@ export function executeTool(name: string, input: unknown): unknown {
         source: e.program.source,
       });
       const scored = evals.map(fmt);
+      const stats = progressStats(profile, evals, []);
       return {
-        readiness_score: readinessScore(profile, evals),
+        aed_reachable_now: stats.aedReachableNow,
+        aed_reachable_after_steps: stats.aedReachableAfterSteps,
+        programs_eligible: stats.programsEligible,
         eligible: scored.filter((s) => s.status === "eligible").sort((a, b) => b.match - a.match),
         almost: scored.filter((s) => s.status === "almost").sort((a, b) => b.match - a.match),
         not_fit: scored.filter((s) => s.status === "not_fit"),
@@ -196,7 +200,7 @@ export function executeTool(name: string, input: unknown): unknown {
       const profile = buildProfile(args.profile);
       const evals = evaluateAllFull(profile, PROGRAMS);
       return {
-        readiness_score: readinessScore(profile, evals),
+        aed_reachable_after_steps: progressStats(profile, evals, []).aedReachableAfterSteps,
         almost_ids: evals.filter((e) => e.status === "almost").map((e) => e.program.id),
         steps: deriveRoadmap(evals).map((s) => ({
           action: s.action,

@@ -1,24 +1,20 @@
 /**
- * Hissati — deterministic scoring (FR-C2 Match Score, FR-D2/D3 Readiness Score,
- * FR-D4 time-to-eligibility). Transcribed from `.local-docs/scoring.md`.
+ * Hissati — deterministic scoring (FR-C2 Match Score, FR-D4 time-to-eligibility).
+ * Transcribed from `.local-docs/scoring.md`. The progress metric that climbs as
+ * roadmap steps complete now lives in `lib/metrics.ts` (cited AED within reach).
  *
- * Both scores are PURE, DETERMINISTIC, bounded to [0,100], and TUNABLE from the
- * named-constant blocks below (retune the demo curve = edit constants only). They
- * read only the shared-contract fields (data-model.md), so schema/dataset/scoring
- * stay in sync. No randomness, no clock, no network — backs NFR-7 + the Vitest
- * evidence. A failed remediable rule = one roadmap step; marking it done flips a
- * rule to passed and mechanically moves both scores (the FR-D3 climb).
+ * Match Score is PURE, DETERMINISTIC, bounded to [0,100], and TUNABLE from the
+ * named-constant blocks below. It reads only the shared-contract fields
+ * (data-model.md), so schema/dataset/scoring stay in sync. No randomness, no
+ * clock, no network — backs NFR-7 + the Vitest evidence.
  */
 import type {
   AmountBand,
   EligibilityStatus,
-  EvaluatedProgram,
   EvaluatedRule,
   Profile,
   Program,
   Sector,
-  Stage,
-  Registration,
   Tier,
 } from "@/lib/schema";
 
@@ -118,88 +114,11 @@ export function matchScore(
 }
 
 /* ==========================================================================
- * 2. READINESS SCORE (FR-D2 / FR-D3)
- * ======================================================================== */
-
-export const READINESS = {
-  // Component weights. MUST sum to 1.0.
-  W_ELIGIBLE: 0.45, // strength of currently-eligible programs (the payoff)
-  W_ROADMAP: 0.25, // proximity to the best almost-eligible Tier-1 programs
-  W_MATURITY: 0.3, // profile maturity (stage + registration) — moves first, early
-
-  // Eligible-now strength counts FUNDING programs only (licences are rungs, not the goal).
-  FUNDING_INSTRUMENTS: ["grant", "loan", "equity", "accelerator"] as const, // excludes "license"
-  ELIGIBLE_TIER_WEIGHT: { 1: 1.0, 2: 0.7, 3: 0.4 } as Record<Tier, number>,
-  ELIGIBLE_SATURATION: 3.0, // sum of tier-weights at which this hits 1.0
-
-  ROADMAP_STEP_DECAY: 0.45, // decay per remaining remedial step
-
-  STAGE_SCORE: { idea: 0.0, mvp: 0.4, early_traction: 0.7, established: 1.0 } as Record<
-    Stage,
-    number
-  >,
-  REGISTRATION_SCORE: { none: 0.0, lt_1yr: 0.5, reg_1_2yr: 0.8, reg_2yr_plus: 1.0 } as Record<
-    Registration,
-    number
-  >,
-  MATURITY_STAGE_SHARE: 0.5,
-  MATURITY_REG_SHARE: 0.5,
-} as const;
-
-function eligibleStrength(programs: EvaluatedProgram[]): number {
-  const funding = READINESS.FUNDING_INSTRUMENTS as readonly string[];
-  const sum = programs
-    .filter((p) => p.status === "eligible" && funding.includes(p.program.instrument))
-    .reduce((acc, p) => acc + READINESS.ELIGIBLE_TIER_WEIGHT[p.program.tier], 0);
-  return Math.min(1, sum / READINESS.ELIGIBLE_SATURATION);
-}
-
-function roadmapProximity(programs: EvaluatedProgram[]): number {
-  const tier1Almost = programs.filter((p) => p.status === "almost" && p.program.tier === 1);
-  if (tier1Almost.length === 0) return 0;
-  const proximities = tier1Almost.map((p) => {
-    const missing = p.rules.filter((r) => !r.passed && r.remediable).length;
-    return Math.max(0, 1 - missing * READINESS.ROADMAP_STEP_DECAY);
-  });
-  return Math.max(...proximities); // closest prize drives the climb
-}
-
-function profileMaturity(profile: Profile): number {
-  return (
-    READINESS.MATURITY_STAGE_SHARE * READINESS.STAGE_SCORE[profile.stage] +
-    READINESS.MATURITY_REG_SHARE * READINESS.REGISTRATION_SCORE[profile.registration]
-  );
-}
-
-/** 0–100 readiness score. Rises as roadmap steps are completed (FR-D3). */
-export function readinessScore(profile: Profile, evaluated: EvaluatedProgram[]): number {
-  const eligible = eligibleStrength(evaluated);
-  const roadmap = roadmapProximity(evaluated);
-  const maturity = profileMaturity(profile);
-
-  const composite =
-    READINESS.W_ELIGIBLE * eligible +
-    READINESS.W_ROADMAP * roadmap +
-    READINESS.W_MATURITY * maturity;
-
-  return Math.round(Math.min(100, Math.max(0, composite * 100)));
-}
-
-/**
- * Breakdown for the gauge UI — the three components behind the number, so the
- * results screen can explain "what would raise this".
- */
-export function readinessBreakdown(profile: Profile, evaluated: EvaluatedProgram[]) {
-  return {
-    score: readinessScore(profile, evaluated),
-    eligible: eligibleStrength(evaluated),
-    roadmap: roadmapProximity(evaluated),
-    maturity: profileMaturity(profile),
-  };
-}
-
-/* ==========================================================================
- * 3. estimateTimeToEligibility (FR-D4)
+ * 2. estimateTimeToEligibility (FR-D4)
+ * --------------------------------------------------------------------------
+ * NOTE: the former Readiness Score (a weighted estimate) has been removed in
+ * favour of `progressStats()` in `lib/metrics.ts` — cited, falsifiable figures
+ * (AED within reach + programs eligible) derived directly from the engine.
  * ======================================================================== */
 
 export const EST = {

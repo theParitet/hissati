@@ -27,8 +27,10 @@
   --color-amber-600: #b9711a;
   --color-amber-100: #f7e6c8;
 
-  /* Night sky — astro / depth / gauge track. */
+  /* Night sky — astro / depth. Deeper variants ground the dashboard "funding sky". */
   --color-night: #15203a;
+  --color-night-700: #0b1326;
+  --color-night-100: #243150;
 
   /* Eligibility semantics. */
   --color-palm: #1f7a52; /* eligible */
@@ -41,12 +43,20 @@
   /* Type — one stack does both scripts: Latin→Fraunces, Arabic→Tajawal fallback. */
   --font-sans: var(--font-tajawal), system-ui, -apple-system, sans-serif;
   --font-display: var(--font-fraunces), var(--font-tajawal), Georgia, serif;
+  /* Ledger voice — AED amounts, match %, verified stamps ("with receipts"). */
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --radius-card: 1rem;
   --radius-pill: 999px;
 
   --shadow-card: 0 1px 2px rgba(33, 24, 15, 0.04), 0 8px 24px -12px rgba(33, 24, 15, 0.18);
   --shadow-lift: 0 2px 4px rgba(33, 24, 15, 0.06), 0 18px 40px -16px rgba(33, 24, 15, 0.28);
+
+  /* Motion — the few intentional moments; everything else is instant or fast. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur-base: 300ms;
+  --dur-slow: 650ms;
 }
 
 @layer base {
@@ -90,16 +100,38 @@
   }
 }
 
-/* Optical text centering: trim a label's line box to its cap-height/baseline so
-   its visible glyphs share the same vertical center as an adjacent icon. Tajawal
-   reserves asymmetric ascent/descent (9/5 at 14px), which otherwise floats text
-   ~2.4px above a flex-centered icon. Ignored by browsers without text-box-trim. */
-.tb-trim {
-  text-box-trim: trim-both;
-  text-box-edge: cap alphabetic;
+/* UNIVERSAL optical text centering.
+   The single source of truth for "text sits visually centered in its box".
+   `text-box-trim` trims the line BOX (leading) to the glyph box — it never clips
+   ink, so it is safe for Arabic (marks/dots always paint). Applied directly to
+   the common UI elements (not an opt-in class) so EVERY button/tab/heading/label
+   is centered by default; no component has to remember. Progressive enhancement:
+   a no-op (standard baseline rendering) in browsers without text-box-trim.
+   `:where()` keeps specificity 0 so a component can still override. */
+@supports (text-box-trim: trim-both) {
+  :where(
+    button, [role="tab"], summary, label, th,
+    h1, h2, h3, h4, h5, h6,
+    .tb-trim, [data-trim]
+  ) {
+    text-box-trim: trim-both;
+    text-box-edge: cap alphabetic;
+  }
 }
 
-/* Signature gauge: the sun rises as readiness climbs. */
+/* Al Sadu selvedge — ONE signature band (hero + PDF seal only, NEVER per card).
+   A restrained woven hem in the heritage palette, rendered offline in pure CSS:
+   a row of Al-'Ain "eye" dots between an amber warp rule and a clay weft rule.
+   Leaves may replace with a richer inline SVG; the placement rule stands. */
+.sadu-band {
+  height: 6px;
+  background:
+    radial-gradient(circle at center, var(--color-oasis) 1.1px, transparent 1.4px) 0 50% / 10px 6px repeat-x,
+    linear-gradient(var(--color-amber) 0 0) 0 0 / 100% 1.5px no-repeat,
+    linear-gradient(var(--color-clay) 0 0) 0 100% / 100% 1.5px no-repeat;
+}
+
+/* Signature: the sun rises as the founder's funding climbs. */
 @keyframes hissati-rise {
   from {
     transform: translateY(14%);
