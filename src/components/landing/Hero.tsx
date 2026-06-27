@@ -91,13 +91,13 @@ export function Hero() {
           <div className="relative mx-auto w-full max-w-xl lg:mx-0">
             <DeviceMockup
               device="laptop"
-              src="/screenshots/overview-laptop.svg"
+              src="/screenshots/overview-laptop.png"
               alt={locale === "ar" ? "خطة حِصّتي على الحاسوب" : "Hissati plan on a laptop"}
               priority
             />
             <DeviceMockup
               device="phone"
-              src="/screenshots/overview-phone.svg"
+              src="/screenshots/overview-phone.png"
               alt={locale === "ar" ? "حِصّتي على الهاتف" : "Hissati on a phone"}
               priority
               className="absolute -bottom-8 -start-5 w-[30%] sm:-start-8 sm:w-[28%]"
