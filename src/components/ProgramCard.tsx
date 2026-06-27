@@ -1,6 +1,6 @@
 "use client";
 
-import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers, GitCompare } from "lucide-react";
+import { ExternalLink, ListChecks, Clock, ShieldCheck, Layers, GitCompare, CheckCircle2, FileText } from "lucide-react";
 import { Card, Badge, Button } from "@/components/ui";
 import { ui, enumLabel, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, localizeDate } from "@/lib/format";
@@ -56,6 +56,31 @@ export function ProgramCard({
               {matchPct}% <span className="font-normal text-ink-faint">{t.match}</span>
             </span>
           )}
+          {/* Progress markers (items 14/15): requirements met (auto) + documents ready (manual) */}
+          <CornerProgress
+            icon={<CheckCircle2 className="h-3.5 w-3.5 text-palm" aria-hidden />}
+            title={t.requirements}
+            value={prog.reqMet}
+            total={prog.reqTotal}
+            tone="palm"
+            locale={locale}
+          />
+          <button
+            type="button"
+            onClick={() => onOpenChecklist(program.id)}
+            aria-label={t.documentsReady}
+            className="no-print inline-flex items-center gap-1 hover:opacity-80"
+          >
+            <CornerProgress
+              icon={<FileText className="h-3.5 w-3.5 text-ink-faint" aria-hidden />}
+              title={t.documentsReady}
+              value={prog.docsReady}
+              total={prog.docsTotal}
+              tone="amber"
+              locale={locale}
+            />
+            <span className="text-xs text-ink-faint">✎</span>
+          </button>
         </div>
       </div>
 
@@ -73,26 +98,6 @@ export function ProgramCard({
             {enumLabel("sector", s, locale)}
           </span>
         ))}
-      </div>
-
-      {/* Progress: requirements met (auto, from the engine) + documents ready (manual) — items 14/15 */}
-      <div className="mt-3.5 space-y-1.5 text-xs">
-        <ProgressRow label={t.requirements} value={prog.reqMet} total={prog.reqTotal} tone="palm" locale={locale} />
-        <button
-          type="button"
-          onClick={() => onOpenChecklist(program.id)}
-          className="no-print block w-full rounded-md text-start hover:opacity-80"
-          aria-label={t.documentsReady}
-        >
-          <ProgressRow
-            label={t.documentsReady}
-            value={prog.docsReady}
-            total={prog.docsTotal}
-            tone="amber"
-            locale={locale}
-            editable
-          />
-        </button>
       </div>
 
       {/* Almost: you could qualify if… (cited remedies, no dead-end) */}
@@ -177,35 +182,34 @@ export function ProgramCard({
   );
 }
 
-function ProgressRow({
-  label,
+function CornerProgress({
+  icon,
+  title,
   value,
   total,
   tone,
   locale,
-  editable,
 }: {
-  label: string;
+  icon: React.ReactNode;
+  title: string;
   value: number;
   total: number;
   tone: "palm" | "amber";
   locale: Locale;
-  editable?: boolean;
 }) {
   const pct = total ? Math.round((value / total) * 100) : 0;
   return (
-    <div className="flex items-center gap-2">
-      <span className="w-24 shrink-0 text-ink-soft">{label}</span>
-      <span className="h-1.5 flex-1 overflow-hidden rounded-pill bg-sand-200">
+    <span className="flex items-center gap-1.5 text-xs text-ink-soft" title={title}>
+      {icon}
+      <span className="tabular-nums">
+        {toLocaleDigits(value, locale)}/{toLocaleDigits(total, locale)}
+      </span>
+      <span className="h-1.5 w-9 overflow-hidden rounded-pill bg-sand-200">
         <span
           className={`block h-full rounded-pill ${tone === "palm" ? "bg-palm" : "bg-amber"} transition-[width] duration-500`}
           style={{ width: `${pct}%` }}
         />
       </span>
-      <span className="shrink-0 tabular-nums text-ink-soft">
-        {toLocaleDigits(value, locale)}/{toLocaleDigits(total, locale)}
-        {editable && <span className="ms-1 text-ink-faint">✎</span>}
-      </span>
-    </div>
+    </span>
   );
 }

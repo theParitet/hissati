@@ -238,6 +238,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     myDetails: "تفاصيلي:",
     documentsReady: "المستندات الجاهزة",
     docsProgress: "جاهزة",
+    contents: "الأسئلة",
 
     // checklist
     checklistTitle: "قائمة التقديم",
@@ -338,6 +339,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     myDetails: "My details:",
     documentsReady: "Documents ready",
     docsProgress: "ready",
+    contents: "Contents",
 
     checklistTitle: "Application checklist",
     requiredDocs: "Required documents",
