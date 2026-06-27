@@ -100,14 +100,12 @@
   }
 }
 
-/* Optical text centering: trim a label's line box to its cap-height/baseline so
-   its visible glyphs share the same vertical center as an adjacent icon. Tajawal
-   reserves asymmetric ascent/descent (9/5 at 14px), which otherwise floats text
-   ~2.4px above a flex-centered icon. Ignored by browsers without text-box-trim. */
-.tb-trim {
-  text-box-trim: trim-both;
-  text-box-edge: cap alphabetic;
-}
+/* .tb-trim is intentionally a NO-OP. It previously used `text-box-trim` /
+   `text-box-edge: cap alphabetic` for optical centering, but that is Chrome-only
+   AND applies Latin cap/baseline metrics to Arabic glyphs (wrong for an
+   Arabic-first app, and it rendered inconsistently across browsers). Vertical
+   centering is now done the robust, cross-browser way: inline-flex + items-center
+   + leading-none on icon/label rows. Class kept inert so existing markup is safe. */
 
 /* Al Sadu selvedge — ONE signature band (hero + PDF seal only, NEVER per card).
    A restrained woven hem in the heritage palette, rendered offline in pure CSS:

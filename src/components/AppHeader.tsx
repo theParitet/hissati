@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Compass, Sparkles, UserRound, Languages, CloudOff, type LucideIcon } from "lucide-react";
+import { Compass, Sparkles, UserRound, Languages, type LucideIcon } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { Badge, Button } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { useHissati, useLocale } from "@/lib/store";
 import { ui } from "@/lib/i18n";
 
@@ -67,16 +67,8 @@ export function AppHeader() {
             })}
           </nav>
 
-          {/* Divider sets navigation apart from status + settings. */}
+          {/* Divider sets navigation apart from the language control. */}
           <span className="hidden h-5 w-px bg-sand-line sm:block" aria-hidden />
-
-          {/* Reassurance, not a control — "no server needed". Lower priority, drops on small screens. */}
-          <span className="hidden lg:inline-flex">
-            <Badge tone="neutral">
-              <CloudOff className="h-3.5 w-3.5 shrink-0" aria-hidden />
-              {t.offlineReady}
-            </Badge>
-          </span>
 
           <Button
             variant="outline"
