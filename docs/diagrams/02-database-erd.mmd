@@ -1,0 +1,112 @@
+%% Hissati — Data Model (ERD)
+%% No SQL database: a bundled, Zod-validated JSON knowledge base + browser localStorage.
+%% This models the logical data contract (schema.ts), the derived evaluation entities,
+%% and the persisted client state.
+erDiagram
+  PROGRAM_FILE ||--o{ PROGRAM : "contains (12)"
+  PROGRAM ||--|| AMOUNT : has
+  PROGRAM ||--|| SOURCE : "cited by"
+  PROGRAM ||--|{ RULE : "eligibility · AND-gates"
+  PROGRAM ||--o{ REQUIRED_DOCUMENT : requires
+  RULE ||--o| REMEDY : "may carry"
+  REMEDY }o--o| PROGRAM : "links_program_id · unblocks"
+  PROGRAM }o--o{ PROGRAM : "concurrent_compatible_with · stackable"
+
+  PROFILE ||--o{ EVALUATED_PROGRAM : "engine yields"
+  PROGRAM ||--o{ EVALUATED_PROGRAM : "classified as"
+  EVALUATED_PROGRAM ||--|{ EVALUATED_RULE : annotates
+  RULE ||--o{ EVALUATED_RULE : "+ passed flag"
+  EVALUATED_PROGRAM ||--o{ ROADMAP_STEP : "almost → steps"
+
+  HISSATI_STATE ||--|| PROFILE : "answers (Partial)"
+  HISSATI_STATE ||--o{ DONE_STEP : "completed steps"
+  HISSATI_STATE ||--o{ CHECKED_DOCS : "doc ticks per program"
+  DONE_STEP }o--|| ROADMAP_STEP : "marks done"
+  CHECKED_DOCS }o--|| PROGRAM : "keyed by id"
+
+  PROGRAM_FILE {
+    string schema_version
+    string generated "ISO date"
+    array  programs
+  }
+  PROGRAM {
+    string id PK "slug · unique"
+    Localized name "en + ar"
+    string operator
+    int    tier "1 | 2 | 3"
+    enum   instrument "grant|loan|equity|accelerator|license"
+    enum   intro_method "open_form|tamm|warm_intro|competition"
+    array  sector_tags
+    string application_url
+    boolean equity "dilutive?"
+    string processing_time
+    Localized description
+  }
+  AMOUNT {
+    number min_aed "nullable"
+    number max_aed "nullable · null = amount varies"
+    string notes
+  }
+  SOURCE {
+    string url
+    string verified_date "ISO date"
+  }
+  RULE {
+    enum   field "nationality|location|stage|registration|sector|relocation|business_age|employee_count"
+    enum   op "in|gte|lte|eq|is_true"
+    union  value "string[] | string | number | boolean"
+    Localized blocking_message "shown when failed"
+  }
+  REMEDY {
+    Localized action "the next step"
+    string links_program_id FK "→ PROGRAM.id"
+    number est_cost_aed "nullable"
+    string est_time "e.g. 1-3 days"
+  }
+  REQUIRED_DOCUMENT {
+    string en
+    string ar
+    string format
+  }
+  PROFILE {
+    enum   nationality_ownership "emirati_majority|emirati_minority|gcc|expat"
+    enum   location "al_quaa_al_ain|abu_dhabi_other|sharjah|dubai|other_uae|outside_uae"
+    enum   stage "idea<mvp<early_traction<established"
+    enum   registration "none<lt_1yr<reg_1_2yr<reg_2yr_plus"
+    enum   sector "camel|dates|astro_tourism|handicrafts|food_processing|retail_services|tech|other"
+    enum   funding_type "grant|loan|equity|unsure"
+    enum   amount_band "lt_50k|50_200k|200_500k|500k_2m|2m_plus"
+    boolean relocation_willing "optional · conditional gate"
+    number business_age_years "optional"
+    number employee_count "optional"
+  }
+  EVALUATED_PROGRAM {
+    string status "eligible | almost | not_fit"
+    array  rules "annotated EvaluatedRule[]"
+    array  failedRules
+    int    matchScore "0-100 · derived"
+  }
+  EVALUATED_RULE {
+    boolean passed "did THIS profile pass?"
+    boolean remediable "does it carry a remedy?"
+  }
+  ROADMAP_STEP {
+    string key PK "e.g. registration:lt_1yr"
+    object mutate "Partial Profile advance"
+    Localized action
+    number months "for ordering"
+    array  unlocks "programs moved toward eligible"
+  }
+  HISSATI_STATE {
+    string storageKey "localStorage · hissati-v1"
+    enum   locale "ar | en · Arabic-first"
+  }
+  DONE_STEP {
+    string key PK "stable step id"
+    object mutate "the profile advance"
+    Localized label "for undo trail"
+  }
+  CHECKED_DOCS {
+    string programId FK "→ PROGRAM.id"
+    array  indices "checked document positions"
+  }
