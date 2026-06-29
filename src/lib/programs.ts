@@ -13,7 +13,6 @@ import { ProgramFileSchema, type Program } from "@/lib/schema";
 const parsed = ProgramFileSchema.parse(rawFile);
 
 export const PROGRAMS: Program[] = parsed.programs;
-export const PROGRAMS_GENERATED: string = parsed.generated;
 
 export function getProgramById(id: string): Program | undefined {
   return PROGRAMS.find((p) => p.id === id);

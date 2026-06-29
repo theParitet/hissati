@@ -80,27 +80,9 @@ export function wizardSteps(answers: Partial<Profile>): QuestionId[] {
   return [...core, ...conditional];
 }
 
-/**
- * Programs still in the running given partial answers: a program is eliminated
- * only when an ALREADY-ANSWERED rule fails with NO remedy (a hard "out"). Rules
- * on not-yet-answered fields, and remediable near-misses, keep it in.
- */
-export function stillMatching(answers: Partial<Profile>): Program[] {
-  return PROGRAMS.filter((p) => {
-    const hardOut = p.eligibility.some(
-      (r) => answered(answers, r.field) && !passesRule(answers as Profile, r) && r.remedy === undefined
-    );
-    return !hardOut;
-  });
-}
-
 /** Whether a single program is still in the running (drives the live chip state). */
 export function isStillMatching(answers: Partial<Profile>, p: Program): boolean {
   return !p.eligibility.some(
     (r) => answered(answers, r.field) && !passesRule(answers as Profile, r) && r.remedy === undefined
   );
-}
-
-export function countStillMatching(answers: Partial<Profile>): number {
-  return stillMatching(answers).length;
 }

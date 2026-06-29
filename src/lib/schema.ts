@@ -225,7 +225,6 @@ export const ProgramFileSchema = z.object({
   note: z.string().optional(),
   programs: z.array(ProgramSchema),
 });
-export type ProgramFile = z.infer<typeof ProgramFileSchema>;
 
 /* ----------------------------------------------------------------------------
  * Eligibility result types (FR-C1, FR-C3)

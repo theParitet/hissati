@@ -9,9 +9,7 @@
 import type { QuestionId } from "@/lib/questions";
 
 export type Locale = "ar" | "en";
-export const LOCALES: Locale[] = ["ar", "en"];
 export const DIR: Record<Locale, "rtl" | "ltr"> = { ar: "rtl", en: "ltr" };
-export const OTHER: Record<Locale, Locale> = { ar: "en", en: "ar" };
 
 const AR_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"];
 

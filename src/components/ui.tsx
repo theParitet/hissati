@@ -66,49 +66,6 @@ export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElemen
   );
 }
 
-export function Badge({
-  tone = "neutral",
-  className,
-  children,
-  ...props
-}: React.HTMLAttributes<HTMLSpanElement> & {
-  tone?: "neutral" | "palm" | "almost" | "clay" | "oasis" | "night";
-}) {
-  const tones: Record<string, string> = {
-    neutral: "bg-sand-200 text-ink-soft",
-    palm: "bg-palm-100 text-palm",
-    almost: "bg-almost-100 text-almost",
-    clay: "bg-clay-100 text-clay",
-    oasis: "bg-oasis-100 text-oasis",
-    night: "bg-night text-sand-100",
-  };
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-pill px-2.5 py-1 text-xs font-medium leading-none",
-        tones[tone],
-        className
-      )}
-      {...props}
-    >
-      {trimLabels(children)}
-    </span>
-  );
-}
-
-/** An eyebrow label — encodes section identity, set in the utility face. */
-export function Eyebrow({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return (
-    <p
-      className={cn(
-        "text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint",
-        className
-      )}
-      {...props}
-    />
-  );
-}
-
 /* ==========================================================================
  * Overhaul contract primitives (spec §6.2). Money/data render in the mono
  * "ledger" voice, always dir="ltr" regardless of document direction.
@@ -139,57 +96,6 @@ export function Money({
       {prefix ? "AED " : ""}
       {formatAED(aed, locale)}
     </span>
-  );
-}
-
-/** Accessible tab strip (roving tabindex + arrow keys). Selection-only; the
- *  parent renders the active panel from `active`. */
-export function Tabs({
-  tabs,
-  active,
-  onChange,
-  className,
-}: {
-  tabs: { id: string; label: React.ReactNode }[];
-  active: string;
-  onChange: (id: string) => void;
-  className?: string;
-}) {
-  const move = (dir: 1 | -1) => {
-    const i = tabs.findIndex((t) => t.id === active);
-    if (i < 0) return;
-    const next = (i + dir + tabs.length) % tabs.length;
-    onChange(tabs[next].id);
-  };
-  return (
-    <div
-      role="tablist"
-      className={cn("inline-flex gap-1 rounded-pill bg-sand-200 p-1", className)}
-      onKeyDown={(e) => {
-        if (e.key === "ArrowRight") { e.preventDefault(); move(1); }
-        else if (e.key === "ArrowLeft") { e.preventDefault(); move(-1); }
-      }}
-    >
-      {tabs.map((tb) => {
-        const selected = tb.id === active;
-        return (
-          <button
-            key={tb.id}
-            role="tab"
-            type="button"
-            aria-selected={selected}
-            tabIndex={selected ? 0 : -1}
-            onClick={() => onChange(tb.id)}
-            className={cn(
-              "rounded-pill px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2",
-              selected ? "bg-sand-100 text-oasis shadow-card" : "text-ink-soft hover:text-ink"
-            )}
-          >
-            {trimLabels(tb.label)}
-          </button>
-        );
-      })}
-    </div>
   );
 }
 
@@ -335,11 +241,6 @@ export function AmountDirectionBadge({
       <span className="tb-trim">{receive ? ui(locale).youReceive : ui(locale).youPay}</span>
     </span>
   );
-}
-
-/** A pulsing placeholder block for async/slow content (PDF export, agent). */
-export function Skeleton({ className }: { className?: string }) {
-  return <div className={cn("animate-pulse rounded-md bg-sand-200", className)} aria-hidden />;
 }
 
 /** Friendly empty/zero state — never a dead-end. */
