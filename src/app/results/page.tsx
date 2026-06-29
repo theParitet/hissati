@@ -14,7 +14,7 @@ import {
   useLocale,
   useHydrated,
   isProfileComplete,
-  effectiveProfile,
+  doneKeysOf,
 } from "@/lib/store";
 import { ui } from "@/lib/i18n";
 import { PROGRAMS } from "@/lib/programs";
@@ -58,8 +58,9 @@ export default function Results() {
     );
   }
 
-  const profile = effectiveProfile(answers, doneSteps) as Profile;
-  const evaluated = evaluateAllFull(profile, PROGRAMS);
+  const profile = answers as Profile;
+  const doneKeys = doneKeysOf(doneSteps);
+  const evaluated = evaluateAllFull(profile, PROGRAMS, doneKeys);
   const stats = progressStats(profile, evaluated, doneSteps);
   const scored = evaluated.map((ev) => ({
     ev,
@@ -77,7 +78,7 @@ export default function Results() {
 
   const downloadPdf = () => exportPlanPdf({ profile, evaluated, steps, stats, locale });
   const onMarkStep = (step: RoadmapStep) =>
-    markStep({ key: step.key, mutate: step.mutate, label: step.action });
+    markStep({ key: step.key, label: step.action });
   const openChecklist = (id: string) => {
     setChecklistId(id);
     setTab("checklist");

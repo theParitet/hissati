@@ -16,6 +16,22 @@ import type {
   EvaluatedRule,
   EvaluatedProgram,
 } from "@/lib/schema";
+import { ruleStepKey } from "@/lib/steps";
+
+/** No completed steps — the default for plain (profile-only) evaluation. */
+const NO_DONE: ReadonlySet<string> = new Set();
+
+/**
+ * A rule is CLEARED for this profile if the answers already satisfy it OR the
+ * founder has marked the atomic step that clears it. This is the whole of the
+ * roadmap "climb": each step independently clears the gate(s) it names — no
+ * profile folding, no implication between rungs (so undo always re-opens it).
+ */
+function ruleCleared(profile: Profile, rule: Rule, doneKeys: ReadonlySet<string>): boolean {
+  if (passesRule(profile, rule)) return true;
+  const key = ruleStepKey(rule);
+  return key !== null && doneKeys.has(key);
+}
 
 /** Ordered enums for gte/lte ordinal comparison. */
 const STAGE_ORDER: readonly string[] = ["idea", "mvp", "early_traction", "established"];
@@ -127,22 +143,49 @@ export function evaluateAll(
  * results UI (which rules passed / which to surface as steps).
  * ------------------------------------------------------------------------ */
 
-/** Every eligibility rule of `program`, tagged with passed + remediable for `profile`. */
-export function annotateRules(profile: Profile, program: Program): EvaluatedRule[] {
+/**
+ * Every eligibility rule of `program`, tagged with passed + remediable. `passed`
+ * folds in completed atomic steps (`doneKeys`): a gate the founder has marked done
+ * reads as passed. Omitting `doneKeys` gives plain profile-only evaluation.
+ */
+export function annotateRules(
+  profile: Profile,
+  program: Program,
+  doneKeys: ReadonlySet<string> = NO_DONE,
+): EvaluatedRule[] {
   return program.eligibility.map((rule) => ({
     ...rule,
-    passed: passesRule(profile, rule),
+    passed: ruleCleared(profile, rule, doneKeys),
     remediable: rule.remedy !== undefined,
   }));
 }
 
-/** Full evaluation: classification + every rule annotated for this profile. */
-export function evaluateProgramFull(profile: Profile, program: Program): EvaluatedProgram {
-  const { status, failedRules } = evaluateProgram(profile, program);
-  return { program, status, failedRules, rules: annotateRules(profile, program) };
+/**
+ * Full evaluation: classification + every rule annotated, with completed steps
+ * (`doneKeys`) clearing their gates. Status is recomputed from the cleared rules,
+ * so marking/undoing a step flips a program eligible↔almost deterministically.
+ */
+export function evaluateProgramFull(
+  profile: Profile,
+  program: Program,
+  doneKeys: ReadonlySet<string> = NO_DONE,
+): EvaluatedProgram {
+  const rules = annotateRules(profile, program, doneKeys);
+  const failedRules = program.eligibility.filter((rule) => !ruleCleared(profile, rule, doneKeys));
+  const status: EvaluatedProgram["status"] =
+    failedRules.length === 0
+      ? "eligible"
+      : failedRules.length <= 2 && failedRules.every((r) => r.remedy !== undefined)
+        ? "almost"
+        : "not_fit";
+  return { program, status, failedRules, rules };
 }
 
-/** Full evaluation across the whole KB. */
-export function evaluateAllFull(profile: Profile, programs: Program[]): EvaluatedProgram[] {
-  return programs.map((program) => evaluateProgramFull(profile, program));
+/** Full evaluation across the whole KB, folding in completed atomic steps. */
+export function evaluateAllFull(
+  profile: Profile,
+  programs: Program[],
+  doneKeys: ReadonlySet<string> = NO_DONE,
+): EvaluatedProgram[] {
+  return programs.map((program) => evaluateProgramFull(profile, program, doneKeys));
 }

@@ -9,7 +9,7 @@
 
 import { create } from "zustand";
 import type { Locale } from "@/lib/i18n";
-import { useHissati, effectiveProfile } from "@/lib/store";
+import { useHissati } from "@/lib/store";
 
 export interface Grounding {
   name: string;
@@ -61,8 +61,8 @@ interface AssistantState {
 export const useAssistant = create<AssistantState>((set, get) => {
   /** Post a conversation (ending in a user turn) and append the assistant reply. */
   async function run(next: AssistantMsg[], locale: Locale) {
-    const { answers, doneSteps } = useHissati.getState();
-    const profile = effectiveProfile(answers, doneSteps);
+    const { answers } = useHissati.getState();
+    const profile = answers;
     try {
       const res = await fetch("/api/agent", {
         method: "POST",

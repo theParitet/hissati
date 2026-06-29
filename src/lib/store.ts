@@ -2,70 +2,28 @@
  * Hissati — client state (FR-A3/FR-A4, FR-D3). Zustand + persist(localStorage):
  * answers + completed roadmap steps + locale survive refresh and offline.
  *
- * "Mark a step done" stores a Partial<Profile> override; the effective profile
- * is answers folded with those overrides, then re-run through the SAME pure
- * engine/scoring. That is the entire FR-D3 live re-check — no special-casing.
+ * "Mark a step done" records the step's KEY in `doneSteps`. Each key is atomic:
+ * the engine clears exactly the gate(s) that name it, so a program re-evaluates
+ * live (the FR-D3 climb) and undoing a step always re-opens it — no profile
+ * folding, no coupling between steps.
  */
 "use client";
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { useEffect, useState } from "react";
-import { Stage, Registration, type Profile } from "@/lib/schema";
+import type { Profile } from "@/lib/schema";
 import type { Locale } from "@/lib/i18n";
 
-/** A completed roadmap step: a stable key + the profile advance it represents. */
+/** A completed roadmap step: its atomic key + a label for the undo trail. */
 export interface DoneStep {
   key: string; // e.g. "registration:lt_1yr" | "stage:mvp" | "relocation_willing:true"
-  mutate: Partial<Profile>;
   label?: { en: string; ar: string }; // for the completed-steps trail (undo)
 }
 
-function maxByOrder(order: readonly string[], a: string | undefined, b: string): string {
-  if (a === undefined) return b;
-  return order.indexOf(b) > order.indexOf(a) ? b : a;
-}
-
-/** Apply one step's mutation, advancing ordered fields to at least the target. */
-function applyMutation(profile: Partial<Profile>, mutate: Partial<Profile>): Partial<Profile> {
-  const next: Partial<Profile> = { ...profile };
-  for (const [k, v] of Object.entries(mutate)) {
-    if (k === "stage") next.stage = maxByOrder(Stage.options, profile.stage, v as string) as Profile["stage"];
-    else if (k === "registration")
-      next.registration = maxByOrder(Registration.options, profile.registration, v as string) as Profile["registration"];
-    else (next as Record<string, unknown>)[k] = v;
-  }
-  return next;
-}
-
-/** The profile actually fed to the matcher: answers + every completed step. */
-export function effectiveProfile(answers: Partial<Profile>, doneSteps: DoneStep[]): Partial<Profile> {
-  return doneSteps.reduce((p, s) => applyMutation(p, s.mutate), answers);
-}
-
-/**
- * Drop any completed step whose advance is *superseded* by a direct edit to the
- * same field. A stated answer is authoritative for the field it sets. Marking a
- * step never touches `answers`, so the matcher-visible (effective) value can sit
- * above the raw answer: a founder who marked "register your business" done
- * (registration → lt_1yr) and then re-states registration as "none" in My
- * details must be matched as unregistered, not stay pinned by the still-present
- * step. Each patched field is compared against its current EFFECTIVE value, so
- * re-affirming the same effective value — and the first questionnaire pass,
- * where no steps exist yet — prunes nothing.
- */
-export function pruneSupersededSteps(
-  answers: Partial<Profile>,
-  patch: Partial<Profile>,
-  doneSteps: DoneStep[]
-): DoneStep[] {
-  if (doneSteps.length === 0) return doneSteps;
-  const effective = effectiveProfile(answers, doneSteps);
-  const overridden = Object.entries(patch)
-    .filter(([k, v]) => effective[k as keyof Profile] !== v)
-    .map(([k]) => k);
-  if (overridden.length === 0) return doneSteps;
-  return doneSteps.filter((d) => !Object.keys(d.mutate).some((f) => overridden.includes(f)));
+/** The set of completed step keys the engine clears gates against. */
+export function doneKeysOf(doneSteps: DoneStep[]): Set<string> {
+  return new Set(doneSteps.map((d) => d.key));
 }
 
 const CORE_FIELDS: (keyof Profile)[] = [
@@ -111,19 +69,12 @@ export const useHissati = create<HissatiState>()(
 
       setLocale: (l) => set({ locale: l }),
       toggleLocale: () => set((s) => ({ locale: s.locale === "ar" ? "en" : "ar" })),
-      setAnswer: (patch) =>
-        set((s) => ({
-          answers: { ...s.answers, ...patch },
-          // A direct edit supersedes any completed step that advanced the same
-          // field, so the matcher can't stay pinned above a re-stated answer.
-          doneSteps: pruneSupersededSteps(s.answers, patch, s.doneSteps),
-        })),
+      setAnswer: (patch) => set((s) => ({ answers: { ...s.answers, ...patch } })),
       resetAnswers: () => set({ answers: {}, doneSteps: [], checkedDocs: {} }),
+      // Atomic toggle: mark adds the key (idempotent), undo removes exactly it.
       markStep: (step) =>
         set((s) =>
-          s.doneSteps.some((d) => d.key === step.key)
-            ? s
-            : { doneSteps: [...s.doneSteps, step] }
+          s.doneSteps.some((d) => d.key === step.key) ? s : { doneSteps: [...s.doneSteps, step] }
         ),
       unmarkStep: (key) => set((s) => ({ doneSteps: s.doneSteps.filter((d) => d.key !== key) })),
       isStepDone: (key) => get().doneSteps.some((d) => d.key === key),

@@ -18,7 +18,7 @@ import { ProgramCard } from "@/components/ProgramCard";
 import { ChecklistDialog } from "@/components/ChecklistDialog";
 import { CompareView } from "@/components/CompareView";
 import { ProfileForm } from "@/components/ProfileForm";
-import { useHissati, useLocale, effectiveProfile, isProfileComplete } from "@/lib/store";
+import { useHissati, useLocale, doneKeysOf, isProfileComplete } from "@/lib/store";
 import { useAssistant, type AssistantMsg, type AssistantStats, type Grounding } from "@/lib/assistant-store";
 import { getProgramById } from "@/lib/programs";
 import { evaluateProgramFull } from "@/lib/engine";
@@ -147,7 +147,8 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
   const doneSteps = useHissati((s) => s.doneSteps);
   const setAnswer = useHissati((s) => s.setAnswer);
   const complete = isProfileComplete(answers);
-  const profile = effectiveProfile(answers, doneSteps) as Profile;
+  const profile = answers as Profile;
+  const doneKeys = doneKeysOf(doneSteps);
   const Arrow = locale === "ar" ? ArrowLeft : ArrowRight;
 
   const enabled = useAssistant((s) => s.enabled);
@@ -268,7 +269,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
               return (
                 <ProgramCard
                   key={id}
-                  ev={evaluateProgramFull(profile, program)}
+                  ev={evaluateProgramFull(profile, program, doneKeys)}
                   profile={profile}
                   locale={locale}
                   onOpenChecklist={setChecklistId}
@@ -298,7 +299,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
                 m.compareIds
                   .map((id) => getProgramById(id))
                   .filter((p): p is NonNullable<typeof p> => Boolean(p))
-                  .map((p) => evaluateProgramFull(profile, p))
+                  .map((p) => evaluateProgramFull(profile, p, doneKeys))
               )}
               locale={locale}
               onOpenChecklist={setChecklistId}
