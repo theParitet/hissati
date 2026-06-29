@@ -22,7 +22,7 @@ import { evaluateAllFull } from "@/lib/engine";
 import { matchScore } from "@/lib/scoring";
 import { isCurrentlyAvailable, progressStats } from "@/lib/metrics";
 import { deriveRoadmap, type RoadmapStep } from "@/lib/roadmap";
-import { exportPlanPdf } from "@/lib/pdf";
+import { PlanDocument } from "@/components/print/PlanDocument";
 import type { Profile } from "@/lib/schema";
 
 /** The sky mirrors the metric's funding set exactly, so its lit/total == OPEN MATCHES. */
@@ -76,7 +76,17 @@ export default function Results() {
     .filter((x) => FUNDING.has(x.ev.program.instrument) && isCurrentlyAvailable(x.ev.program))
     .map((x) => ({ id: x.ev.program.id, name: x.ev.program.name, status: x.ev.status }));
 
-  const downloadPdf = () => exportPlanPdf({ profile, evaluated, steps, stats, locale });
+  // Export = native browser print → "Save as PDF". The print-only <PlanDocument/>
+  // below is the document; the dashboard is `print:hidden`, so this prints the same
+  // plan from any tab. Wait for fonts so Arabic shaping has settled before the dialog.
+  const downloadPdf = async () => {
+    try {
+      await document.fonts?.ready;
+    } catch {
+      /* fonts API unavailable — print anyway */
+    }
+    window.print();
+  };
   const onMarkStep = (step: RoadmapStep) =>
     markStep({ key: step.key, label: step.action });
   const openChecklist = (id: string) => {
@@ -91,7 +101,9 @@ export default function Results() {
   ];
 
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6">
+    <>
+      {/* On screen: the interactive dashboard. Hidden when printing. */}
+      <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6 print:hidden">
       <div className="grid gap-5 lg:grid-cols-[12.5rem_minmax(0,1fr)] lg:gap-8">
         {/* Dashboard chrome — vertical nav (mobile: horizontal strip). */}
         <aside className="lg:sticky lg:top-20 lg:self-start">
@@ -141,6 +153,16 @@ export default function Results() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+
+      {/* When printing: the faithful, vector "Funding Readiness Plan" document. */}
+      <PlanDocument
+        profile={profile}
+        evaluated={evaluated}
+        steps={steps}
+        stats={stats}
+        locale={locale}
+      />
+    </>
   );
 }

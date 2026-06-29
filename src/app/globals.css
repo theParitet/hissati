@@ -195,8 +195,18 @@
 .md th, .md td { border: 1px solid var(--color-sand-line); padding: 0.25rem 0.5rem; text-align: start; }
 .md hr { border: 0; border-top: 1px solid var(--color-sand-line); margin: 0.6rem 0; }
 
-/* Print / PDF stylesheet — drop chrome, ink on white, keep cards intact. */
+/* Print / PDF stylesheet — drop chrome, ink on white, keep cards intact.
+   The plan is exported via native browser print (window.print() → Save as PDF):
+   the on-screen dashboard is `print:hidden`, the print-only PlanDocument is
+   `hidden print:block`, and we force colours so the coloured status bands survive
+   (browsers strip backgrounds by default). The page-edge breathing room comes from
+   PlanDocument's own padding (always honoured, even when the print dialog forces
+   "None" margins); @page keeps a small safe inset on every page of a multi-page plan. */
 @media print {
+  @page {
+    size: A4;
+    margin: 8mm;
+  }
   body {
     background: #fff !important;
   }
@@ -205,5 +215,11 @@
   }
   .print-block {
     break-inside: avoid;
+  }
+  /* Render the plan in full colour (the dark hero, status edges, pills, seals). */
+  .plan-print,
+  .plan-print * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
 }

@@ -33,7 +33,7 @@ export function AppHeader() {
   ];
 
   return (
-    <header className="sticky top-0 z-30 h-16 border-b border-sand-line/70 bg-sand/80 backdrop-blur-md">
+    <header className="sticky top-0 z-30 h-16 border-b border-sand-line/70 bg-sand/80 backdrop-blur-md print:hidden">
       <div className="mx-auto flex h-full max-w-5xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"

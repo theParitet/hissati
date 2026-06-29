@@ -20,7 +20,7 @@ export function Footer() {
   const year = toLocaleDigits(2026, locale);
 
   return (
-    <footer className="mt-auto bg-oasis text-sand-100">
+    <footer className="mt-auto bg-oasis text-sand-100 print:hidden">
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           {/* Brand + one-line mission */}
