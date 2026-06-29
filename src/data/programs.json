@@ -1,7 +1,7 @@
 {
   "schema_version": "3.0",
-  "generated": "2026-06-27",
-  "note": "Primary-source reliability pass. Availability is frozen as checked on 2026-06-27; countable_max_aed is a conservative per-applicant figure for the AED-within-reach metric.",
+  "generated": "2026-06-29",
+  "note": "Primary-source reliability pass (2026-06-27), availability re-verified 2026-06-29 (Sheraa S3 moved to closed between cohorts). countable_max_aed is a conservative per-applicant figure for the AED-within-reach metric.",
   "programs": [
     {
       "id": "khalifa-fund-sme",
@@ -933,7 +933,7 @@
         }
       ],
       "intro_method": "competition",
-      "application_url": "https://www.adafsa.gov.ae/en/Pages/default.aspx",
+      "application_url": "https://www.adafsa.gov.ae/en/awards/",
       "equity": false,
       "concurrent_compatible_with": [
         "khalifa-agri-financing",
@@ -947,13 +947,13 @@
       },
       "source": {
         "url": "https://www.mediaoffice.abudhabi/en/environment/abu-dhabi-agriculture-and-food-safety-authority-launches-4th-edition-of-sheikh-mansour-bin-zayed-agricultural-excellence-award/",
-        "verified_date": "2026-06-27",
+        "verified_date": "2026-06-29",
         "confidence": "confirmed",
-        "method": "Abu Dhabi Government Media Office (gov) coverage of ADAFSA award"
+        "method": "Abu Dhabi Government Media Office (gov) coverage of ADAFSA award; application_url points to the dedicated ADAFSA award page"
       },
       "availability": {
         "status": "closed",
-        "checked_date": "2026-06-27",
+        "checked_date": "2026-06-29",
         "next_cycle": "Annual",
         "note": {
           "en": "The fourth cycle concluded in April 2026; track the next edition.",
@@ -1152,16 +1152,17 @@
       },
       "source": {
         "url": "https://www.asc.sheraa.ae/s3-program",
-        "verified_date": "2026-06-27",
+        "verified_date": "2026-06-29",
         "confidence": "confirmed",
         "method": "Sheraa S3 programme page + Sheraa site"
       },
       "availability": {
-        "status": "open",
-        "checked_date": "2026-06-27",
+        "status": "closed",
+        "checked_date": "2026-06-29",
+        "next_cycle": "Annual — next cohort dates not announced",
         "note": {
-          "en": "Sheraa currently links to an active S3 application form.",
-          "ar": "يوفّر شراع حالياً رابط تقديم نشط لبرنامج S3."
+          "en": "The last published S3 cohort (Fall 2025) closed applications on 7 Sep 2025 and ran to Feb 2026; the next intake is not yet open.",
+          "ar": "أُغلق باب التقديم لأحدث دفعة منشورة من برنامج S3 (خريف 2025) في 7 سبتمبر 2025 واستمرّت حتى فبراير 2026؛ ولم تُفتح الدورة التالية بعد."
         }
       }
     },

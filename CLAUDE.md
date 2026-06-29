@@ -37,7 +37,7 @@ Next.js (App Router) + TypeScript · Tailwind + shadcn/ui · Zustand+persist (lo
 1. Scaffold (Next.js+TS+Tailwind+shadcn); deploy empty to Vercel; confirm live URL + offline PWA shell.
 2. Types + Zod schema; load & validate `programs.json` (per data-model.md).
 3. `evaluateProgram`/`evaluateAll` + Vitest tests (classification, orphan-rule/question, no-dead-ends).
-4. Scoring + availability-aware metric layer (`lib/metrics.ts`): date founder AED **0 → 0 → 2,000,000 → 7,000,000**, open matches **0 → 1 → 4 → 5**.
+4. Scoring + availability-aware metric layer (`lib/metrics.ts`): date founder AED **0 → 0 → 2,000,000 → 7,000,000**, open matches **0 → 1 → 3 → 4**.
 5. Questionnaire wizard: 6 core + relevant conditional questions (gender, farm tenure, social impact, relocation), localStorage, offline.
 6. Results = 3-tab dashboard (Overview/funding-sky · Programs · Checklist) + almost/roadmap.
 7. Checklist + Arabic PDF export.
@@ -66,7 +66,7 @@ Note that this can be challenged if doesn't serve the final goal - winning hacka
 
 ### Design/website overhaul (merged — branch `overhaul`)
 Multi-agent overhaul: a foundation trunk + 5 parallel worktree leaves (Header, PDF, Dashboard, Assistant, Landing), merged green. What changed:
-- **Readiness Score → "AED within reach"** (`lib/metrics.ts`): sums conservative per-applicant values for open/rolling matches, excludes pools/costs/services/closed windows, and groups alternative products. Climb: AED **0 → 0 → 2,000,000 → 7,000,000**; open matches **0 → 1 → 4 → 5**. `tests/metrics.test.ts` pins the result. **55 tests green.**
+- **Readiness Score → "AED within reach"** (`lib/metrics.ts`): sums conservative per-applicant values for open/rolling matches, excludes pools/costs/services/closed windows, and groups alternative products. Climb: AED **0 → 0 → 2,000,000 → 7,000,000**; open matches **0 → 1 → 3 → 4**. `tests/metrics.test.ts` pins the result. **55 tests green.**
 - **3-tab dashboard** (`src/components/dashboard/`): Overview (compact stat strip + the dark **"funding sky"** signature) · Programs · Checklist. Nav labels: **My plan** (`/results`) · **Assistant** · **My details** (`/questionnaire`).
 - **Tailwind-v4 token system** reconciled in `globals.css` (`oasis/amber/clay/sand/ink/night/palm/almost`); Al Sadu restrained to one signature band (hero + PDF seal). Fonts: Tajawal + Fraunces + IBM Plex Mono.
 - New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), and **PDF plan**. Real app screenshots in `docs/screenshots/`. Docs (README, `.local-docs/design.md`, this file, demo script) reconciled to shipped reality.

@@ -354,7 +354,7 @@ Each claim is falsifiable and checkable in minutes — that's criterion 6.
 | **16 tracked opportunities** across 3 tiers (10 / 4 / 2), each carrying availability metadata and a source verification date | Open [`src/data/programs.json`](./src/data/programs.json); `npm test` → `tests/programs.test.ts` (also Zod-validated at module load) |
 | **Every "almost" match for the seeded date-product founder has 1–2 blocking rules, all with actionable remedies** | `npm test` → `tests/engine.test.ts` → *"no-dead-end invariant (FR-C3)"* |
 | **AED within reach climbs monotonically `0 → 0 → 2,000,000 → 7,000,000`** for the seeded date-product founder as steps complete | `npm test` → `tests/metrics.test.ts` → *"exact cited values"* |
-| **Open-match count climbs `0 → 1 → 4 → 5`** along that same path | `npm test` → `tests/metrics.test.ts` |
+| **Open-match count climbs `0 → 1 → 3 → 4`** along that same path | `npm test` → `tests/metrics.test.ts` |
 | **Khalifa Fund loan flips `almost → eligible` exactly at step 2** | `npm test` → `tests/scoring.test.ts` → *"Headline demo beat"* |
 | **A new founder reaches a concrete first action in ≤ 3 clicks** | "I only have an idea" → wizard → results with roadmap visible |
 | **The full flow runs offline** | DevTools → Network → *Offline* → reload → complete wizard → PDF (see [`docs/07-offline.png`](./docs/07-offline.png)) |

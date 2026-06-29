@@ -85,15 +85,15 @@ describe("progressStats — the climb (replaces the readiness score)", () => {
  * the real numbers the engine computes today; if the dataset changes, update here.
  */
 describe("progressStats — exact cited values (README evidence)", () => {
-  it("6 currently available funding programs out of 16 tracked opportunities", () => {
+  it("5 currently available funding programs out of 16 tracked opportunities", () => {
     expect(PROGRAMS).toHaveLength(16);
-    expect(statsFor(dateFounderIdea).programsTotal).toBe(6);
+    expect(statsFor(dateFounderIdea).programsTotal).toBe(5);
   });
-  it("open-match climb: 0 → 1 → 4 → 5", () => {
+  it("open-match climb: 0 → 1 → 3 → 4", () => {
     expect(statsFor(dateFounderIdea).programsEligible).toBe(0);
     expect(statsFor(dateFounderRegistered).programsEligible).toBe(1);
-    expect(statsFor(dateFounderMvp).programsEligible).toBe(4);
-    expect(statsFor(dateFounderEstablished).programsEligible).toBe(5);
+    expect(statsFor(dateFounderMvp).programsEligible).toBe(3);
+    expect(statsFor(dateFounderEstablished).programsEligible).toBe(4);
   });
   it("AED climb is 0 → 0 → 2M → 7M after EDB becomes available", () => {
     expect(statsFor(dateFounderIdea).aedReachableNow).toBe(0);
