@@ -15,7 +15,6 @@ import { ProgramDetail } from "@/components/dashboard/ProgramDetail";
 import { InstrumentGlyph, STATUS_TONE, STATUS_ACTIVE_BG } from "@/components/dashboard/InstrumentGlyph";
 import { CompareView } from "@/components/CompareView";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
-import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { buildComparison } from "@/lib/compare";
 import type { EvaluatedProgram, Profile } from "@/lib/schema";
 
@@ -168,7 +167,6 @@ export function ProgramsTab({
                     const { program, status } = ev;
                     const active = current?.ev.program.id === program.id && view === "detail";
                     const inCompare = compareIds.includes(program.id);
-                    const cost = isCostInstrument(program.instrument);
                     const pinned = isPinned(program.id);
                     return (
                       <li key={program.id} className="flex items-center gap-1">
@@ -182,27 +180,13 @@ export function ProgramsTab({
                           )}
                         >
                           <InstrumentGlyph instrument={program.instrument} status={status} />
-                          <span className="min-w-0 flex-1">
-                            <span
-                              className={cn(
-                                "block truncate text-sm leading-tight",
-                                active ? cn("font-semibold", STATUS_TONE[status]) : "font-medium text-ink"
-                              )}
-                            >
-                              {pick(program.name, locale)}
-                            </span>
-                            <span className="mt-0.5 block truncate text-xs text-ink-faint">
-                              {status === "not_fit" ? (
-                                program.operator
-                              ) : (
-                                <span className={cost ? "" : "text-oasis"}>
-                                  <span className="font-medium">
-                                    {cost ? t.youPay : t.youReceive} ·{" "}
-                                  </span>
-                                  {formatAmountRange(program.amount, locale)}
-                                </span>
-                              )}
-                            </span>
+                          <span
+                            className={cn(
+                              "min-w-0 flex-1 truncate text-sm leading-tight",
+                              active ? cn("font-semibold", STATUS_TONE[status]) : "font-medium text-ink"
+                            )}
+                          >
+                            {pick(program.name, locale)}
                           </span>
                           {status !== "not_fit" && (
                             <span
