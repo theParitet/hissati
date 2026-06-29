@@ -43,6 +43,31 @@ export function effectiveProfile(answers: Partial<Profile>, doneSteps: DoneStep[
   return doneSteps.reduce((p, s) => applyMutation(p, s.mutate), answers);
 }
 
+/**
+ * Drop any completed step whose advance is *superseded* by a direct edit to the
+ * same field. A stated answer is authoritative for the field it sets. Marking a
+ * step never touches `answers`, so the matcher-visible (effective) value can sit
+ * above the raw answer: a founder who marked "register your business" done
+ * (registration → lt_1yr) and then re-states registration as "none" in My
+ * details must be matched as unregistered, not stay pinned by the still-present
+ * step. Each patched field is compared against its current EFFECTIVE value, so
+ * re-affirming the same effective value — and the first questionnaire pass,
+ * where no steps exist yet — prunes nothing.
+ */
+export function pruneSupersededSteps(
+  answers: Partial<Profile>,
+  patch: Partial<Profile>,
+  doneSteps: DoneStep[]
+): DoneStep[] {
+  if (doneSteps.length === 0) return doneSteps;
+  const effective = effectiveProfile(answers, doneSteps);
+  const overridden = Object.entries(patch)
+    .filter(([k, v]) => effective[k as keyof Profile] !== v)
+    .map(([k]) => k);
+  if (overridden.length === 0) return doneSteps;
+  return doneSteps.filter((d) => !Object.keys(d.mutate).some((f) => overridden.includes(f)));
+}
+
 const CORE_FIELDS: (keyof Profile)[] = [
   "nationality_ownership",
   "location",
@@ -86,7 +111,13 @@ export const useHissati = create<HissatiState>()(
 
       setLocale: (l) => set({ locale: l }),
       toggleLocale: () => set((s) => ({ locale: s.locale === "ar" ? "en" : "ar" })),
-      setAnswer: (patch) => set((s) => ({ answers: { ...s.answers, ...patch } })),
+      setAnswer: (patch) =>
+        set((s) => ({
+          answers: { ...s.answers, ...patch },
+          // A direct edit supersedes any completed step that advanced the same
+          // field, so the matcher can't stay pinned above a re-stated answer.
+          doneSteps: pruneSupersededSteps(s.answers, patch, s.doneSteps),
+        })),
       resetAnswers: () => set({ answers: {}, doneSteps: [], checkedDocs: {} }),
       markStep: (step) =>
         set((s) =>
