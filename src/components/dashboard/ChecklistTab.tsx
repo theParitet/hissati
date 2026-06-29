@@ -11,18 +11,14 @@ import { ChevronLeft, ChevronRight, ExternalLink, ListChecks } from "lucide-reac
 import { cn } from "@/lib/cn";
 import { Button, StatusPill, EmptyState } from "@/components/ui";
 import { ChecklistBody } from "@/components/dashboard/ChecklistBody";
+import { InstrumentGlyph } from "@/components/dashboard/InstrumentGlyph";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { programProgress } from "@/lib/checklist";
 import { useHissati } from "@/lib/store";
-import type { EvaluatedProgram, EligibilityStatus } from "@/lib/schema";
+import type { EvaluatedProgram } from "@/lib/schema";
 
 type Scored = { ev: EvaluatedProgram; pct: number };
-const DOT: Record<EligibilityStatus, string> = {
-  eligible: "bg-palm",
-  almost: "bg-almost",
-  not_fit: "bg-ink-faint/50",
-};
 
 export function ChecklistTab({
   locale,
@@ -123,7 +119,11 @@ export function ChecklistTab({
                     )}
                   >
                     <span className="flex items-center gap-2.5">
-                      <span className={cn("h-2 w-2 shrink-0 rounded-pill", DOT[status])} aria-hidden />
+                      <InstrumentGlyph
+                        instrument={program.instrument}
+                        status={status}
+                        active={active}
+                      />
                       <span
                         className={cn(
                           "min-w-0 flex-1 truncate text-sm leading-tight",
@@ -142,7 +142,7 @@ export function ChecklistTab({
                         {toLocaleDigits(p.docsReady, locale)}/{toLocaleDigits(p.docsTotal, locale)}
                       </span>
                     </span>
-                    <span className="mt-2 ms-[1.125rem] block h-1.5 overflow-hidden rounded-pill bg-sand-200">
+                    <span className="mt-2 ms-[1.625rem] block h-1.5 overflow-hidden rounded-pill bg-sand-200">
                       <span
                         className={cn(
                           "block h-full rounded-pill transition-[width] duration-500",

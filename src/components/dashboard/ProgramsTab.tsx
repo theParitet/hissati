@@ -8,22 +8,18 @@
  * Mobile collapses to one pane with a back step. Mirrors in RTL via logical props.
  */
 import { useState } from "react";
-import { GitCompare, X, ChevronLeft, ChevronRight, Check, Pin } from "lucide-react";
+import { GitCompare, X, ChevronLeft, ChevronRight, ChevronDown, Check, Pin } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui";
 import { ProgramDetail } from "@/components/dashboard/ProgramDetail";
+import { InstrumentGlyph } from "@/components/dashboard/InstrumentGlyph";
 import { CompareView } from "@/components/CompareView";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { buildComparison } from "@/lib/compare";
-import type { EvaluatedProgram, Profile, EligibilityStatus } from "@/lib/schema";
+import type { EvaluatedProgram, Profile } from "@/lib/schema";
 
 type Scored = { ev: EvaluatedProgram; pct: number };
-const DOT: Record<EligibilityStatus, string> = {
-  eligible: "bg-palm",
-  almost: "bg-almost",
-  not_fit: "bg-ink-faint/50",
-};
 
 export function ProgramsTab({
   locale,
@@ -50,6 +46,15 @@ export function ProgramsTab({
   const [pinnedIds, setPinnedIds] = useState<string[]>([]);
   const [view, setView] = useState<"detail" | "compare">("detail");
   const [mobilePane, setMobilePane] = useState<"list" | "detail">("list");
+  // Collapsed section keys. Empty = all expanded; a key present = that group is folded.
+  const [collapsed, setCollapsed] = useState<Set<string>>(() => new Set());
+  const toggleGroup = (key: string) =>
+    setCollapsed((cur) => {
+      const next = new Set(cur);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
 
   // Pinned programs float into a "Pinned" group at the top and leave their status group.
   const isPinned = (id: string) => pinnedIds.includes(id);
@@ -133,18 +138,31 @@ export function ProgramsTab({
           )}
 
           <div className="max-h-[34rem] overflow-y-auto p-2 lg:max-h-none lg:min-h-0 lg:flex-1">
-            {groups.map((g) => (
+            {groups.map((g) => {
+              const isCollapsed = collapsed.has(g.key);
+              return (
               <div key={g.key} className="mb-1.5 last:mb-0">
-                <div className="flex items-center gap-2 px-2 pb-1 pt-2">
-                  <span
-                    className="text-[11px] font-semibold uppercase leading-none tracking-[0.14em] text-ink-faint tb-trim"
-                  >
+                <button
+                  type="button"
+                  onClick={() => toggleGroup(g.key)}
+                  aria-expanded={!isCollapsed}
+                  className="flex w-full items-center gap-2 rounded-md px-2 pb-1 pt-2 text-start transition-colors hover:bg-sand-200/50"
+                >
+                  <ChevronDown
+                    className={cn(
+                      "h-3.5 w-3.5 shrink-0 text-ink-faint transition-transform",
+                      isCollapsed && "-rotate-90 rtl:rotate-90"
+                    )}
+                    aria-hidden
+                  />
+                  <span className="text-[11px] font-semibold uppercase leading-none tracking-[0.14em] text-ink-faint tb-trim">
                     {g.label}
                   </span>
                   <span className="font-mono text-[11px] leading-none text-ink-faint" dir="ltr">
                     {toLocaleDigits(g.items.length, locale)}
                   </span>
-                </div>
+                </button>
+                {!isCollapsed && (
                 <ul>
                   {g.items.map(({ ev, pct }) => {
                     const { program, status } = ev;
@@ -163,9 +181,10 @@ export function ProgramsTab({
                             active ? "bg-oasis-100" : "hover:bg-sand-200/70"
                           )}
                         >
-                          <span
-                            className={cn("h-2 w-2 shrink-0 rounded-pill", DOT[status])}
-                            aria-hidden
+                          <InstrumentGlyph
+                            instrument={program.instrument}
+                            status={status}
+                            active={active}
                           />
                           <span className="min-w-0 flex-1">
                             <span
@@ -238,8 +257,10 @@ export function ProgramsTab({
                     );
                   })}
                 </ul>
+                )}
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
