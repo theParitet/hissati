@@ -8,6 +8,7 @@
  */
 import { CheckCircle2, Undo2, Sparkles } from "lucide-react";
 import { Card, Stat, Money, EmptyState } from "@/components/ui";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { FundingSky, type SkyStar } from "@/components/dashboard/FundingSky";
 import { RoadmapStepCard } from "@/components/RoadmapStepCard";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
@@ -25,6 +26,7 @@ export function Overview({
   doneSteps,
   onMarkStep,
   onUnmarkStep,
+  onDownloadPdf,
 }: {
   locale: Locale;
   stats: ProgressStats;
@@ -33,6 +35,7 @@ export function Overview({
   doneSteps: DoneStep[];
   onMarkStep: (step: RoadmapStep) => void;
   onUnmarkStep: (key: string) => void;
+  onDownloadPdf: () => void;
 }) {
   const t = ui(locale);
   const open = stats.hasOpenEndedAmounts;
@@ -105,15 +108,18 @@ export function Overview({
 
       {/* Next actions — the highest-impact, cited roadmap steps. */}
       <section>
-        <div className="flex items-baseline justify-between gap-3">
-          <h2 className="text-lg leading-none">{locale === "ar" ? "خطواتك التالية" : "Next steps"}</h2>
-          {steps.length > MAX_NEXT && (
-            <span className="text-xs text-ink-faint">
-              {locale === "ar"
-                ? `+${toLocaleDigits(steps.length - MAX_NEXT, locale)} في البرامج`
-                : `+${steps.length - MAX_NEXT} more`}
-            </span>
-          )}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-baseline gap-2.5">
+            <h2 className="text-lg leading-none">{locale === "ar" ? "خطواتك التالية" : "Next steps"}</h2>
+            {steps.length > MAX_NEXT && (
+              <span className="text-xs text-ink-faint">
+                {locale === "ar"
+                  ? `+${toLocaleDigits(steps.length - MAX_NEXT, locale)} في البرامج`
+                  : `+${steps.length - MAX_NEXT} more`}
+              </span>
+            )}
+          </div>
+          <DownloadPdfButton locale={locale} onClick={onDownloadPdf} className="no-print shrink-0" />
         </div>
 
         <div className="mt-3 space-y-3">

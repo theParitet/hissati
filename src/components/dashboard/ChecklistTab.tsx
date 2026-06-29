@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, ExternalLink, ListChecks } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Button, StatusPill, EmptyState } from "@/components/ui";
+import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { ChecklistBody } from "@/components/dashboard/ChecklistBody";
 import { InstrumentGlyph, STATUS_TONE, STATUS_ACTIVE_BG } from "@/components/dashboard/InstrumentGlyph";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
@@ -25,11 +26,13 @@ export function ChecklistTab({
   eligible,
   almost,
   selectedId,
+  onDownloadPdf,
 }: {
   locale: Locale;
   eligible: Scored[];
   almost: Scored[];
   selectedId?: string | null;
+  onDownloadPdf: () => void;
 }) {
   const t = ui(locale);
   const items = [...eligible, ...almost];
@@ -152,6 +155,12 @@ export function ChecklistTab({
               );
             })}
           </ul>
+
+          {/* Plan export — pinned to the bottom of the list column, mirroring the
+              "Documents ready" header band (border-t instead of border-b). */}
+          <div className="no-print border-t border-sand-line bg-sand-200/40 p-2.5">
+            <DownloadPdfButton locale={locale} onClick={onDownloadPdf} className="w-full" />
+          </div>
         </div>
 
         {/* DETAIL — the active checklist */}

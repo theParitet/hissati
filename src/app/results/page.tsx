@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { LayoutGrid, Layers, ListChecks } from "lucide-react";
 import { Button } from "@/components/ui";
-import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { SideNav, type NavItem } from "@/components/dashboard/SideNav";
 import { Overview } from "@/components/dashboard/Overview";
 import { ProgramsTab } from "@/components/dashboard/ProgramsTab";
@@ -90,14 +89,6 @@ export default function Results() {
     { id: "checklist", label: t.tabChecklist, icon: ListChecks, count: stats.programsEligible + stats.programsAlmost },
   ];
 
-  // Slim per-section actions for the dashboard top strip.
-  const actions =
-    tab === "overview" ? (
-      <DownloadPdfButton locale={locale} onClick={downloadPdf} />
-    ) : tab === "checklist" ? (
-      <DownloadPdfButton locale={locale} onClick={downloadPdf} />
-    ) : null;
-
   return (
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-6 sm:px-6">
       <div className="grid gap-5 lg:grid-cols-[12.5rem_minmax(0,1fr)] lg:gap-8">
@@ -111,11 +102,8 @@ export default function Results() {
           />
         </aside>
 
-        {/* Isolated content panel + its slim action strip */}
+        {/* Isolated content panel */}
         <div className="min-w-0">
-          {actions && (
-            <div className="no-print mb-4 flex items-center justify-end gap-2">{actions}</div>
-          )}
           <div key={tab} className="animate-rise">
             {tab === "overview" && (
               <Overview
@@ -126,6 +114,7 @@ export default function Results() {
                 doneSteps={doneSteps}
                 onMarkStep={onMarkStep}
                 onUnmarkStep={unmarkStep}
+                onDownloadPdf={downloadPdf}
               />
             )}
             {tab === "programs" && (
@@ -140,7 +129,13 @@ export default function Results() {
               />
             )}
             {tab === "checklist" && (
-              <ChecklistTab locale={locale} eligible={eligible} almost={almost} selectedId={checklistId} />
+              <ChecklistTab
+                locale={locale}
+                eligible={eligible}
+                almost={almost}
+                selectedId={checklistId}
+                onDownloadPdf={downloadPdf}
+              />
             )}
           </div>
         </div>
