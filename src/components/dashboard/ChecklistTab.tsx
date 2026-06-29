@@ -11,7 +11,7 @@ import { ChevronLeft, ChevronRight, ExternalLink, ListChecks } from "lucide-reac
 import { cn } from "@/lib/cn";
 import { Button, StatusPill, EmptyState } from "@/components/ui";
 import { ChecklistBody } from "@/components/dashboard/ChecklistBody";
-import { InstrumentGlyph } from "@/components/dashboard/InstrumentGlyph";
+import { InstrumentGlyph, STATUS_TONE, STATUS_ACTIVE_BG } from "@/components/dashboard/InstrumentGlyph";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
 import { programProgress } from "@/lib/checklist";
@@ -115,19 +115,15 @@ export function ChecklistTab({
                     aria-current={active ? "true" : undefined}
                     className={cn(
                       "w-full rounded-lg px-2.5 py-2.5 text-start transition-colors",
-                      active ? "bg-oasis-100" : "hover:bg-sand-200/70"
+                      active ? STATUS_ACTIVE_BG[status] : "hover:bg-sand-200/70"
                     )}
                   >
                     <span className="flex items-center gap-2.5">
-                      <InstrumentGlyph
-                        instrument={program.instrument}
-                        status={status}
-                        active={active}
-                      />
+                      <InstrumentGlyph instrument={program.instrument} status={status} />
                       <span
                         className={cn(
                           "min-w-0 flex-1 truncate text-sm leading-tight",
-                          active ? "font-semibold text-oasis" : "font-medium text-ink"
+                          active ? cn("font-semibold", STATUS_TONE[status]) : "font-medium text-ink"
                         )}
                       >
                         {pick(program.name, locale)}

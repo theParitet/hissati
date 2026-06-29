@@ -1,10 +1,13 @@
 /**
- * InstrumentGlyph — the leading row marker shared by the Programs and Checklist
- * master lists. It carries two orthogonal axes in one glyph: the SHAPE says what
- * kind of instrument it is (grant / loan / equity / accelerator / licence / support),
- * the COLOUR tint keeps the eligibility status legible. That tint matters where a
- * row sits outside its status section (e.g. the Programs "Pinned" group); elsewhere
- * the section header already names the status, so the shape is the new information.
+ * InstrumentGlyph + the shared status colour language for the Programs and
+ * Checklist master lists.
+ *
+ * The glyph carries two orthogonal axes in one mark: the SHAPE names the
+ * instrument (grant / loan / equity / accelerator / licence / support), the
+ * COLOUR tint (STATUS_TONE) names the eligibility status. The selected row wears
+ * the matching status THEME (STATUS_ACTIVE_BG + STATUS_TONE) rather than a single
+ * accent, so an eligible pick stays green, an almost pick amber, a not-fit pick
+ * neutral. These mirror the StatusPill palette (src/components/ui.tsx).
  */
 import { Gift, Landmark, PieChart, Rocket, IdCard, Handshake, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -19,28 +22,29 @@ const INSTRUMENT_ICON: Record<Instrument, LucideIcon> = {
   support: Handshake,
 };
 
-const STATUS_TONE: Record<EligibilityStatus, string> = {
+/** Text/icon tint for a row's eligibility status. */
+export const STATUS_TONE: Record<EligibilityStatus, string> = {
   eligible: "text-palm",
   almost: "text-almost",
   not_fit: "text-ink-faint",
 };
 
+/** Selected-row background per status (pairs with STATUS_TONE for text + icon). */
+export const STATUS_ACTIVE_BG: Record<EligibilityStatus, string> = {
+  eligible: "bg-palm-100",
+  almost: "bg-almost-100",
+  not_fit: "bg-sand-200",
+};
+
 export function InstrumentGlyph({
   instrument,
   status,
-  active,
   className,
 }: {
   instrument: Instrument;
   status: EligibilityStatus;
-  active?: boolean;
   className?: string;
 }) {
   const Icon = INSTRUMENT_ICON[instrument];
-  return (
-    <Icon
-      className={cn("h-4 w-4 shrink-0", active ? "text-oasis" : STATUS_TONE[status], className)}
-      aria-hidden
-    />
-  );
+  return <Icon className={cn("h-4 w-4 shrink-0", STATUS_TONE[status], className)} aria-hidden />;
 }

@@ -12,7 +12,7 @@ import { GitCompare, X, ChevronLeft, ChevronRight, ChevronDown, Check, Pin } fro
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui";
 import { ProgramDetail } from "@/components/dashboard/ProgramDetail";
-import { InstrumentGlyph } from "@/components/dashboard/InstrumentGlyph";
+import { InstrumentGlyph, STATUS_TONE, STATUS_ACTIVE_BG } from "@/components/dashboard/InstrumentGlyph";
 import { CompareView } from "@/components/CompareView";
 import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument } from "@/lib/format";
@@ -178,19 +178,15 @@ export function ProgramsTab({
                           aria-current={active ? "true" : undefined}
                           className={cn(
                             "group flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2 py-2 text-start transition-colors",
-                            active ? "bg-oasis-100" : "hover:bg-sand-200/70"
+                            active ? STATUS_ACTIVE_BG[status] : "hover:bg-sand-200/70"
                           )}
                         >
-                          <InstrumentGlyph
-                            instrument={program.instrument}
-                            status={status}
-                            active={active}
-                          />
+                          <InstrumentGlyph instrument={program.instrument} status={status} />
                           <span className="min-w-0 flex-1">
                             <span
                               className={cn(
                                 "block truncate text-sm leading-tight",
-                                active ? "font-semibold text-oasis" : "font-medium text-ink"
+                                active ? cn("font-semibold", STATUS_TONE[status]) : "font-medium text-ink"
                               )}
                             >
                               {pick(program.name, locale)}
