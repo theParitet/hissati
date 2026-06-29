@@ -167,12 +167,16 @@ export const TOOLS = [
   },
 ];
 
-export function executeTool(name: string, input: unknown): unknown {
+export function executeTool(
+  name: string,
+  input: unknown,
+  doneKeys: ReadonlySet<string> = new Set(),
+): unknown {
   const args = (input ?? {}) as Record<string, unknown>;
   switch (name) {
     case "match_programs": {
       const profile = buildProfile(args.profile);
-      const evals = evaluateAllFull(profile, PROGRAMS);
+      const evals = evaluateAllFull(profile, PROGRAMS, doneKeys);
       const fmt = (e: (typeof evals)[number]) => ({
         id: e.program.id,
         name: e.program.name,
@@ -204,7 +208,7 @@ export function executeTool(name: string, input: unknown): unknown {
     }
     case "steps_to_qualify": {
       const profile = buildProfile(args.profile);
-      const evals = evaluateAllFull(profile, PROGRAMS);
+      const evals = evaluateAllFull(profile, PROGRAMS, doneKeys);
       return {
         aed_reachable_after_steps: progressStats(profile, evals, []).aedReachableAfterSteps,
         almost_ids: evals.filter((e) => e.status === "almost").map((e) => e.program.id),
@@ -224,7 +228,7 @@ export function executeTool(name: string, input: unknown): unknown {
       const evs = ids
         .map((id) => getProgramById(id))
         .filter((p): p is Program => Boolean(p))
-        .map((p) => evaluateProgramFull(profile, p));
+        .map((p) => evaluateProgramFull(profile, p, doneKeys));
       return {
         ids: evs.map((e) => e.program.id),
         comparison: evs.map((e) => ({

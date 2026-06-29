@@ -61,13 +61,19 @@ interface AssistantState {
 export const useAssistant = create<AssistantState>((set, get) => {
   /** Post a conversation (ending in a user turn) and append the assistant reply. */
   async function run(next: AssistantMsg[], locale: Locale) {
-    const { answers } = useHissati.getState();
+    const { answers, doneSteps } = useHissati.getState();
     const profile = answers;
+    const doneKeys = doneSteps.map((d) => d.key);
     try {
       const res = await fetch("/api/agent", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ locale, profile, messages: next.map((m) => ({ role: m.role, content: m.content })) }),
+        body: JSON.stringify({
+          locale,
+          profile,
+          doneKeys,
+          messages: next.map((m) => ({ role: m.role, content: m.content })),
+        }),
       });
       const data = await res.json();
       const reply: AssistantMsg = data.error

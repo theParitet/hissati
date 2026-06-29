@@ -113,20 +113,21 @@ export function passesRule(profile: Profile, rule: Rule): boolean {
   }
 }
 
+/**
+ * The eligible / almost / not_fit classification from a program's failed rules
+ * (data-model.md §3). Single source of truth — shared by the profile-only and the
+ * done-aware (Full) evaluators so they can never drift apart.
+ */
+function classify(failedRules: Rule[]): EligibilityResult["status"] {
+  if (failedRules.length === 0) return "eligible";
+  if (failedRules.length <= 2 && failedRules.every((r) => r.remedy !== undefined)) return "almost";
+  return "not_fit";
+}
+
 /** Classify a single program for a profile (FR-C1). */
 export function evaluateProgram(profile: Profile, program: Program): EligibilityResult {
   const failedRules: Rule[] = program.eligibility.filter((rule) => !passesRule(profile, rule));
-
-  if (failedRules.length === 0) {
-    return { status: "eligible", failedRules };
-  }
-
-  const allRemediable = failedRules.every((r) => r.remedy !== undefined);
-  if (failedRules.length <= 2 && allRemediable) {
-    return { status: "almost", failedRules };
-  }
-
-  return { status: "not_fit", failedRules };
+  return { status: classify(failedRules), failedRules };
 }
 
 /** Convenience: classify the whole KB (data-model.md §3). */
@@ -172,13 +173,7 @@ export function evaluateProgramFull(
 ): EvaluatedProgram {
   const rules = annotateRules(profile, program, doneKeys);
   const failedRules = program.eligibility.filter((rule) => !ruleCleared(profile, rule, doneKeys));
-  const status: EvaluatedProgram["status"] =
-    failedRules.length === 0
-      ? "eligible"
-      : failedRules.length <= 2 && failedRules.every((r) => r.remedy !== undefined)
-        ? "almost"
-        : "not_fit";
-  return { program, status, failedRules, rules };
+  return { program, status: classify(failedRules), failedRules, rules };
 }
 
 /** Full evaluation across the whole KB, folding in completed atomic steps. */

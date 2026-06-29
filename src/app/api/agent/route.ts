@@ -135,7 +135,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid JSON." }, { status: 400 });
   }
 
-  const { messages, locale, profile } = (body ?? {}) as { messages?: unknown; locale?: string; profile?: unknown };
+  const { messages, locale, profile, doneKeys } = (body ?? {}) as {
+    messages?: unknown;
+    locale?: string;
+    profile?: unknown;
+    doneKeys?: unknown;
+  };
+  // Completed roadmap steps the founder has marked done — clear their gates so the
+  // assistant's grounding matches the dashboard (NOT the model's claim; the client's).
+  const doneKeySet = new Set(
+    Array.isArray(doneKeys) ? doneKeys.filter((k): k is string => typeof k === "string") : [],
+  );
   // Seed the model with what the founder already answered so it never re-asks.
   const known = validatedProfileFields(profile);
   const knownStr = Object.keys(known).length
@@ -205,7 +215,7 @@ export async function POST(req: Request) {
 
         const results: Anthropic.ToolResultBlockParam[] = toolUses.map((tu) => {
           grounding.push({ name: tu.name, ...toolLabel(tu.name, tu.input) });
-          const result = executeTool(tu.name, tu.input);
+          const result = executeTool(tu.name, tu.input, doneKeySet);
           for (const id of collectProgramIds(tu.name, result)) programIds.add(id);
           if (tu.name === "compare_programs") for (const id of collectCompareIds(result)) compareIds.add(id);
           stats = collectStats(tu.name, result, stats);

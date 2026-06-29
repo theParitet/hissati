@@ -397,6 +397,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
           <ChecklistDialog
             program={checklistProgram}
             profile={profile}
+            doneKeys={doneKeys}
             locale={locale}
             onClose={() => setChecklistId(null)}
           />
@@ -474,6 +475,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
         <ChecklistDialog
           program={checklistProgram}
           profile={profile}
+          doneKeys={doneKeys}
           locale={locale}
           onClose={() => setChecklistId(null)}
         />

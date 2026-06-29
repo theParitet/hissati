@@ -12,18 +12,20 @@ import type { Profile, Program } from "@/lib/schema";
 export function ChecklistDialog({
   program,
   profile,
+  doneKeys,
   locale,
   onClose,
   onDownloadPdf,
 }: {
   program: Program;
   profile: Profile;
+  doneKeys?: ReadonlySet<string>;
   locale: Locale;
   onClose: () => void;
   onDownloadPdf?: () => void;
 }) {
   const t = ui(locale);
-  const ev = evaluateProgramFull(profile, program);
+  const ev = evaluateProgramFull(profile, program, doneKeys);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
