@@ -9,8 +9,8 @@
  *    -> cache-first + revalidate. Once the chunks are cached, the whole
  *    deterministic flow (match/score/PDF) runs with no network.
  */
-const CACHE = "hissati-v2";
-const PRECACHE = ["/", "/questionnaire", "/results", "/assistant", "/icon.svg", "/manifest.webmanifest"];
+const CACHE = "hissati-v3";
+const PRECACHE = ["/", "/details", "/plan", "/assistant", "/icon.svg", "/manifest.webmanifest"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(

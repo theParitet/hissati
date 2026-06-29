@@ -27,7 +27,7 @@ export function ClosingCta() {
           {ar ? "ستة أسئلة. مسار موثّق. خطة في يدك." : "Six questions. A cited path. A plan in hand."}
         </p>
         <div className="mt-1 flex flex-wrap items-center justify-center gap-3">
-          <Button size="lg" onClick={() => router.push("/questionnaire")}>
+          <Button size="lg" onClick={() => router.push("/details")}>
             {t.startCta}
             <Arrow className="h-5 w-5" aria-hidden />
           </Button>

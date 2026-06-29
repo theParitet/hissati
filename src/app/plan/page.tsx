@@ -51,7 +51,7 @@ export default function Results() {
       <div className="mx-auto max-w-xl px-6 py-24 text-center">
         <h1 className="text-3xl">{t.noResultsTitle}</h1>
         <p className="mt-3 text-ink-soft">{t.noResultsBody}</p>
-        <Button className="mt-7" size="lg" onClick={() => router.push("/questionnaire")}>
+        <Button className="mt-7" size="lg" onClick={() => router.push("/details")}>
           {t.startCta}
         </Button>
       </div>

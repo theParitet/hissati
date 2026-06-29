@@ -67,6 +67,6 @@ Note that this can be challenged if doesn't serve the final goal - winning hacka
 ### Design/website overhaul (merged — branch `overhaul`)
 Multi-agent overhaul: a foundation trunk + 5 parallel worktree leaves (Header, PDF, Dashboard, Assistant, Landing), merged green. What changed:
 - **Readiness Score → "AED within reach"** (`lib/metrics.ts`): sums conservative per-applicant values for open/rolling matches, excludes pools/costs/services/closed windows, and groups alternative products. Climb: AED **0 → 0 → 2,000,000 → 7,000,000**; open matches **0 → 1 → 3 → 4**. `tests/metrics.test.ts` pins the result. **55 tests green.**
-- **3-tab dashboard** (`src/components/dashboard/`): Overview (compact stat strip + the dark **"funding sky"** signature) · Programs · Checklist. Nav labels: **My plan** (`/results`) · **Assistant** · **My details** (`/questionnaire`).
+- **3-tab dashboard** (`src/components/dashboard/`): Overview (compact stat strip + the dark **"funding sky"** signature) · Programs · Checklist. Nav labels: **My plan** (`/plan`) · **Assistant** · **My details** (`/details`).
 - **Tailwind-v4 token system** reconciled in `globals.css` (`oasis/amber/clay/sand/ink/night/palm/almost`); Al Sadu restrained to one signature band (hero + PDF seal). Fonts: Tajawal + Fraunces + IBM Plex Mono.
 - New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), and **PDF plan**. Real app screenshots in `docs/screenshots/`. Docs (README, `.local-docs/design.md`, this file, demo script) reconciled to shipped reality.

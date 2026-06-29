@@ -25,11 +25,11 @@ export function AppHeader() {
   const t = ui(locale);
 
   const nav: { href: string; label: string; icon: LucideIcon }[] = [
-    // /results prompts the questionnaire if the profile isn't done yet.
-    { href: "/results", label: t.navPlan, icon: Compass },
+    // /plan prompts My details if the profile isn't done yet.
+    { href: "/plan", label: t.navPlan, icon: Compass },
     // /assistant shows an off-state when no API key is configured.
     { href: "/assistant", label: t.assistant, icon: Sparkles },
-    { href: "/questionnaire", label: t.navDetails, icon: UserRound },
+    { href: "/details", label: t.navDetails, icon: UserRound },
   ];
 
   return (

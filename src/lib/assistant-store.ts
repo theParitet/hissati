@@ -1,7 +1,7 @@
 /**
  * Hissati — assistant chat state (FR-I). Deliberately NOT persisted: the
  * conversation is shared across the landing input, the /assistant tab, and the
- * embedded chat on /results within a session, but doesn't survive a reload (a
+ * embedded chat on /plan within a session, but doesn't survive a reload (a
  * stale funding chat is worse than a fresh one). The deterministic core owns all
  * durable state; this is ephemeral UI.
  */

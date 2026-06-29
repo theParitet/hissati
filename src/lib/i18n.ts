@@ -280,7 +280,6 @@ export const UI: Record<Locale, Record<string, string>> = {
     docsProgress: "جاهزة",
     contents: "الأسئلة",
     navDetails: "بياناتي",
-    navMatches: "مطابقاتي",
     navPlan: "خطتي",
     // dashboard tabs + AED-within-reach metric (overhaul)
     tabOverview: "نظرة عامة",
@@ -292,7 +291,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     programsEligibleLabel: "مطابقات مفتوحة",
     stepsLabel: "خطوات منجزة",
     amountVaries: "المبلغ يختلف",
-    seeMatchesCta: "اعرض مطابقاتي",
+    seePlanCta: "اعرض خطتي",
     stillInRunning: "لا تزال مطابِقة",
 
     // checklist
@@ -410,7 +409,6 @@ export const UI: Record<Locale, Record<string, string>> = {
     docsProgress: "ready",
     contents: "Contents",
     navDetails: "My details",
-    navMatches: "My matches",
     navPlan: "My plan",
     // dashboard tabs + AED-within-reach metric (overhaul)
     tabOverview: "Overview",
@@ -422,7 +420,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     programsEligibleLabel: "Open matches",
     stepsLabel: "Steps done",
     amountVaries: "amount varies",
-    seeMatchesCta: "See my matches",
+    seePlanCta: "See my plan",
     stillInRunning: "Still matching",
 
     checklistTitle: "Application checklist",

@@ -72,14 +72,14 @@ export default function Questionnaire() {
 
   function goNext() {
     if (clamped < steps.length - 1) setIndex(clamped + 1);
-    else router.push("/results");
+    else router.push("/plan");
   }
   // Single-choice / boolean answers auto-advance for a fast flow.
   function answerAndAdvance(patch: Partial<Profile>) {
     setAnswer(patch);
     const nextSteps = wizardSteps({ ...answers, ...patch });
     if (clamped < nextSteps.length - 1) setIndex(clamped + 1);
-    else router.push("/results");
+    else router.push("/plan");
   }
   function startOver() {
     resetAnswers();
@@ -129,8 +129,8 @@ export default function Questionnaire() {
   const actions = (
     <div className="flex flex-col gap-2">
       {complete ? (
-        <Button size="sm" className="w-full" onClick={() => router.push("/results")}>
-          {t.seeMatchesCta} <Forward className="h-4 w-4" aria-hidden />
+        <Button size="sm" className="w-full" onClick={() => router.push("/plan")}>
+          {t.seePlanCta} <Forward className="h-4 w-4" aria-hidden />
         </Button>
       ) : currentId === "funding" ? (
         <Button size="sm" className="w-full" onClick={goNext} disabled={!fundingReady}>

@@ -1,6 +1,6 @@
 /**
  * Hissati — program comparison (item 2). Pure: turns evaluated programs into
- * side-by-side rows the UI renders (on /results and inline in the assistant).
+ * side-by-side rows the UI renders (on /plan and inline in the assistant).
  * Everything is read from the SAME deterministic engine/scoring — compare never
  * introduces a second source of truth.
  */

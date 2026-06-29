@@ -39,8 +39,7 @@ const T = {
     offNote:
       "المساعد ميزة اختيارية ومُطفأة حالياً. كل ما عداه في حِصّتي — المطابقة والخطوات وخطة الـPDF — يعمل دون اتصال وبدونه.",
     errorRetry: "أعد المحاولة",
-    seeAll: "اعرض كل المطابقات",
-    moreMatches: "مطابقات أخرى في صفحتك",
+    moreMatches: "المزيد في خطتك",
     starters: [
       "ما التمويل الذي يمكنني الحصول عليه؟",
       "ما خطوتي الأولى للتأهّل؟",
@@ -57,8 +56,7 @@ const T = {
     offNote:
       "The assistant is an optional add-on, currently off. Everything else in Hissati — matching, steps, and the PDF plan — works offline without it.",
     errorRetry: "Try again",
-    seeAll: "See all matches",
-    moreMatches: "more in your matches",
+    moreMatches: "more in your plan",
     starters: ["What funding can I get?", "What's my first step to qualify?", "I make dates at home — any grants?"],
   },
 };
@@ -278,7 +276,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
             })}
             {extra > 0 && (
               <Link
-                href="/results"
+                href="/plan"
                 className="inline-flex items-center gap-1.5 self-start rounded-pill px-1 text-sm font-medium text-oasis hover:text-oasis-700"
               >
                 <span className="tb-trim">
@@ -290,7 +288,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
           </div>
         )}
 
-        {/* Inline compare table — same CompareView as /results. */}
+        {/* Inline compare table — same CompareView as /plan. */}
         {m.compareIds && m.compareIds.length >= 2 && complete && (
           <div className="mt-3 rounded-card border border-sand-line bg-sand-100 p-3">
             <CompareView
@@ -346,9 +344,9 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
                   title={t.title}
                   desc={t.offNote}
                   action={
-                    <Link href="/results">
+                    <Link href="/plan">
                       <span className="inline-flex h-9 items-center gap-1.5 rounded-pill bg-oasis px-4 text-sm font-medium text-sand-100 transition-colors hover:bg-oasis-700">
-                        <span className="tb-trim">{uiT.navMatches}</span>
+                        <span className="tb-trim">{uiT.navPlan}</span>
                         <Arrow className="h-4 w-4" aria-hidden />
                       </span>
                     </Link>

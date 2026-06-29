@@ -66,13 +66,13 @@ export function Hero() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Button size="lg" onClick={() => router.push("/questionnaire")}>
+              <Button size="lg" onClick={() => router.push("/details")}>
                 {hasProgress ? t.continueCta : t.startCta}
                 <Arrow className="h-5 w-5" aria-hidden />
               </Button>
               {hasProgress && (
-                <Button size="lg" variant="outline" onClick={() => router.push("/results")}>
-                  {t.seeMatchesCta}
+                <Button size="lg" variant="outline" onClick={() => router.push("/plan")}>
+                  {t.seePlanCta}
                 </Button>
               )}
             </div>
