@@ -3,6 +3,7 @@ import { PROGRAMS } from "@/lib/programs";
 import { evaluateAllFull } from "@/lib/engine";
 import { deriveRoadmap } from "@/lib/roadmap";
 import { ruleStepKey } from "@/lib/steps";
+import { pruneStepsForEdit, type DoneStep } from "@/lib/store";
 import type { Profile, Rule } from "@/lib/schema";
 
 /**
@@ -66,5 +67,49 @@ describe("atomic step toggle — each key clears only its own gate", () => {
     const undidMvp = queue(new Set(["stage:early_traction"])); // undo MVP only
     expect(undidMvp).toContain("stage:mvp"); // ← returns to the queue
     expect(undidMvp).not.toContain("stage:early_traction"); // ← still done
+  });
+});
+
+describe("pruneStepsForEdit — a re-stated answer wins over a stale completed step", () => {
+  const registerStep: DoneStep = { key: "registration:lt_1yr" };
+  const mvpStep: DoneStep = { key: "stage:mvp" };
+
+  it("editing a field drops a completed step keyed on that field (the honesty fix)", () => {
+    expect(pruneStepsForEdit({ registration: "none" }, [registerStep])).toEqual([]);
+  });
+
+  it("fires on the edit regardless of whether the raw value changed", () => {
+    // Re-affirming 'none' (answer was already none) still drops the contradicting key.
+    expect(pruneStepsForEdit({ registration: "none" }, [registerStep, mvpStep])).toEqual([mvpStep]);
+  });
+
+  it("leaves steps on fields the edit didn't touch (same reference)", () => {
+    const done = [registerStep, mvpStep];
+    expect(pruneStepsForEdit({ sector: "tech" }, done)).toBe(done);
+  });
+
+  it("edits one field, drops only that field's step", () => {
+    expect(pruneStepsForEdit({ stage: "idea" }, [registerStep, mvpStep])).toEqual([registerStep]);
+  });
+
+  it("handles the relocation key", () => {
+    const reloc: DoneStep = { key: "relocation_willing:true" };
+    expect(pruneStepsForEdit({ relocation_willing: false }, [reloc])).toEqual([]);
+  });
+
+  it("end-to-end: re-stating registration drops the key so the gate re-fails", () => {
+    const unreg: Profile = { ...base, registration: "none" };
+    const cleared = evaluateAllFull(unreg, PROGRAMS, new Set(["registration:lt_1yr"]));
+    const khalifaReg = cleared
+      .find((e) => e.program.id === "khalifa-fund-sme")!
+      .rules.find((r) => r.field === "registration")!;
+    expect(khalifaReg.passed).toBe(true); // stale key clears the gate...
+
+    const remaining = pruneStepsForEdit({ registration: "none" }, [{ key: "registration:lt_1yr" }]);
+    const after = evaluateAllFull(unreg, PROGRAMS, new Set(remaining.map((d) => d.key)));
+    const khalifaReg2 = after
+      .find((e) => e.program.id === "khalifa-fund-sme")!
+      .rules.find((r) => r.field === "registration")!;
+    expect(khalifaReg2.passed).toBe(false); // ...until the re-stated answer prunes it
   });
 });

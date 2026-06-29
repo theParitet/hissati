@@ -26,6 +26,19 @@ export function doneKeysOf(doneSteps: DoneStep[]): Set<string> {
   return new Set(doneSteps.map((d) => d.key));
 }
 
+/**
+ * A re-stated answer is authoritative for the field it sets. Editing a field in
+ * My details drops any completed step keyed on that field, so a stale done-key
+ * can't keep a gate cleared against the founder's own restated answer (e.g.
+ * marking "register" done, then setting registration back to "none"). Steps on
+ * untouched fields stay; returns the same array reference when nothing is pruned.
+ */
+export function pruneStepsForEdit(patch: Partial<Profile>, doneSteps: DoneStep[]): DoneStep[] {
+  const editedFields = new Set(Object.keys(patch));
+  const kept = doneSteps.filter((d) => !editedFields.has(d.key.split(":")[0]));
+  return kept.length === doneSteps.length ? doneSteps : kept;
+}
+
 const CORE_FIELDS: (keyof Profile)[] = [
   "nationality_ownership",
   "location",
@@ -69,7 +82,12 @@ export const useHissati = create<HissatiState>()(
 
       setLocale: (l) => set({ locale: l }),
       toggleLocale: () => set((s) => ({ locale: s.locale === "ar" ? "en" : "ar" })),
-      setAnswer: (patch) => set((s) => ({ answers: { ...s.answers, ...patch } })),
+      setAnswer: (patch) =>
+        set((s) => ({
+          answers: { ...s.answers, ...patch },
+          // A re-stated answer wins over a stale completed step on the same field.
+          doneSteps: pruneStepsForEdit(patch, s.doneSteps),
+        })),
       resetAnswers: () => set({ answers: {}, doneSteps: [], checkedDocs: {} }),
       // Atomic toggle: mark adds the key (idempotent), undo removes exactly it.
       markStep: (step) =>
