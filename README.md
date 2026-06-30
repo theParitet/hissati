@@ -83,63 +83,16 @@ From the "almost" set, Hissati builds a **Funding Readiness Roadmap** of ordered
 A pure, deterministic pipeline turns the founder's answers into ranked matches, a cited roadmap, and the climbing "AED within reach" figure. Marking a step done re-folds the profile and re-runs the **same** engine — that is the entire live re-check, with no special-casing, no clock, no network, and no randomness, so every claim in §7 is reproducible.
 
 ```mermaid
-flowchart TD
-  START([Founder opens Hissati]) --> LAND["Landing · Arabic-first RTL<br/>value story + ask-bar"]
-  LAND -->|Start| WIZ
-  LAND -. optional question .-> ASK
-
-  subgraph WIZARD["Adaptive questionnaire · offline · persisted"]
-    WIZ["wizardSteps(answers)<br/>~6 core gating questions"] --> ANS["Answer → setAnswer → localStorage"]
-    ANS --> LIVE["stillMatching · live 'N programs still match' chip"]
-    LIVE --> RELOC{"relocation the<br/>deciding gate?"}
-    RELOC -->|yes| ASKR["ask relocation"]
-    ASKR --> COMPLETE
-    RELOC -->|no| COMPLETE{"isProfileComplete?<br/>6 core answers"}
-    COMPLETE -->|no| WIZ
-  end
-
-  COMPLETE -->|yes| EVAL
-
-  subgraph ENGINE["Deterministic results pipeline · pure · offline"]
-    EVAL["effectiveProfile = answers + doneSteps<br/>evaluateAllFull(profile, 16 opportunities)"] --> BUCKETS{"classify each program"}
-    BUCKETS -->|0 rules failed| ELIG["ELIGIBLE now"]
-    BUCKETS -->|1–2 remediable| ALMOST["ALMOST · blocking rule + cited fix"]
-    BUCKETS -->|hard gate| NOTFIT["NOT A FIT · explained, never empty"]
-    ELIG --> RANK["matchScore ranking<br/>progressStats · AED within reach"]
-    ALMOST --> ROADMAP["deriveRoadmap · ordered, deduped, cited steps"]
-    NOTFIT --> PREREG["pre-registration track · idea-stage"]
-  end
-
-  RANK --> DASH
-  ROADMAP --> DASH
-  PREREG --> DASH
-
-  subgraph RESULTS["Results dashboard"]
-    DASH["Overview · Programs · Checklist"] --> ACTIONS{"founder acts"}
-    ACTIONS -->|mark step done| MARK["markStep → effectiveProfile re-folds"]
-    ACTIONS -->|export| PDFOUT["Bilingual PDF readiness plan · browser print"]
-    ACTIONS -->|compare / checklist| DETAIL["compare rows · document ticks"]
-  end
-
-  MARK -->|re-run the SAME engine| EVAL
-  MARK -. "score climbs · almost → eligible flips" .-> DASH
-
-  ASK["Ask-bar / /assistant"] --> AGENT
-  DASH -. ask in context .-> ASK
-
-  subgraph ASSIST["Optional grounded assistant · app works fully with it OFF"]
-    AGENT["POST /api/agent · profile + messages"] --> LOOP["Claude tool-calling loop"]
-    LOOP --> TOOLEX["executeTool over the SAME engine + KB"]
-    TOOLEX -->|collect_profile| FORM["tap-to-answer form → enrich profile"]
-    FORM --> AGENT
-    TOOLEX -->|structured results| RENDER["render ProgramCards / CompareView / grounding chips"]
-  end
-  RENDER -. seeds shared profile .-> DASH
-
-  classDef opt stroke-dasharray:5 5,fill:#f6f1e7;
-  class ASSIST,ASK,AGENT,LOOP,TOOLEX,FORM,RENDER opt;
-  classDef guard fill:#14584a,color:#ffffff;
-  class ALMOST,NOTFIT,PREREG guard;
+flowchart LR
+  A["Founder's answers<br/>offline wizard"] --> P["effectiveProfile<br/>answers + completed steps"]
+  P --> E["evaluateAllFull<br/>pure deterministic engine · 16 programs"]
+  E --> ELIG["Eligible now"]
+  E --> ALM["Almost<br/>blocking rule + cited fix"]
+  E --> NF["Not a fit<br/>explained, never empty"]
+  ELIG --> D["Dashboard<br/>ranked matches · AED within reach · roadmap · PDF"]
+  ALM --> D
+  NF --> D
+  D -->|"mark a step done → re-run the same engine"| P
 ```
 
 ## 5. Architecture
@@ -148,72 +101,34 @@ Layered, offline-first PWA. The deterministic core and the 16-opportunity knowle
 
 ```mermaid
 flowchart TB
-  subgraph CLIENT["Browser · Installable PWA · offline-first"]
-    direction TB
-
-    subgraph UI["Presentation · Next.js App Router · React 19 · Tailwind 4"]
-      L["/ landing"]
-      Q["/details · adaptive wizard"]
-      R["/plan · dashboard<br/>overview · programs · checklist"]
-      A["/assistant · grounded chat"]
-    end
-
-    subgraph STATE["Client state · Zustand"]
-      HS["useHissati · persist to localStorage<br/>answers · doneSteps · checkedDocs · locale"]
-      AS["useAssistant · ephemeral<br/>messages · grounding · stats"]
-    end
-
-    subgraph CORE["Deterministic core · pure TypeScript · bundled · zero-network"]
-      ENG["engine · evaluateAllFull · passesRule"]
-      SCO["scoring · matchScore · estimateTimeToEligibility"]
-      MET["metrics · progressStats · AED within reach"]
-      ROAD["roadmap · deriveRoadmap"]
-      WIZ["wizard · wizardSteps · stillMatching"]
-      SCH["schema · Zod data contract"]
-      KB[("programs.json<br/>16 opportunities · validated at load")]
-    end
-
-    subgraph OUT["Client-side outputs"]
-      PDF["plan · native browser print (window.print → Save as PDF)<br/>bilingual readiness plan"]
-    end
-
-    SW["Service Worker · sw.js<br/>precache shell · cache-first static · network-first nav"]
+  subgraph CLIENT["Browser · installable PWA · runs fully offline"]
+    UI["UI · Next.js App Router · React 19 · Tailwind 4<br/>landing · wizard · dashboard · assistant"]
+    STATE["Zustand state · persisted to localStorage<br/>answers · done steps · locale"]
+    CORE["Deterministic core + knowledge base · bundled, zero-network<br/>engine · scoring · metrics · roadmap · Zod schema · 16 programs"]
+    OUT["Bilingual PDF plan · native browser print"]
+    SW["Service Worker · precache shell · offline boundary"]
   end
 
-  subgraph SERVER["Next.js Server · Vercel · OPTIONAL"]
-    API["/api/agent · Node runtime · force-dynamic<br/>same-origin · per-IP rate-limit · key server-only"]
-    TOOLS["agent-tools<br/>match · steps · compare · details · collect_profile"]
+  subgraph SERVER["Server · OPTIONAL — app works without it"]
+    API["/api/agent · Anthropic key stays server-side"]
   end
 
-  EXT["Anthropic API<br/>Claude Haiku 4.5"]
+  EXT["Anthropic API · Claude Haiku 4.5"]
 
-  UI --> STATE
-  HS --> CORE
-  CORE --> UI
+  UI <--> STATE
+  UI --> CORE
   CORE --> OUT
-  KB --- ENG
-  SCH -. validates .-> KB
-
-  AS -->|POST profile + messages| API
-  API -->|messages + tools| EXT
-  EXT -->|tool_use| API
-  API --> TOOLS
-  TOOLS --> ENG
-  TOOLS --> KB
-  API -->|structured results · never HTML| AS
-
-  SW -. intercepts navigations + assets .-> UI
-  SW -. bypasses /api/* .-> API
+  STATE -. optional chat .-> API
+  API --> EXT
+  SW -. serves UI offline .-> UI
 
   classDef opt stroke-dasharray:5 5,fill:#f6f1e7;
-  class SERVER,API,TOOLS,EXT,A,AS opt;
-  classDef kb fill:#14584a,color:#ffffff;
-  class KB kb;
+  class SERVER,API,EXT opt;
 ```
 
 ### Data model
 
-There is no SQL database: the data layer is the bundled JSON knowledge base (validated against the Zod contract in `schema.ts` at module load) plus browser `localStorage` for the founder's own answers and progress. The full entity-relationship diagram — with notes and raw, `mermaid.parse`-validated `.mmd` sources — lives in [`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md) and [`docs/diagrams/`](./docs/diagrams).
+There is no SQL database: the data layer is the bundled JSON knowledge base (validated against the Zod contract in [`schema.ts`](./src/lib/schema.ts) at module load) plus browser `localStorage` for the founder's own answers and progress.
 
 ### Feasibility & operations
 
@@ -261,8 +176,6 @@ The knowledge base is **hand-verified, not scraped**. Each of the 16 records in 
 
 | Reference | Covers |
 |---|---|
-| [`docs/DIAGRAMS.md`](./docs/DIAGRAMS.md) | The three architecture diagrams — system, data model (ERD), functionality workflow — with notes |
-| [`docs/diagrams/`](./docs/diagrams) | Raw, `mermaid.parse`-validated diagram sources |
 | [`CLAUDE.md`](./CLAUDE.md) | Engineering ground rules, module map, and the frozen data-contract invariants |
 | [`docs/screenshots/`](./docs/screenshots) | UI screenshots of the live app |
 
