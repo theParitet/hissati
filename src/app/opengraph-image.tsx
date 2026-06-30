@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { BrandMark } from "@/components/BrandMark";
+import { WORDMARK } from "./opengraph-image-wordmark";
 
 export const alt = "Hissati — verified UAE funding, eligibility, and cited next steps";
 export const size = { width: 1200, height: 630 };
@@ -21,10 +22,13 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", width: 760 }}>
-          <div style={{ display: "flex", fontSize: 34, fontWeight: 700, color: "#14584a" }}>
-            Hissati · حِصّتي
-          </div>
-          <div style={{ display: "flex", marginTop: 26, fontSize: 64, fontWeight: 700, lineHeight: 1.08 }}>
+          {/* The whole "Hissati · حِصّتي" lockup is a browser-rendered image: Satori
+              (next/og) renders neither a true-bold Latin nor shaped/ordered Arabic.
+              See opengraph-image-wordmark.ts. marginLeft offsets the capture padding
+              so the "H" aligns with the headline's left edge. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={WORDMARK} width={320} height={64} alt="Hissati · حِصّتي" style={{ marginLeft: -4 }} />
+          <div style={{ display: "flex", marginTop: 22, fontSize: 64, fontWeight: 700, lineHeight: 1.08 }}>
             Find the UAE funding you can reach.
           </div>
           <div style={{ display: "flex", marginTop: 24, fontSize: 28, lineHeight: 1.4, color: "#5c5043" }}>
