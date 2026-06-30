@@ -7,7 +7,7 @@
       "id": "khalifa-fund-sme",
       "name": {
         "en": "Khalifa Fund — SME Funding (Microfinance & Loans)",
-        "ar": "صندوق خليفة — تمويل المشاريع الصغيرة والمتوسطة (تمويل أصغر وقروض)"
+        "ar": "صندوق خليفة — تمويل المشاريع الصغيرة والمتوسطة (التمويل الأصغر وقروض)"
       },
       "operator": "Khalifa Fund for Enterprise Development",
       "tier": 1,
@@ -120,7 +120,7 @@
       "processing_time": "Several weeks (TAMM application + review)",
       "description": {
         "en": "Interest-free government financing for Emirati-owned SMEs in Abu Dhabi. A Microfinance Loan offers up to AED 500,000 for new entrepreneurs; larger Small/Expansion loans reach AED 2M+. Sectors include agriculture, tourism, ICT, manufacturing and more.",
-        "ar": "تمويل حكومي بدون فوائد للمشاريع الصغيرة والمتوسطة المملوكة لإماراتيين في أبوظبي. يوفّر التمويل الأصغر حتى 500 ألف درهم لروّاد الأعمال الجدد، وتصل القروض الأكبر إلى مليوني درهم وأكثر، ضمن قطاعات الزراعة والسياحة وتقنية المعلومات والتصنيع وغيرها."
+        "ar": "تمويل حكومي بدون فوائد للمشاريع الصغيرة والمتوسطة المملوكة لإماراتيين في أبوظبي. يوفّر التمويل الأصغر حتى 500 ألف درهم لروّاد الأعمال الجدد، وتصل القروض الأكبر إلى مليوني درهم وأكثر، ضمن قطاعات الزراعة والسياحة وتقنية المعلومات والاتصالات والتصنيع وغيرها."
       },
       "source": {
         "url": "https://www.khalifafund.ae/services/funding-scheme/",
@@ -206,7 +206,7 @@
           "remedy": {
             "action": {
               "en": "Get a Farm Licence first (if you own or lease a farm) — or a Tajer licence to start trading.",
-              "ar": "احصل على رخصة مزرعة أولاً (إذا كنت تملك أو تستأجر مزرعة) — أو رخصة تاجر للبدء بالتجارة."
+              "ar": "احصل على رخصة زراعية أولاً (إذا كنت تملك أو تستأجر مزرعة) — أو رخصة تاجر للبدء بالتجارة."
             },
             "links_program_id": "farm-licence",
             "est_cost_aed": 790,
@@ -233,7 +233,7 @@
       "required_documents": [
         {
           "en": "Farm / trade licence",
-          "ar": "رخصة المزرعة / الرخصة التجارية",
+          "ar": "الرخصة الزراعية / الرخصة التجارية",
           "format": "PDF / TAMM"
         },
         {
@@ -790,7 +790,7 @@
           ],
           "blocking_message": {
             "en": "ADDED SME support is for businesses licensed in Abu Dhabi.",
-            "ar": "دعم دائرة التنمية الاقتصادية للمشاريع المرخّصة في أبوظبي."
+            "ar": "دعم دائرة التنمية الاقتصادية مخصّص للمشاريع المرخّصة في أبوظبي."
           }
         },
         {
@@ -836,7 +836,7 @@
       "processing_time": "Varies by service",
       "description": {
         "en": "ADDED’s Tanami framework connects Abu Dhabi startups and mSMEs to finance access, procurement, exports, skills, innovation and sustainability support. It is an enablement pathway, not a cash grant.",
-        "ar": "تربط منظومة تنامي التابعة لاقتصادية أبوظبي الشركات الناشئة والمنشآت بخدمات الوصول إلى التمويل والمشتريات والتصدير والمهارات والابتكار والاستدامة. وهي مسار تمكين وليست منحة نقدية."
+        "ar": "تربط منظومة تنامي التابعة لدائرة التنمية الاقتصادية في أبوظبي الشركات الناشئة والمنشآت بخدمات الوصول إلى التمويل والمشتريات والتصدير والمهارات والابتكار والاستدامة. وهي مسار تمكين وليست منحة نقدية."
       },
       "source": {
         "url": "https://www.added.gov.ae/en/grow/Tanami",
@@ -853,7 +853,7 @@
       "id": "sheikh-mansour-agri-award",
       "name": {
         "en": "Sheikh Mansour bin Zayed Agricultural Excellence Award",
-        "ar": "جائزة منصور بن زايد للتميّز الزراعي"
+        "ar": "جائزة الشيخ منصور بن زايد للتميّز الزراعي"
       },
       "operator": "Abu Dhabi Agriculture and Food Safety Authority (ADAFSA)",
       "tier": 1,
@@ -918,7 +918,7 @@
       "required_documents": [
         {
           "en": "Farm licence / proof of farming activity",
-          "ar": "رخصة المزرعة / إثبات النشاط الزراعي",
+          "ar": "الرخصة الزراعية / إثبات النشاط الزراعي",
           "format": "PDF"
         },
         {
@@ -928,7 +928,7 @@
         },
         {
           "en": "Application via ADAFSA (category-specific)",
-          "ar": "التقديم عبر جهاز أبوظبي للزراعة (حسب الفئة)",
+          "ar": "التقديم عبر هيئة أبوظبي للزراعة والسلامة الغذائية (حسب الفئة)",
           "format": "Form"
         }
       ],
@@ -943,7 +943,7 @@
       "processing_time": "Annual cycle (edition-based)",
       "description": {
         "en": "ADAFSA's annual award (AED 10M prize pool) recognising outstanding farmers and livestock breeders in Abu Dhabi, with dedicated categories for youth projects and outstanding female farmers — a direct recognition-and-cash route for Al Qua'a's camel and date farmers.",
-        "ar": "جائزة سنوية من جهاز أبوظبي للزراعة والسلامة الغذائية (جوائز بقيمة 10 ملايين درهم) تكرّم المزارعين ومربّي الثروة الحيوانية المتميّزين في أبوظبي، مع فئات مخصصة لمشاريع الشباب والمزارِعات المتميّزات — طريق مباشر للتكريم والجوائز لمزارعي الإبل والتمور في القوع."
+        "ar": "جائزة سنوية من هيئة أبوظبي للزراعة والسلامة الغذائية (جوائز بقيمة 10 ملايين درهم) تكرّم المزارعين ومربّي الثروة الحيوانية المتميّزين في أبوظبي، مع فئات مخصصة لمشاريع الشباب والمزارِعات المتميّزات — طريق مباشر للتكريم والجوائز لمزارعي الإبل والتمور في القوع."
       },
       "source": {
         "url": "https://www.mediaoffice.abudhabi/en/environment/abu-dhabi-agriculture-and-food-safety-authority-launches-4th-edition-of-sheikh-mansour-bin-zayed-agricultural-excellence-award/",
@@ -988,12 +988,12 @@
           "value": "mvp",
           "blocking_message": {
             "en": "Hub71 targets pre-seed to Series A startups with at least a working product.",
-            "ar": "يستهدف هب71 الشركات من المرحلة التأسيسية إلى السلسلة A مع منتج قابل للعمل على الأقل."
+            "ar": "يستهدف هب71 الشركات من مرحلة ما قبل التأسيس إلى السلسلة A مع منتج عامل على الأقل."
           },
           "remedy": {
             "action": {
               "en": "Build a working prototype / MVP with early users before applying.",
-              "ar": "ابنِ نموذجاً أولياً قابلاً للعمل مع مستخدمين أوائل قبل التقديم."
+              "ar": "ابنِ نموذجاً أولياً عاملاً مع مستخدمين أوائل قبل التقديم."
             },
             "est_time": "3–6 months"
           }
@@ -1148,7 +1148,7 @@
       "processing_time": "Cohort-based (set intakes)",
       "description": {
         "en": "Sheraa's equity-free, fee-free studio for early-stage startups, bundling a free 1-year Sharjah licence and co-working space; priority sectors include creative industries, EdTech, manufacturing and sustainability.",
-        "ar": "استوديو شراع بدون حصص ملكية أو رسوم للشركات الناشئة المبكرة، ويشمل رخصة مجانية في الشارقة لمدة عام ومساحة عمل مشتركة؛ القطاعات ذات الأولوية تشمل الصناعات الإبداعية والتعليم التقني والتصنيع والاستدامة."
+        "ar": "استوديو شراع بدون حصص ملكية أو رسوم للشركات الناشئة المبكرة، ويشمل رخصة مجانية في الشارقة لمدة عام ومساحة عمل مشتركة؛ القطاعات ذات الأولوية تشمل الصناعات الإبداعية وتقنيات التعليم والتصنيع والاستدامة."
       },
       "source": {
         "url": "https://www.asc.sheraa.ae/s3-program",
@@ -1304,7 +1304,7 @@
           "value": "mvp",
           "blocking_message": {
             "en": "The competition requires a working prototype / MVP in a Falcon Economy sector.",
-            "ar": "تتطلب المسابقة نموذجاً أولياً قابلاً للعمل ضمن قطاعات اقتصاد الصقر."
+            "ar": "تتطلب المسابقة نموذجاً أولياً عاملاً ضمن قطاعات اقتصاد الصقر."
           },
           "remedy": {
             "action": {
@@ -1337,7 +1337,7 @@
       "processing_time": "Annual; bootcamp + finalist pitch (latest edition applications closed Jun 2026)",
       "description": {
         "en": "An Emirati-focused competition for early-stage ventures (MVP-ready) in Abu Dhabi's 'Falcon Economy' sectors, awarding over AED 1M in prizes and in-kind support plus MZN Hub membership for finalists.",
-        "ar": "مسابقة موجّهة للإماراتيين للمشاريع المبكرة (الجاهزة بمنتج أولي) ضمن قطاعات 'اقتصاد الصقر' في أبوظبي، تمنح أكثر من مليون درهم جوائز ودعماً عينياً وعضوية مركز MZN للمتأهلين."
+        "ar": "مسابقة موجّهة للإماراتيين للمشاريع المبكرة (الجاهزة بمنتج أولي) ضمن قطاعات «اقتصاد الصقر» في أبوظبي، تمنح أكثر من مليون درهم جوائز ودعماً عينياً وعضوية مركز MZN للمتأهلين."
       },
       "source": {
         "url": "https://www.khalifafund.ae/program-initiatives/khalifa-entrepreneurship-award/",
@@ -1525,7 +1525,7 @@
           "remedy": {
             "action": {
               "en": "Reach early traction (users/revenue) before approaching the fund.",
-              "ar": "حقّق جذباً مبكراً (مستخدمون/إيرادات) قبل التواصل مع الصندوق."
+              "ar": "حقّق جذباً مبكراً (مستخدمون/إيرادات) قبل التواصل مع الشركة."
             },
             "est_time": "6–12 months"
           }
@@ -1562,7 +1562,7 @@
       "processing_time": "Rolling",
       "description": {
         "en": "A leading MENA/Pakistan venture-capital firm investing equity in early-stage tech startups (reference / stretch tier).",
-        "ar": "شركة رائدة في رأس المال الجريء في الشرق الأوسط وباكستان تستثمر حصص ملكية في الشركات الناشئة التقنية المبكرة (طبقة مرجعية / طموحة)."
+        "ar": "شركة رائدة في رأس المال الجريء في الشرق الأوسط وشمال إفريقيا وباكستان تستثمر حصص ملكية في الشركات الناشئة التقنية المبكرة (طبقة مرجعية / طموحة)."
       },
       "source": {
         "url": "https://www.shorooq.com/",
@@ -1611,7 +1611,7 @@
           "remedy": {
             "action": {
               "en": "Build a product and an investable narrative before seeking a warm intro.",
-              "ar": "ابنِ منتجاً وقصة استثمارية مقنعة قبل السعي لمقدّمة دافئة."
+              "ar": "ابنِ منتجاً وقصة استثمارية مقنعة قبل السعي للحصول على تعريف من جهة موثوقة."
             },
             "est_time": "3–9 months"
           }
@@ -1653,7 +1653,7 @@
       "processing_time": "Rolling (warm intro)",
       "description": {
         "en": "A Gulf/MENA technology VC investing from inception to growth, typically reached via warm intro (reference / stretch tier).",
-        "ar": "شركة رأس مال جريء تقنية في الخليج والشرق الأوسط تستثمر من التأسيس إلى النمو، يتم الوصول إليها عادة عبر مقدّمة دافئة (طبقة مرجعية / طموحة)."
+        "ar": "شركة رأس مال جريء تقنية في الخليج والشرق الأوسط وشمال إفريقيا تستثمر من التأسيس إلى النمو، يتم الوصول إليها عادة عبر تعريف من جهة موثوقة (طبقة مرجعية / طموحة)."
       },
       "source": {
         "url": "https://www.becocapital.com/contact/",

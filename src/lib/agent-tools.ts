@@ -274,7 +274,7 @@ export function toolLabel(name: string, input: unknown): { labelEn: string; labe
     case "steps_to_qualify":
       return { labelEn: "Built your roadmap to qualify", labelAr: "أنشأ خارطة طريقك للتأهّل" };
     case "program_details":
-      return { labelEn: `Looked up ${id ?? "a program"}`, labelAr: `بحث في ${id ?? "برنامج"}` };
+      return { labelEn: `Looked up ${id ?? "a program"}`, labelAr: `بحث عن ${id ?? "برنامج"}` };
     case "compare_programs":
       return { labelEn: "Compared the programs side by side", labelAr: "قارن بين البرامج جنباً إلى جنب" };
     case "collect_profile":

@@ -55,7 +55,7 @@ export function LivePreview({ locale }: { locale: Locale }) {
     <section className="mx-auto max-w-5xl px-4 py-16 sm:px-6 sm:py-20">
       <div className="max-w-2xl">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-faint">
-          {ar ? "جرّبه الآن" : "Try it, right here"}
+          {ar ? "جرّبه هنا مباشرةً" : "Try it, right here"}
         </p>
         <h2 className="mt-2 text-3xl sm:text-4xl">
           {ar ? "لوحتك الشخصية" : "Your personal dashboard"}
@@ -112,7 +112,7 @@ export function LivePreview({ locale }: { locale: Locale }) {
                   ? "المنتج مُطلق ✓"
                   : "MVP launched ✓"
                 : ar
-                  ? "أعلِن إطلاق المنتج"
+                  ? "سجّل إطلاق المنتج"
                   : "Mark MVP launched"}
             </Button>
           </div>

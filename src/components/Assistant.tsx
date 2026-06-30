@@ -37,7 +37,7 @@ const T = {
     grounded: "بالاستناد إلى",
     off: "غير مُفعّل",
     offNote:
-      "المساعد ميزة اختيارية ومُطفأة حالياً. كل ما عداه في حِصّتي — المطابقة والخطوات وخطة الـPDF — يعمل دون اتصال وبدونه.",
+      "المساعد ميزة اختيارية ومُطفأة حالياً. كل ما عداه في حِصّتي — المطابقة والخطوات وخطة PDF — يعمل دون اتصال وبدونه.",
     errorRetry: "أعد المحاولة",
     moreMatches: "المزيد في خطتك",
     starters: [
@@ -380,7 +380,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
                 <button
                   onClick={() => submit()}
                   disabled={loading || !input.trim()}
-                  aria-label="Send"
+                  aria-label={locale === "ar" ? "إرسال" : "Send"}
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-pill bg-oasis text-sand-100 transition-colors hover:bg-oasis-700 disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   <Send className="h-4 w-4" aria-hidden />

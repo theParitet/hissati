@@ -34,7 +34,9 @@ export function RoadmapStepCard({
             <span className="inline-flex items-center gap-1">
               <Coins className="h-3.5 w-3.5" aria-hidden />{" "}
               <span>
-                {locale === "ar" ? "درهم" : "AED"} {toLocaleDigits(step.est_cost_aed, locale)}
+                {locale === "ar"
+                  ? `${toLocaleDigits(step.est_cost_aed, locale)} درهم`
+                  : `AED ${toLocaleDigits(step.est_cost_aed, locale)}`}
               </span>
             </span>
           )}

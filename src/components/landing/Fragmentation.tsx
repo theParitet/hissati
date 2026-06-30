@@ -22,7 +22,7 @@ export function Fragmentation({ locale }: { locale: Locale }) {
       icon: <Layers className="h-4 w-4 text-oasis" aria-hidden />,
       title: ar ? "مطابقة واحدة" : "One match",
       body: ar
-        ? "كل البرامج تُقاس على ملفك دفعةً واحدة: مؤهَّل، قريب، أو غير مناسب."
+        ? "كل البرامج تُقاس على ملفك دفعةً واحدة: مؤهَّل أو قريب من التأهّل أو غير مناسب."
         : "Every program scored against your profile at once: eligible, almost, or not a fit.",
     },
     {

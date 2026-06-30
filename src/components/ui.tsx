@@ -157,8 +157,8 @@ export function VerifiedStamp({
     >
       <ShieldCheck className="h-3.5 w-3.5 shrink-0" aria-hidden />
       <span className="min-w-0 break-all">
-        <span className="font-sans font-semibold tracking-wide">verified</span> · {host} · {localizeDate(verifiedDate, locale)}
-        {sourceDate ? ` · source ${localizeDate(sourceDate, locale)}` : ""}
+        <span className="font-sans font-semibold tracking-wide">{ui(locale).verified}</span> · {host} · {localizeDate(verifiedDate, locale)}
+        {sourceDate ? ` · ${ui(locale).source} ${localizeDate(sourceDate, locale)}` : ""}
         {confidence ? ` · ${ui(locale)[`confidence_${confidence}`]}` : ""}
       </span>
     </span>

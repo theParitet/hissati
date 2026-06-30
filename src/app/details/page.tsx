@@ -24,7 +24,7 @@ const SHORT_LABEL: Record<string, { en: string; ar: string }> = {
   social_impact: { en: "Social impact", ar: "الأثر الاجتماعي" },
   relocation_willing: { en: "Relocation", ar: "الانتقال" },
   team: { en: "Team", ar: "الفريق" },
-  has_pitch_deck: { en: "Pitch deck", ar: "العرض" },
+  has_pitch_deck: { en: "Pitch deck", ar: "العرض التقديمي" },
   has_financials: { en: "Financials", ar: "البيانات المالية" },
 };
 function shortLabel(id: string, locale: Locale): string {

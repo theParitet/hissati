@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     "UAE grants",
     "small business funding UAE",
     "Emirati entrepreneur funding",
-    "تمويل المشاريع الإمارات",
+    "تمويل المشاريع في الإمارات",
     "منح المشاريع الصغيرة",
   ],
   authors: [{ name: "Hissati" }],

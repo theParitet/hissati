@@ -113,7 +113,9 @@ export function ProgramsTab({
           {compareIds.length > 0 && (
             <div className="flex items-center gap-2 border-b border-sand-line bg-sand-200/50 px-3 py-2">
               <span className="text-xs font-medium text-ink-soft">
-                {toLocaleDigits(compareIds.length, locale)} {locale === "ar" ? "محدّد" : "selected"}
+                {locale === "ar"
+                  ? `تم تحديد ${toLocaleDigits(compareIds.length, locale)}`
+                  : `${compareIds.length} selected`}
               </span>
               <Button
                 size="sm"
@@ -260,7 +262,7 @@ export function ProgramsTab({
             }}
             className="mb-4 inline-flex items-center gap-1 text-sm font-medium text-ink-soft hover:text-ink lg:hidden"
           >
-            <Back className="h-4 w-4" aria-hidden /> {locale === "ar" ? "القائمة" : "Programs"}
+            <Back className="h-4 w-4" aria-hidden /> {locale === "ar" ? "البرامج" : "Programs"}
           </button>
 
           {view === "compare" && compareRows.length >= 2 ? (

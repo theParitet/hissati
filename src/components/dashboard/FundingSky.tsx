@@ -141,7 +141,7 @@ export function FundingSky({
             {hasOpenEnded ? "+" : ""}
           </span>{" "}
           {locale === "ar"
-            ? "ضمن متناولك — كل نجمة برنامج تمويل واحد."
+            ? "ضمن متناولك — كل نجمة تمثّل برنامج تمويل واحد."
             : "within reach — each star is one funding program."}
         </p>
       </div>

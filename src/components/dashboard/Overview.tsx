@@ -11,7 +11,7 @@ import { Card, Stat, Money, EmptyState } from "@/components/ui";
 import { DownloadPdfButton } from "@/components/DownloadPdfButton";
 import { FundingSky, type SkyStar } from "@/components/dashboard/FundingSky";
 import { RoadmapStepCard } from "@/components/RoadmapStepCard";
-import { ui, pick, toLocaleDigits, type Locale } from "@/lib/i18n";
+import { ui, pick, toLocaleDigits, stepsUnlockMore, type Locale } from "@/lib/i18n";
 import type { ProgressStats } from "@/lib/metrics";
 import type { RoadmapStep } from "@/lib/roadmap";
 import type { DoneStep } from "@/lib/store";
@@ -70,7 +70,7 @@ export function Overview({
             sub={
               stats.aedReachableAfterSteps > stats.aedReachableNow ? (
                 <span className="inline-flex items-center gap-1">
-                  {locale === "ar" ? "بالخطوات حتى" : "With steps up to"}{" "}
+                  {locale === "ar" ? "بإكمال الخطوات حتى" : "With steps up to"}{" "}
                   <Money aed={stats.aedReachableAfterSteps} locale={locale} />
                   {plus}
                 </span>
@@ -89,9 +89,7 @@ export function Overview({
             }
             sub={
               steps.length > 0
-                ? locale === "ar"
-                  ? `${toLocaleDigits(steps.length, locale)} خطوة تفتح المزيد`
-                  : `${steps.length} ${steps.length === 1 ? "step unlocks more" : "steps unlock more"}`
+                ? stepsUnlockMore(steps.length, locale)
                 : locale === "ar"
                   ? "لا خطوات متبقية"
                   : "no steps left"

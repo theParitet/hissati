@@ -19,6 +19,20 @@ export function toLocaleDigits(value: number | string, locale: Locale): string {
   return locale === "ar" ? s.replace(/[0-9]/g, (d) => AR_DIGITS[+d]) : s;
 }
 
+/**
+ * "{n} steps unlock more" with correct Arabic number–noun–verb agreement.
+ * English only needs singular/plural; Arabic has four count regimes (1 / 2 /
+ * 3–10 / 11+), so a single fixed "خطوة" mis-agrees for the common 2–10 case.
+ */
+export function stepsUnlockMore(n: number, locale: Locale): string {
+  if (locale === "en") return `${n} ${n === 1 ? "step unlocks more" : "steps unlock more"}`;
+  const d = toLocaleDigits(n, "ar");
+  if (n === 1) return "خطوة واحدة تفتح المزيد";
+  if (n === 2) return "خطوتان تفتحان المزيد";
+  if (n <= 10) return `${d} خطوات تفتح المزيد`;
+  return `${d} خطوة تفتح المزيد`;
+}
+
 /** Pick the right side of a bilingual {en, ar} object. */
 export function pick(text: { en: string; ar: string }, locale: Locale): string {
   return text[locale];
@@ -46,7 +60,7 @@ export const ENUM_LABELS: Record<string, Record<string, L>> = {
   },
   stage: {
     idea: { en: "Just an idea", ar: "مجرد فكرة" },
-    mvp: { en: "Built a product / MVP", ar: "أطلقت منتجاً أولياً" },
+    mvp: { en: "Built a product / MVP", ar: "طوّرت منتجاً أولياً" },
     early_traction: { en: "Early traction (pilots, first sales)", ar: "جذب مبكر (تجارب، أول مبيعات)" },
     established: { en: "Established (1–2yr+ revenue)", ar: "قائم (إيرادات لأكثر من سنة)" },
   },
@@ -62,7 +76,7 @@ export const ENUM_LABELS: Record<string, Record<string, L>> = {
     astro_tourism: { en: "Astro-tourism / desert camps", ar: "السياحة الفلكية / مخيمات الصحراء" },
     handicrafts: { en: "Handicrafts", ar: "الحرف اليدوية" },
     food_processing: { en: "Food processing", ar: "تصنيع الأغذية" },
-    retail_services: { en: "Retail / services", ar: "تجارة / خدمات" },
+    retail_services: { en: "Retail / services", ar: "تجزئة / خدمات" },
     tech: { en: "Technology", ar: "التقنية" },
     other: { en: "Other", ar: "أخرى" },
   },
@@ -133,7 +147,7 @@ export const QUESTION_TEXT: Record<QuestionId, { prompt: L; help?: L }> = {
     prompt: { en: "What funding are you looking for?", ar: "ما نوع التمويل الذي تبحث عنه؟" },
   },
   gender: {
-    prompt: { en: "Are you applying as a woman?", ar: "هل تتقدمين بصفتك امرأة؟" },
+    prompt: { en: "Are you applying as a woman?", ar: "هل مقدِّم الطلب امرأة؟" },
     help: {
       en: "Asked only to check women-only programmes such as the Mobdea home licence.",
       ar: "يُطرح فقط للتحقق من البرامج المخصصة للنساء مثل رخصة مبدعة المنزلية.",
@@ -201,7 +215,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     stillMatchOne: "برنامج واحد ما زال مطابقاً",
     back: "السابق",
     next: "التالي",
-    skip: "تخطٍّ",
+    skip: "تخطّي",
     seeResults: "اعرض نتائجي",
     yes: "نعم",
     no: "لا",
@@ -219,10 +233,10 @@ export const UI: Record<Locale, Record<string, string>> = {
     timeToQualify: "الوقت حتى التأهّل",
     whyNot: "سبب عدم المطابقة",
     blockingRule: "القاعدة المانعة",
-    markDone: "تمّت هذه الخطوة",
+    markDone: "أنجزتُ هذه الخطوة",
     markedDone: "تمّت ✓",
     undo: "تراجع",
-    viewChecklist: "قائمة المتطلبات",
+    viewChecklist: "قائمة التقديم",
     apply: "تقديم الطلب",
     source: "المصدر",
     verified: "تم التحقق",
@@ -233,7 +247,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     requiredFor: "خطوة مطلوبة للوصول إلى",
     instrument: "الأداة",
     tier: "الفئة",
-    tier1: "محلي غير مخفِّف",
+    tier1: "محلي غير مخفِّف للملكية",
     tier2: "مسرّعة / مسابقة",
     tier3: "استثمار جريء",
     instrument_grant: "منحة",
@@ -245,8 +259,8 @@ export const UI: Record<Locale, Record<string, string>> = {
     availability_open: "مفتوح الآن",
     availability_rolling: "متاح بشكل مستمر",
     availability_closed: "مغلق — تابع الدورة القادمة",
-    availability_unknown: "التوفر غير معلن",
-    confidence_confirmed: "مؤكد من المصدر",
+    availability_unknown: "التوفر غير منشور",
+    confidence_confirmed: "مؤكد من المصدر الأساسي",
     confidence_reported: "مذكور رسمياً",
     confidence_estimated: "تقديري",
     roadmapTitle: "خارطة الطريق إلى التمويل",
@@ -279,7 +293,7 @@ export const UI: Record<Locale, Record<string, string>> = {
     documentsReady: "المستندات الجاهزة",
     docsProgress: "جاهزة",
     contents: "الأسئلة",
-    navDetails: "بياناتي",
+    navDetails: "تفاصيلي",
     navPlan: "خطتي",
     // dashboard tabs + AED-within-reach metric (overhaul)
     tabOverview: "نظرة عامة",

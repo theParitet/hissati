@@ -48,7 +48,7 @@ export function Hero() {
                 <>
                   كل تمويل إماراتي.
                   <br />
-                  خطة واحدة يمكنك <span className="text-amber-100">تتبّعها</span>.
+                  خطة واحدة يمكنك <span className="text-amber-100">تتبّعها فعلاً</span>.
                 </>
               ) : (
                 <>

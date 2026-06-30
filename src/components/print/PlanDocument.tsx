@@ -31,7 +31,7 @@ import {
 import { Logo } from "@/components/Logo";
 import { InstrumentGlyph } from "@/components/dashboard/InstrumentGlyph";
 import { cn } from "@/lib/cn";
-import { ui, pick, toLocaleDigits, enumLabel, type Locale } from "@/lib/i18n";
+import { ui, pick, toLocaleDigits, enumLabel, stepsUnlockMore, type Locale } from "@/lib/i18n";
 import { formatAmountRange, isCostInstrument, localizeDate } from "@/lib/format";
 import { estimateTimeToEligibility } from "@/lib/scoring";
 import { programsUnlockedBy } from "@/lib/programs";
@@ -316,7 +316,7 @@ export function PlanDocument({
   const isEmpty = !eligible.length && !almost.length && !steps.length;
 
   const snapshot: [string, string][] = [
-    [ar ? "القطاع" : "Sector", enumLabel("sector", profile.sector, locale)],
+    [ar ? "المجال" : "Sector", enumLabel("sector", profile.sector, locale)],
     [ar ? "المرحلة" : "Stage", enumLabel("stage", profile.stage, locale)],
     [ar ? "الموقع" : "Location", enumLabel("location", profile.location, locale)],
     [ar ? "الملكية" : "Ownership", enumLabel("nationality_ownership", profile.nationality_ownership, locale)],
@@ -366,7 +366,7 @@ export function PlanDocument({
             sub={
               delta > 0 ? (
                 <span className="inline-flex items-center gap-1">
-                  {ar ? "بالخطوات حتى" : "With steps up to"} <Money aed={stats.aedReachableAfterSteps} locale={locale} />
+                  {ar ? "بإكمال الخطوات حتى" : "With steps up to"} <Money aed={stats.aedReachableAfterSteps} locale={locale} />
                   {plus}
                 </span>
               ) : (
@@ -384,9 +384,7 @@ export function PlanDocument({
             }
             sub={
               steps.length > 0
-                ? ar
-                  ? `${toLocaleDigits(steps.length, locale)} خطوة تفتح المزيد`
-                  : `${steps.length} ${steps.length === 1 ? "step unlocks more" : "steps unlock more"}`
+                ? stepsUnlockMore(steps.length, locale)
                 : ar
                   ? "لا خطوات متبقية"
                   : "no steps left"
@@ -425,7 +423,7 @@ export function PlanDocument({
         >
           <p className="text-[11px] text-ink-faint">
             {ar
-              ? "علّم كل بند بالقلم وأنت تنجزه. احمل هذه الصفحة إلى المصرف أو مركز تم."
+              ? "علّم كل بند بالقلم وأنت تنجزه. احمل هذه الصفحة إلى المصرف أو مركز «تَم» (TAMM)."
               : "Tick each item with a pen as you go. Take this page to the bank or a TAMM centre."}
           </p>
 
@@ -491,7 +489,7 @@ export function PlanDocument({
       {/* One step away — almost programs */}
       {almost.length > 0 && (
         <Section
-          eyebrow={ar ? "بخطوة واحدة" : "One step away"}
+          eyebrow={ar ? "على بُعد خطوة واحدة" : "One step away"}
           title={t.almostEligible}
           tone="almost"
           count={almost.length}
