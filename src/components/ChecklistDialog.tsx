@@ -42,7 +42,7 @@ export function ChecklistDialog({
       aria-label={pick(program.name, locale)}
     >
       <div
-        className="max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-card border border-sand-line bg-sand-100 shadow-lift sm:rounded-card"
+        className="scrollbar-themed max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-card border border-sand-line bg-sand-100 shadow-lift sm:rounded-card"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 flex items-start justify-between gap-3 border-b border-sand-line bg-sand-100 p-5">

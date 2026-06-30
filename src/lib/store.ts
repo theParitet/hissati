@@ -11,9 +11,19 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import type { Profile } from "@/lib/schema";
 import type { Locale } from "@/lib/i18n";
+
+/**
+ * Layout effects run synchronously before the browser paints; plain effects run
+ * after. For locale resolution we want the persisted value applied to the FIRST
+ * painted frame (no Arabic→English flash), so we use a layout effect on the
+ * client. On the server useLayoutEffect warns and no-ops, so fall back to
+ * useEffect there.
+ */
+export const useIsomorphicLayoutEffect =
+  typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 /** A completed roadmap step: its atomic key + a label for the undo trail. */
 export interface DoneStep {
@@ -120,9 +130,10 @@ export const useHissati = create<HissatiState>()(
  */
 export function useHydrated(): boolean {
   const [hydrated, setHydrated] = useState(false);
-  // This effect deliberately marks the client hydration boundary.
+  // Marks the client hydration boundary BEFORE paint (layout effect), so the
+  // persisted locale lands on the first visible frame rather than flashing.
   // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => setHydrated(true), []);
+  useIsomorphicLayoutEffect(() => setHydrated(true), []);
   return hydrated;
 }
 

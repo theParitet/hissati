@@ -100,6 +100,26 @@
   }
 }
 
+/* Fades the body in after the locale-bootstrap reveal (mechanism: see layout.tsx).
+   The blank is the page's own sand canvas, never white; prefers-reduced-motion
+   shortens this to instant via the global rule below. */
+body {
+  transition: opacity 150ms var(--ease-out);
+}
+
+/* Brand-green scrollbar (oasis) on the document AND inner panels — a visible brand bar
+   everywhere. NOTE the deliberate tradeoff: theming a scrollbar (scrollbar-color/-width)
+   forces Chromium out of overlay into a classic, space-reserving bar, so the page
+   scrollbar reserves a ~11px gutter whose transparent track shows the sand canvas as a
+   "cream" band beside the dark hero. That's the accepted choice for a green bar you
+   actually see. (scrollbar-color inherits; scrollbar-width does NOT — so both selectors
+   set both properties; the panel selector keeps inner bars thin too.) */
+html,
+.scrollbar-themed {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-oasis) transparent;
+}
+
 /* Compact labels use a deterministic line box. The previous text-box-trim
    enhancement produced different geometry across browsers and used Latin edges
    for Arabic. Flex rows center this box; the font stack supplies sane metrics. */

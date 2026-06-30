@@ -100,7 +100,7 @@ export function ChecklistTab({
             </span>
           </div>
 
-          <ul className="max-h-[34rem] overflow-y-auto p-2 lg:max-h-none lg:min-h-0 lg:flex-1">
+          <ul className="scrollbar-themed max-h-[34rem] overflow-y-auto p-2 lg:max-h-none lg:min-h-0 lg:flex-1">
             {items.map(({ ev }) => {
               const { program, status } = ev;
               const p = programProgress(ev, checkedDocs[program.id] ?? []);

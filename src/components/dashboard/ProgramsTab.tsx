@@ -138,7 +138,7 @@ export function ProgramsTab({
             </div>
           )}
 
-          <div className="max-h-[34rem] overflow-y-auto p-2 lg:max-h-none lg:min-h-0 lg:flex-1">
+          <div className="scrollbar-themed max-h-[34rem] overflow-y-auto p-2 lg:max-h-none lg:min-h-0 lg:flex-1">
             {groups.map((g) => {
               const isCollapsed = collapsed.has(g.key);
               return (

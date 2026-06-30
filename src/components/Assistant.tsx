@@ -173,6 +173,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
   if (enabled === null && !isPage) return null; // embedded: stay quiet until we know
 
   const off = enabled === false;
+  const checking = enabled === null; // availability not yet known — show a loader, never the on-UI
   const empty = messages.length === 0;
   const checklistProgram = checklistId ? getProgramById(checklistId) : undefined;
 
@@ -330,14 +331,16 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
     return (
       <>
         <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden">
-          <div ref={scrollRef} className="flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto">
+          <div ref={scrollRef} className="scrollbar-themed flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto">
             <div
               className={
                 "mx-auto flex min-w-0 w-full max-w-2xl flex-1 flex-col px-4 py-6 " +
                 (off || empty ? "items-center justify-center" : "space-y-4")
               }
             >
-              {off ? (
+              {checking ? (
+                <TypingDots />
+              ) : off ? (
                 <EmptyState
                   className="max-w-md"
                   icon={<PowerOff className="h-7 w-7" aria-hidden />}
@@ -366,7 +369,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
             </div>
           </div>
 
-          {!off && (
+          {!off && !checking && (
             <div className="mx-auto min-w-0 w-full max-w-2xl px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
               <div className="flex items-center gap-2 rounded-pill border border-sand-line bg-sand-100 p-2 shadow-lift transition-colors focus-within:border-oasis">
                 <input
@@ -423,7 +426,7 @@ export function Assistant({ variant = "embedded" }: { variant?: "embedded" | "pa
           {off ? (
             <div className="px-5 py-6 text-sm text-ink-soft">{t.offNote}</div>
           ) : (
-            <div ref={scrollRef} className="max-h-[34rem] min-h-[18rem] space-y-4 overflow-y-auto px-5 py-4">
+            <div ref={scrollRef} className="scrollbar-themed max-h-[34rem] min-h-[18rem] space-y-4 overflow-y-auto px-5 py-4">
               {empty && (
                 <div>
                   <p className="text-sm text-ink-soft">{t.intro}</p>

@@ -89,6 +89,21 @@ export const viewport: Viewport = {
   themeColor: "#14584a",
 };
 
+// Pre-paint locale bootstrap. The server can't read localStorage, so it ships the
+// Arabic-first default (<html dir="rtl" lang="ar"> AND Arabic body text). This blocking
+// inline script runs before first paint: for a returning English user it flips <html>
+// to en/ltr (kills the RTL→LTR mirror) and hides <body> via an INLINE opacity:0 set
+// directly on the element — no stylesheet involved, so there's no cold-load race where
+// Arabic text could paint before globals.css applied. DirectionManager clears the inline
+// opacity pre-paint once React applies the persisted locale (the content then fades in).
+// A fire-and-forget 3s failsafe re-reveals if hydration never runs (JS dead) — Arabic is
+// the honest fallback then, and a harmless no-op once the body is already shown; offline
+// still hydrates (chunks are cached). This script hardcodes the persist key 'hissati-v1'
+// and the zustand .state.locale envelope; keep them in sync with lib/store.ts.
+// Arabic users (the server default) are never hidden → instant paint, zero penalty.
+const LOCALE_BOOTSTRAP =
+  "(function(){try{var s=localStorage.getItem('hissati-v1');var l=s?(JSON.parse(s).state||{}).locale:null;var e=document.documentElement;if(l==='en'){e.lang='en';e.dir='ltr';if(document.body)document.body.style.opacity='0';setTimeout(function(){if(document.body)document.body.style.opacity='';},3000);}}catch(e){}})();";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
@@ -97,7 +112,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
       className={`${tajawal.variable} ${inter.variable} ${fraunces.variable} ${plexMono.variable}`}
     >
-      <body className="flex min-h-dvh min-w-0 flex-col antialiased">
+      {/* suppressHydrationWarning: the inline locale-bootstrap script sets body
+          style.opacity pre-hydration for a returning English user (intentional). */}
+      <body className="flex min-h-dvh min-w-0 flex-col antialiased" suppressHydrationWarning>
+        <script dangerouslySetInnerHTML={{ __html: LOCALE_BOOTSTRAP }} />
         <DirectionManager />
         <ServiceWorkerRegister />
         <AppHeader />
