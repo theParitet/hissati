@@ -1,10 +1,9 @@
 /**
  * Hissati brand logo — the single source of truth for the mark.
  *
- * SWAPPABLE BY DESIGN (dev-side): to change the logo later, either
- *   (a) edit the <Glyph> SVG below, or
- *   (b) replace <Glyph/> with <img src="/logo-mark.svg" .../> (atomic asset),
- * and every usage (header, landing, PDF) updates at once.
+ * SWAPPABLE BY DESIGN (dev-side): to change the logo, edit the <BrandMark>
+ * SVG in `components/BrandMark.tsx`; every usage (header, landing, PDF) updates
+ * at once.
  *
  * The mark's lines use `currentColor`, so it adapts to context — light on the
  * green app bar (`text-sand-100`), oasis-green on light surfaces (default).

@@ -1,5 +1,5 @@
 /**
- * Hissati — progress metrics (replaces the former Readiness Score).
+ * Hissati — progress metrics: the cited "AED within reach" headline + climb.
  *
  * Every number here is DERIVED from the deterministic engine's EvaluatedProgram[]
  * plus the user's completed roadmap steps — so it is cited and falsifiable, not an

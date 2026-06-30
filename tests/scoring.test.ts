@@ -12,7 +12,7 @@ import {
 
 // The progress climb (AED within reach) is asserted in tests/metrics.test.ts.
 
-describe("Headline demo beat: Khalifa Fund loan flips almost → eligible at step 2", () => {
+describe("Khalifa Fund loan flips almost→eligible at step 2", () => {
   const khalifa = getProgramById("khalifa-fund-sme")!;
   it("ALMOST at step 1 (registered, still idea-stage — only the MVP gate remains)", () => {
     expect(evaluateProgramFull(dateFounderRegistered, khalifa).status).toBe("almost");

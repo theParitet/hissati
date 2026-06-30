@@ -27,7 +27,7 @@ flowchart TB
     end
 
     subgraph OUT["Client-side outputs"]
-      PDF["pdf · jsPDF + html2canvas<br/>bilingual readiness plan"]
+      PDF["pdf · native browser print (window.print → Save as PDF)<br/>bilingual readiness plan"]
     end
 
     SW["Service Worker · sw.js<br/>precache shell · cache-first static · network-first nav"]

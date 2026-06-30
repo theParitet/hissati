@@ -10,7 +10,7 @@ import type { Profile } from "@/lib/schema";
 
 /**
  * The hero persona: an Emirati woman making date products at home in Al Qua'a.
- * Used to assert the readiness CLIMB (scoring.md §2.4). We model "completing a
+ * Used to assert the readiness CLIMB (tests/metrics.test.ts). We model "completing a
  * roadmap step" as advancing one profile field:
  *   step 0 (here) -> step 1 (register) -> step 2 (launch/MVP).
  */
@@ -47,7 +47,7 @@ export const dateFounderEstablished: Profile = {
   registration: "reg_2yr_plus",
 };
 
-/** An MVP tech founder, relocation unanswered (Match Score worked-example B = 54; Hub71 = almost). */
+/** An MVP tech founder, relocation unanswered (Match Score worked-example B = 51; Hub71 = almost). */
 export const mvpTechFounder: Profile = {
   nationality_ownership: "expat",
   location: "dubai",

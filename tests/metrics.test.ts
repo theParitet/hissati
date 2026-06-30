@@ -13,14 +13,14 @@ import type { Profile } from "@/lib/schema";
 const statsFor = (p: Profile) => progressStats(p, evaluateAllFull(p, PROGRAMS), []);
 
 /**
- * The "climb" — replaces the readiness-score climb. The headline metric is the
+ * The "climb": the headline metric is the
  * conservative "AED within reach": explicit per-applicant countable values for
  * currently available matches, with alternative products de-duplicated.
  *
  * Date-founder path: idea → register a trade licence → launch an MVP → mature.
  * The cited money beat is at MVP, where Khalifa's AED 2M loan flips eligible.
  */
-describe("progressStats — the climb (replaces the readiness score)", () => {
+describe("progressStats — the climb", () => {
   it("idea stage: no funding open yet → 0 eligible, AED 0", () => {
     const s = statsFor(dateFounderIdea);
     expect(s.programsEligible).toBe(0);

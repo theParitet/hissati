@@ -1,6 +1,6 @@
 /**
  * Hissati — deterministic scoring (FR-C2 Match Score, FR-D4 time-to-eligibility).
- * Transcribed from `.local-docs/scoring.md`. The progress metric that climbs as
+ * Transcribed from `docs/scoring.md`. The progress metric that climbs as
  * roadmap steps complete now lives in `lib/metrics.ts` (cited AED within reach).
  *
  * Match Score is PURE, DETERMINISTIC, bounded to [0,100], and TUNABLE from the
@@ -116,9 +116,9 @@ export function matchScore(
 /* ==========================================================================
  * 2. estimateTimeToEligibility (FR-D4)
  * --------------------------------------------------------------------------
- * NOTE: the former Readiness Score (a weighted estimate) has been removed in
- * favour of `progressStats()` in `lib/metrics.ts` — cited, falsifiable figures
- * (AED within reach + programs eligible) derived directly from the engine.
+ * NOTE: headline progress figures live in `progressStats()` in `lib/metrics.ts`
+ * — cited, falsifiable values (AED within reach + programs eligible) derived
+ * directly from the engine, never a weighted estimate.
  * ======================================================================== */
 
 export const EST = {

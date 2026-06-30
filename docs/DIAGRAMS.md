@@ -51,7 +51,7 @@ flowchart TB
     end
 
     subgraph OUT["Client-side outputs"]
-      PDF["pdf · jsPDF + html2canvas<br/>bilingual readiness plan"]
+      PDF["pdf · native browser print (window.print)<br/>bilingual readiness plan"]
     end
 
     SW["Service Worker · sw.js<br/>precache shell · cache-first static · network-first nav"]
@@ -282,7 +282,7 @@ flowchart TD
   subgraph RESULTS["Results dashboard"]
     DASH["Overview · Programs · Checklist"] --> ACTIONS{"founder acts"}
     ACTIONS -->|mark step done| MARK["markStep → effectiveProfile re-folds"]
-    ACTIONS -->|export| PDFOUT["Bilingual PDF readiness plan · jsPDF"]
+    ACTIONS -->|export| PDFOUT["Bilingual PDF readiness plan · native browser print"]
     ACTIONS -->|compare / checklist| DETAIL["compare rows · document ticks"]
   end
 

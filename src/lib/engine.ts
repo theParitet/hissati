@@ -4,7 +4,7 @@
  * Pure, side-effect-free TypeScript over the program KB. Same (profile, program)
  * always yields the same result (NFR-7) — runs entirely in the browser, no network.
  * The `passesRule` / `evaluateProgram` / `evaluateAll` bodies are transcribed from
- * the authoritative `.local-docs/data-model.md` §3. `annotateRules` /
+ * the authoritative `docs/data-model.md` §3. `annotateRules` /
  * `evaluateProgramFull` / `evaluateAllFull` are additive helpers (contract §5) that
  * attach `.passed`/`.remediable` per rule for the scoring formulas and the UI.
  */

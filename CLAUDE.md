@@ -2,17 +2,15 @@
 
 **Hissati** (حصتي) is a funding **readiness navigator** for first-time founders in Al Qua'a, Al Ain (Tatweer Hackathon). Flow: short questionnaire → match the founder to real UAE funding programs (eligible / almost / not-a-fit, with the blocking rule named) → a 3-tab dashboard (Overview · Programs · Checklist) led by the cited **"AED within reach"** metric → roadmap → application checklist → bilingual PDF export. Offline-first, Arabic-first.
 
-## Read first — context lives in `.local-docs/` (git-ignored; informs the build, never shipped)
+## Read first — reference docs live in `docs/` (committed)
 Core (always):
-- `requirements.md` — the contract: features FR-A…FR-I, NFRs, stack, evidence reqs, Definition of Done (§10).
-- `data-model.md` — Zod schema, enums, the `evaluateProgram` algorithm, question→rule map. **Single source of truth for types.**
-- `programs.json` — the program dataset the matcher runs on.
-- `scoring.md` — match-score formula. (The readiness-score it also describes was **removed** in the overhaul; the live headline metric is "AED within reach" in `src/lib/metrics.ts`.)
-- `project-context.md` — the why / personas / scope.
+- `docs/requirements.md` — the contract: features FR-A…FR-I, NFRs, stack, evidence reqs, Definition of Done.
+- `docs/data-model.md` — Zod schema, enums, the `evaluateProgram` algorithm, question→rule map. **Single source of truth for types.**
+- `src/data/programs.json` — the program dataset the matcher runs on (validated against the Zod schema).
+- `docs/scoring.md` — match-score formula + `estimateTimeToEligibility`. (The live headline metric is "AED within reach" in `src/lib/metrics.ts`.)
+- `docs/project-context.md` — the why / personas / scope.
 
-Reference (as needed): `programs-sources.md` (citations + which figures are unconfirmed), `hackathon-info.md` (judging criteria + required README sections).
-
-Ignore (superseded): `deep-research-report.md`, `Tatweer Hackathon - D2 Feature Spec.md`, `… Idea Slate & Strategy.md`, `Links.md`. Any `[[wikilinks]]` to these are intentional, not missing.
+Reference (as needed): `docs/programs-sources.md` (citations + which figures are unconfirmed), `docs/design.md` (design system / tokens).
 
 ## Stack
 Next.js (App Router) + TypeScript · Tailwind + shadcn/ui · Zustand+persist (localStorage) · PWA offline (next-pwa/Workbox) · Arabic PDF via html2canvas+jsPDF (or print stylesheet) · **Tajawal** self-hosted via next/font · deploy on Vercel. Optional agent: one server route calling Claude tool-use.
@@ -66,7 +64,7 @@ Note that this can be challenged if doesn't serve the final goal - winning hacka
 
 ### Design/website overhaul (merged — branch `overhaul`)
 Multi-agent overhaul: a foundation trunk + 5 parallel worktree leaves (Header, PDF, Dashboard, Assistant, Landing), merged green. What changed:
-- **Readiness Score → "AED within reach"** (`lib/metrics.ts`): sums conservative per-applicant values for open/rolling matches, excludes pools/costs/services/closed windows, and groups alternative products. Climb: AED **0 → 0 → 2,000,000 → 7,000,000**; open matches **0 → 1 → 3 → 4**. `tests/metrics.test.ts` pins the result. **55 tests green.**
+- **"AED within reach"** (`lib/metrics.ts`): sums conservative per-applicant values for open/rolling matches, excludes pools/costs/services/closed windows, and groups alternative products. Climb: AED **0 → 0 → 2,000,000 → 7,000,000**; open matches **0 → 1 → 3 → 4**. `tests/metrics.test.ts` pins the result. **69 tests green.**
 - **3-tab dashboard** (`src/components/dashboard/`): Overview (compact stat strip + the dark **"funding sky"** signature) · Programs · Checklist. Nav labels: **My plan** (`/plan`) · **Assistant** · **My details** (`/details`).
 - **Tailwind-v4 token system** reconciled in `globals.css` (`oasis/amber/clay/sand/ink/night/palm/almost`); Al Sadu restrained to one signature band (hero + PDF seal). Fonts: Tajawal + Fraunces + IBM Plex Mono.
-- New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), and **PDF plan**. Real app screenshots in `docs/screenshots/`. Docs (README, `.local-docs/design.md`, this file, demo script) reconciled to shipped reality.
+- New **landing** (desert-dawn hero + device mockups), **header**, **assistant** (graceful Agent-OFF state), and **PDF plan**. Real app screenshots in `docs/screenshots/`. Docs (README, `docs/design.md`, this file) reconciled to shipped reality.

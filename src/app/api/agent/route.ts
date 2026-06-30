@@ -83,7 +83,7 @@ function num(o: unknown, key: string): number | undefined {
 /**
  * Lift the cited money figures the money-tools already compute (match_programs /
  * steps_to_qualify) so the client can render the "within reach" ledger chip — the
- * same honest, falsifiable number as the dashboard. Never a readiness score.
+ * same honest, falsifiable number as the dashboard. Never a fabricated score.
  */
 function collectStats(name: string, result: unknown, prev?: AgentStats): AgentStats | undefined {
   if (name === "match_programs") {

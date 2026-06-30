@@ -1,7 +1,7 @@
 /**
  * Hissati — shared data contract (Zod schemas + types).
  *
- * Transcribed verbatim from `.local-docs/data-model.md` §2, the AUTHORITATIVE
+ * Transcribed verbatim from `docs/data-model.md` §2, the AUTHORITATIVE
  * single source of truth for every enum, field name, and the Rule grammar.
  * Do NOT rename or diverge these — the dataset, engine, and scoring all key off
  * these exact strings (FR-B4: KB validated against ProgramSchema; FR-A: profile
