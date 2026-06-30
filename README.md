@@ -203,6 +203,6 @@ Context and feasibility figures in §1 and §5 are drawn from the following prim
 
 Built for the **Tatweer Hackathon** (26–28 June 2026, Al Qua'a · in collaboration with Abu Dhabi University). Released under the [`MIT License`](./LICENSE).
 
-> **Hackathon submission:** the project as judged is at commit [`2954a34`](https://github.com/theParitet/TatweerHackathon404Team/tree/2954a34). Later commits are post-hackathon.
+> **Hackathon submission:** the project as judged is at commit [`2954a34`](https://github.com/theParitet/hissati/tree/2954a34). Later commits are post-hackathon.
 
 *Hissati is an information tool, not a licensed financial or legal advisor. It surfaces public funding programs and their stated rules; it does not file applications on anyone's behalf.*
